@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marta Franco — Front-end, UX research, Interface design</title>
+<meta name="description" content="Marta Franco. Front-end, UX research, Interface design. Junior looking for my first full-time role.">
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+<header class="hero" id="top">
+  <img class="hero__bg" src="assets/img/hero-grainient.png" alt="" aria-hidden="true">
+
+  <div class="hero__bar">
+    <a href="index.html" class="hero__logo" aria-label="Marta Franco — inicio">
+      <img src="assets/img/logo.svg" alt="">
+    </a>
+    <nav class="hero__nav" aria-label="Principal">
+      <a href="index.html" class="u-underline is-current" aria-current="page">Home</a>
+      <a href="work/index.html" class="u-underline">Work</a>
+      <a href="about/index.html" class="u-underline">About</a>
+      <a href="contact/index.html" class="u-underline">Contact</a>
+    </nav>
+  </div>
+
+  <div class="hero__mid">
+    <h1 class="hero__title" role="img" aria-label="Marta Franco"></h1>
+    <p class="hero__subtitle">Front-end, UX research, Interface design</p>
+    <p class="hero__badge">Available for full-time roles</p>
+  </div>
+
+  <div class="hero__bar hero__bar--bottom">
+    <div class="hero__clock" id="clock">
+      <span class="hero__clock-loc">Sevilla, ES</span>
+      <span class="hero__dot">·</span>
+      <span class="hero__clock-time" id="clockTime">20:34 CEST</span>
+      <span class="hero__dot">·</span>
+      <div class="hero__modes" role="group" aria-label="Franja horaria">
+        <button type="button" class="tm" data-mode="auto">auto</button>
+        <button type="button" class="tm" data-mode="day">day</button>
+        <button type="button" class="tm" data-mode="twilight">twilight</button>
+        <button type="button" class="tm" data-mode="night">night</button>
+      </div>
+    </div>
+    <a href="#work" class="hero__scroll u-underline">
+      <span>Scroll to explore</span>
+      <img src="assets/img/arrow-down.svg" alt="" class="hero__scroll-arrow">
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <section class="selected-work" id="work">
+    <h2 class="section-title">Selected work</h2>
+
+    <ul class="selected-work__list">
+      <li>
+        <a href="work/antonio-franco/index.html" class="selected-work__row">
+          <span class="selected-work__name">(01)&emsp;Antonio Franco — Fashion portfolio</span>
+          <span class="selected-work__meta">Web design, Front end&emsp;&emsp;2026</span>
+        </a>
+      </li>
+      <li>
+        <a href="work/consentio/index.html" class="selected-work__row">
+          <span class="selected-work__name">(02)&emsp;ConSentío</span>
+          <span class="selected-work__meta">UX Research, UI Design&emsp;&emsp;2025</span>
+        </a>
+      </li>
+      <li>
+        <a href="work/portfolio-v1-v2/index.html" class="selected-work__row">
+          <span class="selected-work__name">(03)&emsp;Portfolio v1 → v2</span>
+          <span class="selected-work__meta">Web design, Front-end&emsp;&emsp;2025–26</span>
+        </a>
+      </li>
+    </ul>
+
+    <a href="work/index.html" class="link-reveal link-reveal--diagonal">
+      <span>All work</span>
+      <img src="assets/img/icon-arrow-allwork.svg" alt="">
+    </a>
+  </section>
+
+  <section class="statement">
+    <blockquote class="statement__quote">
+      <p>Typography taught me precision.</p>
+      <p>Code taught me structure.</p>
+      <p>Usability test taught me I was wrong about both.</p>
+    </blockquote>
+
+    <p class="statement__now">
+      Currently — Learning JavaScript, one interaction at a time.
+      Reading far too much about type on screen.
+      Cooking a lot, and quietly planning a website about it.
+    </p>
+
+    <a href="about/index.html" class="link-reveal link-reveal--lead">
+      <img src="assets/img/icon-arrow-small.svg" alt="">
+      <span>More about me</span>
+    </a>
+
+    <div class="statement__wheel-wrap">
+      <div class="statement__wheel" id="wheel" aria-hidden="true">
+        <svg viewBox="0 0 1000 1000" focusable="false">
+          <defs><path id="wheelPathBig"/><path id="wheelPathSmall"/></defs>
+          <g id="wheelBig"><text id="wheelTextBig"><textPath href="#wheelPathBig"></textPath></text></g>
+          <g id="wheelSmall"><text id="wheelTextSmall"><textPath href="#wheelPathSmall"></textPath></text></g>
+        </svg>
+      </div>
+      <img class="statement__thumb" src="assets/img/playing-cards-mockup.png" alt="Mockup ilustrado de cartas de juego">
+    </div>
+  </section>
+
+  <section class="what-i-do" id="what-i-do">
+    <h2 class="section-title">What I do</h2>
+
+    <ul class="what-i-do__list">
+      <li class="what-i-do__item is-active" data-i="0" tabindex="0">
+        <h3>(01) Interface design</h3>
+        <p>Layout, type, colour and the states in between. Figma, components and systems, responsive from the first frame.</p>
+      </li>
+      <li class="what-i-do__item" data-i="1" tabindex="0">
+        <h3>(02) UX &amp; Research</h3>
+        <p>Interviews, surveys, benchmarking, usability testing. Working out what the thing is for before deciding what it looks like — and testing whether I got it right.</p>
+      </li>
+      <li class="what-i-do__item" data-i="2" tabindex="0">
+        <h3>(03) Front-end</h3>
+        <p>I build what I design in HTML and CSS, and I'm learning JavaScript properly. Designing something you'll have to build yourself changes how you design it.</p>
+      </li>
+      <li class="what-i-do__item" data-i="3" tabindex="0">
+        <h3>(04) Type &amp; systems</h3>
+        <p>Type scales, spacing, colour and components — the rules that keep fifty screens looking like one product. Typography is the part I care most about, and two years of print is where I learned to.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="all-work" id="all-work">
+    <h2 class="section-title">All my work</h2>
+
+    <div class="all-work__table">
+
+      <div class="all-work__group">
+        <h3 class="all-work__cat">Web design</h3>
+        <div class="all-work__rows">
+          <a class="all-work__row" href="work/antonio-franco/index.html">
+            <span class="all-work__role">Web design, Art direction</span>
+            <span class="all-work__name">Antonio Franco portfolio<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="work/consentio/index.html">
+            <span class="all-work__role">UX Research, UI Design</span>
+            <span class="all-work__name">ConSentío<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="work/portfolio-v1-v2/index.html">
+            <span class="all-work__role">Web design, Front-end</span>
+            <span class="all-work__name">Portfolio v1 → v2<i aria-hidden="true">↗</i></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="all-work__group">
+        <h3 class="all-work__cat">3D</h3>
+        <div class="all-work__rows">
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">3D, Packaging</span>
+            <span class="all-work__name">3D bottle<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">3D, Animation</span>
+            <span class="all-work__name">Off-White<i aria-hidden="true">↗</i></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="all-work__group">
+        <h3 class="all-work__cat">Typography</h3>
+        <div class="all-work__rows">
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">Typography</span>
+            <span class="all-work__name">Kilter Typography<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">Typography, Investigation</span>
+            <span class="all-work__name">Typographic Analysis<i aria-hidden="true">↗</i></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="all-work__group">
+        <h3 class="all-work__cat">Graphic design</h3>
+        <div class="all-work__rows">
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">Branding, Graphic design</span>
+            <span class="all-work__name">Mondo Restaurant<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">Web design, Graphic design</span>
+            <span class="all-work__name">Merkamueble Redesign<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">Illustration, Graphic design</span>
+            <span class="all-work__name">Students Life Cards<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">Graphic design</span>
+            <span class="all-work__name">Ecological Posters<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">Illustration, Graphic design</span>
+            <span class="all-work__name">Bullet Train Illustrations<i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="all-work__row" href="#">
+            <span class="all-work__role">Branding, Graphic design</span>
+            <span class="all-work__name">Expo Sevilla '24<i aria-hidden="true">↗</i></span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <h2 class="cta__title">Let's talk.</h2>
+    <p class="cta__lead">I'm looking for my first full-time role in <u>web design and UI/UX</u>. Junior, curious, and much more interested in learning how you work than in showing you I already know.</p>
+    <p class="cta__text">If you're building something, or hiring someone who'll ask a lot of questions — I'd like to hear about it.</p>
+    <a href="mailto:martafrancomtz@gmail.com" class="cta__email u-underline">martafrancomtz@gmail.com →</a>
+    <a href="about/index.html" class="link-reveal link-reveal--lead">
+      <span>More about me</span>
+      <img src="assets/img/arrow-right.svg" alt="">
+    </a>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__contact">
+    <p><span>(Call me maybe)</span> +34 639 867 532</p>
+    <p><span>(Or just write)</span> <a href="mailto:martafrancomtz@gmail.com" class="u-underline">martafrancomtz@gmail.com</a></p>
+    <p class="site-footer__copy">Seville, Spain. © 2026 Marta Franco. Designed and built by me.</p>
+  </div>
+
+  <img class="site-footer__image" src="assets/img/footer-image.png" alt="">
+
+  <div class="site-footer__links">
+    <a href="#" class="link-reveal link-reveal--diagonal"><span>LinkedIn</span><img src="assets/img/arrow-diagonal.svg" alt=""></a>
+    <a href="#" class="link-reveal link-reveal--diagonal"><span>Instagram</span><img src="assets/img/arrow-diagonal.svg" alt=""></a>
+    <a href="#" class="link-reveal link-reveal--diagonal"><span>GitHub</span><img src="assets/img/arrow-diagonal.svg" alt=""></a>
+    <a href="#" class="link-reveal link-reveal--diagonal"><span>Behance</span><img src="assets/img/arrow-diagonal.svg" alt=""></a>
+    <a href="#" class="site-footer__cv u-underline">Curriculum Vitae (PDF)</a>
+  </div>
+</footer>
+
+<script src="assets/js/clock.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
