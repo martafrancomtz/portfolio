@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Metadatos básicos para el sitio web -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio">
+
+    <title>Work - Marta Franco</title> <!-- Título de la página -->
+    <link rel="icon" href="images/m-50x50.png" type="image/png"> <!-- Favicon (icono en la pestaña del navegador) -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS externo -->
+    <script src="js/script.js" defer></script> <!-- Enlace al archivo JS externo -->
+
+    <!-- Enlace a la fuente de google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- Encabezado -->
+    <header class="header">
+        <a href="index.html" class="header__logo">
+            <img src="images/m-50x50.png" alt="Logo" class="header__logo-img">
+        </a>
+        <nav class="header__nav">
+            <button class="header__menu-toggle" aria-label="Toggle menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="header__menu">
+                <li class="header__menu-item"><a href="work.html" class="header__menu-link">Work,</a></li>
+                <li class="header__menu-item"><a href="about.html" class="header__menu-link">About,</a></li>
+                <li class="header__menu-item"><a href="contact.html" class="header__menu-link">Contact,</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Galería -->
+    <section class="gallery">
+        <!-- Botones de categorías -->
+        <div class="portfolio__filter">
+            <a href="#" class="current" data-filter="*">All,</a>
+            <a href="#" data-filter=".category-3d">3D,</a>
+            <a href="#" data-filter=".category-web">Web Design,</a>
+            <a href="#" data-filter=".category-branding">Branding,</a>
+            <a href="#" data-filter=".category-illustration">Illustration</a>
+        </div>
+        <!-- Proyectos -->
+        <div class="portfolio__container">
+            <div class="gallery__item category-3d">
+                <a href="work-botella.html">
+                    <img src="images/botella.jpg" alt="Botella 3D" class="gallery__image">
+                    <div class="gallery__caption">
+                        <p class="title__caption">3D bottle</p>
+                        <p class="subtitle__caption">Sirius Dalmore</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item category-3d ">
+                <a href="work-offwhite.html">
+                    <img src="images/offwhite.jpg" alt="Off-White animation" class="gallery__image">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Off-White</p>
+                        <p class="subtitle__caption">3D animation</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item category-branding">
+                <a href="work-mondo.html">
+                    <img src="images/mondo.jpg" alt="Mondo restaurant" class="gallery__image" loading="lazy">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Mondo</p>
+                        <p class="subtitle__caption">Restaurant</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item">
+                <a href="work-kilter.html">
+                    <img src="images/kilter.jpg" alt="Kilter typography" class="gallery__image" loading="lazy">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Kilter</p>
+                        <p class="subtitle__caption">Typography</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item category-illustration">
+                <a href="work-cards.html">
+                    <img src="images/cards.jpg" alt="Students cards" class="gallery__image" loading="lazy">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Students Life</p>
+                        <p class="subtitle__caption">Cards</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item">
+                <a href="work-eco.html">
+                    <img src="images/eco.jpg" alt="Ecological posters" class="gallery__image" loading="lazy">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Ecological</p>
+                        <p class="subtitle__caption">Posters</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item category-web">
+                <a href="work-merkamueble.html">
+                    <img src="images/merkamueble9.jpg" alt="Web Mercamueble" class="gallery__image" loading="lazy">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Merkamueble</p>
+                        <p class="subtitle__caption">Redesign</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item category-branding">
+                <a href="work-expo.html">
+                    <img src="images/expo.jpg" alt="Expo Sevilla" class="gallery__image" loading="lazy">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Expo</p>
+                        <p class="subtitle__caption">Sevilla '24</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item category-illustration">
+                <a href="work-ilustration.html">
+                    <img src="images/ilustracion.jpg" alt="Bullet train illustrations" class="gallery__image" loading="lazy">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Bullet Train</p>
+                        <p class="subtitle__caption">Illustrations</p>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery__item">
+                <a href="work-akzi.html">
+                    <img src="images/akzi.jpg" alt="Typographic Analysis of Akzidenz Grotesk" class="gallery__image" loading="lazy">
+                    <div class="gallery__caption">
+                        <p class="title__caption">Typographic </p>
+                        <p class="subtitle__caption">Analysis</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pie de página -->
+    <hr class="line">
+    <footer class="footer">
+        <p class="footer__text">&copy; 2025 Marta Franco.</p>
+        <ul class="footer__socials">
+            <li class="footer__social"><a href="https://www.instagram.com/martafrancom?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="footer__social-link"><img src="images/instagram.png" alt="Instagram" loading="lazy"></a></li>
+            <li class="footer__social"><a href="https://www.linkedin.com/in/martafrancomartinez/" target="_blank" class="footer__social-link"><img src="images/linkedin.png" alt="LinkedIn" loading="lazy"></a></li>
+            <li class="footer__social"><a href="https://www.behance.net/martafranco1" target="_blank" class="footer__social-link"><img src="images/behance.png" alt="Behance" loading="lazy"></a></li>
+        </ul>
+        <ul class="footer__infos">
+            <li class="footer__info"><a href="#" class="footer__link">martafrancomtz@gmail.com</a></li>
+            <li class="footer__info"><a href="#" class="footer__link">+34 639867532</a></li>
+            <li class="footer__info">
+                <a href="cv/Curriculum_Vitae_Marta_Franco_Martinez.pdf" target="_blank" class="footer__link">Curriculum Vitae</a>
+            </li>
+        </ul>
+    </footer>
+</body>
+
+</html>

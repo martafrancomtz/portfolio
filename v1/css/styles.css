@@ -1,0 +1,1496 @@
+/* Estilos globales */
+*{
+  font-family: 'Inter', sans-serif;
+  font-weight: 400; 
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;  
+  box-sizing: border-box; 
+  overflow-x: hidden; 
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Encabezado */  
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 2rem;
+  position: fixed; 
+  top: 0;
+  left: 0;
+  z-index: 98; 
+  width: 100%; 
+    width: -webkit-fill-available;
+}
+
+.header a{
+  font-size: 20px;
+}
+
+.header__logo-img {
+  width: 45px;
+  height: auto; 
+  display: block;
+}
+
+/* Ocultar el menú completo en dispositivos pequeños */
+.header__menu {
+  display: flex; 
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.header__menu-item {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.header__menu-item:last-child {
+  border-bottom: none;
+}
+
+/* Mostrar el botón de menú hamburguesa */
+.header__menu-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 40px;
+  height: 21px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 99;
+}
+
+.header__menu-toggle span {
+  display: block;
+  height: 3px;
+  margin: 5px;
+  width: 100%;
+  background-color: #333;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Animación del menú hamburguesa */
+.header__menu-toggle.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.header__menu-toggle.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.header__menu-toggle.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Dispositivos mas pequeños */
+@media screen and (max-width: 768px) {
+  * {
+    box-sizing: border-box;
+  }
+
+  .header {
+    background-color: #f4f4f4;
+    width: 100%;
+  }
+
+  .header a {
+    font-size: 40px;
+  }
+
+  .header__menu {
+    display: none;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100vw;
+    z-index: 100;
+    background-color: #f4f4f4;
+    overflow: visible;
+  }
+
+  .header__menu--active {
+    display: flex !important;
+    align-items: start;
+    height: 100vh; 
+    background-color: #f4f4f4;
+    font-size: 1.5rem; 
+    padding: 2rem;
+    justify-content: flex-start;
+    height: 100vh;
+    width: 100%; 
+    overflow-y: auto;
+  }
+
+  .header__menu-toggle {
+    display: block; 
+    justify-items: center;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .header {
+    background-color: #f4f4f4;
+  }
+
+  .header__menu {
+    display: flex;
+    flex-direction: row;
+    position: static; 
+    width: auto;
+    box-shadow: none; 
+  }
+
+  .header__menu-toggle {
+    display: none;
+  }
+}
+
+.header__menu-link {
+  font-size: 20px;
+  color: #333;
+}
+
+.header__menu-link--active {
+  border-bottom: 2px solid #333;
+}
+
+/* animacion encabezado */
+.header__menu-link {
+  position: relative;
+  color: #333;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.header__menu-link::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #333;
+  transition: width 0.3s ease;
+}
+
+.header__menu-link:hover::before {
+  width: 100%;
+}
+
+/* PAGINA INDEX */
+
+/* Estilos generales */
+.intro {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  justify-content: center; 
+  overflow: hidden;
+}
+
+.intro__title {
+  text-align: right;
+  display: flex;
+  color: #000000;
+  justify-content: right;
+  align-self: end;
+  font-size: 8rem;
+  margin: 20rem 2rem 6rem 0rem;
+  flex-direction: column;
+  line-height: 1;
+  position: relative;
+  overflow: hidden; 
+  
+}
+
+.intro__line {
+  font-size: 8rem;
+  overflow: hidden; 
+  position: relative;
+}
+
+/* Cada parrafo */
+.intro__description {
+  text-align: left; 
+  font-size: 2rem;
+  margin-bottom: 9rem;
+}
+
+.intro__description-container {
+  display: flex;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%; 
+  gap: 2rem;
+}
+
+.intro__description:first-child {
+  margin-left: 2rem;
+}
+
+.intro__description:last-child {
+  margin-left: auto;
+  text-align: right; 
+  margin-right: 2rem;
+}
+
+/* Carrusel */
+.featured-projects {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.featured-projects__title{
+  font-family: 'Inter', sans-serif;
+  font-size: 36px;
+  font-weight: 600; 
+  margin: 5rem 0rem 5rem 2rem;
+}
+
+.carousel {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.carousel__track {
+  display: flex;
+  gap: 2rem;
+  animation: scroll 40s linear infinite;
+  transition: transform 0.3s ease-in-out;
+  width: calc(200px * 9);
+}
+
+.carousel__item {
+  position: relative; 
+  overflow: hidden; 
+  display: flex; 
+  flex-direction: column-reverse; 
+  min-width: 300px;
+  text-align: left;
+  width: fit-content; 
+  opacity: 1; 
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.carousel__item a {
+  text-decoration: none; 
+}
+
+.carousel__item img {
+  display: block; 
+}
+
+.carousel__image {
+  width: 100%;
+  border-radius: 5px;
+  height: auto; 
+  display: block; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.carousel__caption {
+  position: absolute;
+  color: #f4f4f4;
+  padding-left: 1.4rem; 
+  white-space: nowrap; 
+}
+
+.carousel__caption span{
+  font-weight: 700; 
+  text-shadow: 0px 0px 6px black;
+}
+
+/* Pausa al pasar el ratón */
+.carousel:hover .carousel__track {
+  animation-play-state: paused;
+}
+
+/* Animación del carrusel */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-200px * 7));
+  }
+}
+
+/* Carrusel: Configuración de hover */
+.carousel:hover .carousel__item {
+  opacity: 0.5; 
+}
+
+.carousel__item:hover {
+  opacity: 1 !important; 
+  transform: scale(0.97);
+}
+
+.full-opacity {
+  opacity: 1;
+}
+
+.half-opacity {
+  opacity: 0.5;
+}
+
+.carousel__button {
+  position: absolute; 
+  right: 2rem;
+  margin-top: 2rem;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* animacion boton */
+.carousel__button::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+  transition: transform 0.4s ease;
+}
+
+.carousel__button:not(:hover)::before {
+  transition-delay: 0.2s; 
+}
+
+/* Línea secundaria (nueva línea) */
+.carousel__button::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%; 
+  height: 2px;
+  background-color: #333;
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+  transition: transform 0.4s ease 0.1s; 
+}
+
+/* Hover: línea inicial desaparece y secundaria aparece */
+.carousel__button:hover::before {
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+}
+
+.carousel__button:hover::after {
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+}
+
+/* About Me indice */
+.skills__text{
+  font-weight: 400;
+  padding: 10rem 2rem 0rem 2rem;
+  margin-top: 7rem;
+  max-width: 65%;
+  font-size: 2rem;
+}
+
+.skills__button {
+  position: absolute;
+  left: 1rem; 
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* animacion boton */
+.skills__button::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+  transition: transform 0.4s ease;
+}
+
+.skills__button:not(:hover)::before {
+  transition-delay: 0.2s; 
+}
+
+/* Línea secundaria */
+.skills__button::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%; 
+  height: 2px;
+  background-color: #333;
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+  transition: transform 0.4s ease 0.1s; 
+}
+
+/* Hover: línea inicial desaparece y secundaria aparece */
+.skills__button:hover::before {
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+}
+
+.skills__button:hover::after {
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+}
+
+/* PAGINA WORK */
+
+/* Estilos de la galería */
+.gallery {
+  padding: 16rem 2rem 6rem 2rem; 
+  margin: 0 auto; 
+}
+
+.portfolio__container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem; 
+  width: 100%; 
+  min-height: 200px; 
+}
+
+/* Contenedor de botones */
+.portfolio__filter {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
+}
+
+/* Estilo base de los botones */
+.portfolio__filter a {
+  font-size: 30px; 
+  color: #333;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px; 
+  position: relative;
+  text-decoration: none; 
+  transition: color 0.3s ease;
+  display: inline-block; 
+  white-space: nowrap; 
+}
+
+/* Estilo al pasar el ratón sobre los botones */
+.portfolio__filter a:hover {
+  color: #333; 
+}
+
+/* Efecto de línea inferior animada */
+.portfolio__filter a::before {
+  content: '';
+  position: absolute;
+  bottom: 0; 
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #333;
+  transition: width 0.3s ease;
+}
+
+/* Al pasar el ratón, expande la línea */
+.portfolio__filter a:hover::before {
+  width: 100%; 
+}
+
+/* Botón activo */
+.portfolio__filter a.current {
+  color: #333; 
+  font-weight: bold; 
+}
+
+.portfolio__filter a.current::before {
+  width: 100%; 
+}
+
+/* Galería */
+.gallery__item {
+  position: relative;
+  overflow: hidden; 
+  width: 100%;
+  display: inline-block;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.gallery__image:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+}
+
+.gallery__caption{
+  padding: 0.5rem 0;
+  position: relative;
+  display: inline-block;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 10px;
+}
+
+@media (max-width: 767px) {
+  .portfolio__container {
+    grid-template-columns: 1fr; 
+    gap: 1rem;
+  }
+
+  .gallery__caption {
+    text-align: center;
+    font-size: 0.9rem;
+  }
+}
+
+.gallery__caption::before {
+  content: ''; 
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #333;
+  transition: width 0.3s ease;
+}
+
+.gallery__link:hover .gallery__caption::before {
+  width: 100%; 
+}
+
+/* Hover animacion imagenes */
+.gallery__item:hover {
+  transform: scale(1.03);
+}
+
+.gallery__image {
+  width: 100%; 
+  height: auto;
+  display: block; 
+  object-fit: cover; 
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.3s ease; 
+}
+
+.title__caption {
+  font-size: 22px;
+  margin: 0; 
+  position: relative;
+  display: inline-block;
+  color: #333;
+}
+
+.subtitle__caption {
+  font-size: 22px;
+  margin: 0;
+  color: #a29f9f; 
+}
+
+.title__caption::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #333;
+  transition: width 0.3s ease;
+}
+
+.gallery__item:hover .title__caption::after {
+  width: 100%; 
+}
+
+/* PROJECTS*/
+
+/* Hero seccion */
+.project__hero {
+  position: relative;
+  padding: 0;
+  margin: 0; 
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box; 
+}
+
+.project__hero-image {
+  width: calc(100% - 4rem); 
+  height: calc(100vh - 4rem);
+  margin: 6rem 0rem 2rem 0rem ;
+  object-fit: cover;
+}
+
+.hero__botella {
+  width: 100%;
+  object-fit: cover; 
+  object-position: bottom; 
+}
+
+.hero__offwhite {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center; 
+}
+
+.project__gallery-video {
+  width: 100%; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hero__mondo {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center;  
+}
+
+.hero__kilter {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center;  
+}
+
+.hero__cards {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center;  
+}
+
+.hero__eco {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center;  
+}
+
+.hero__merkamueble {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center;  
+}
+
+.hero__expo {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center;  
+}
+
+.hero__ilustracion {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center;  
+}
+
+.hero__akzi {
+  width: 100%;
+  object-fit: cover; 
+  object-position: center;  
+}
+
+/* Titulo y decripción */
+.project__intro {
+  display: flex;
+  justify-content: space-between;
+  padding: 4rem 2rem;
+  gap: 2rem;
+}
+
+.project__intro-left {
+  flex: 1;
+}
+
+.project__intro-right {
+  flex: 1;
+  margin-top: 2rem;
+}
+
+.project__title {
+  font-size: 2.5rem;
+  margin-bottom: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.project__subtitle {
+  font-size: 1.5rem;
+  color: #a29f9f;
+}
+
+.project__description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+/* Texto full-width */
+.project__fullwidth {
+  padding: 2rem 0rem; 
+}
+
+.project__fullwidth-text {
+  width: 100%;
+  padding: 0rem 0rem; 
+  background-color: #f4f4f4; 
+  text-align: center; 
+}
+
+.project__fullwidth p {
+  font-size: 1.5rem; 
+  line-height: 1.8; 
+  margin: 0 auto; 
+  color: #333; 
+}
+
+/* Galeria seccion */
+.project__gallery {
+  padding: 4rem 2rem;
+}
+
+.project__gallery-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.project__gallery-two-columns {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.project__gallery-one-column {
+  grid-template-columns: 1fr;
+}
+
+.project__gallery-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+/* 2 columnas 1 texto */
+.project__two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem 2rem;
+}
+
+.project__empty-column {
+  grid-column: 1 / span 1;
+}
+
+.project__text-column {
+  grid-column: 2 / span 1;
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+/* 2 columnas texto */
+.project__two-column-text {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem; 
+  padding: 2rem 0rem; 
+}
+
+.project__column p {
+  font-size: 1.2rem; 
+  line-height: 1.8; 
+  color: #333; 
+  margin: 0; 
+}
+
+/* CTA */
+.project__cta {
+  text-align: center;
+  padding: 8rem 4rem 0rem 4rem;
+}
+
+.project__cta-button {
+  align-self: flex-end; 
+  position: relative;
+  display: inline-block;
+  color: #333;
+  text-decoration: none;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 0;
+  padding: 0; 
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  line-height: 1; 
+}
+
+/* Línea inicial debajo del texto */
+.project__cta-button::before {
+  content: '';
+  position: absolute;
+  bottom: -4px; 
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+  transition: transform 0.4s ease;
+}
+
+.project__cta-button:not(:hover)::before {
+  transition-delay: 0.2s; 
+}
+
+/* Línea secundaria (nueva línea) */
+.project__cta-button::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%; 
+  height: 2px;
+  background-color: #333;
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+  transition: transform 0.4s ease 0.1s; 
+}
+
+/* Hover: línea inicial desaparece y secundaria aparece */
+.project__cta-button:hover::before {
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+}
+
+.project__cta-button:hover::after {
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+}
+
+/*ABOUT ME */
+
+.about-container {
+  margin: 12rem 2rem 4rem 2rem; 
+}
+
+/* Título */
+.about-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: left; 
+  color: #333;
+}
+
+/* Foto */
+.about-photo {
+  max-width: 240px; 
+  margin: 10rem;
+}
+
+.about-photo-img {
+  width: 100%; 
+  height: auto;
+  border-radius: 50%; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+  object-fit: cover;
+}
+
+/* Descripción */
+.about-description {
+  flex: 2;
+  max-width: 52rem;
+  margin-left: auto; 
+  text-align: right; 
+  font-size: 1.2rem;
+  line-height: 1.6; 
+  color: #555;
+}
+
+.about-description p {
+  margin: 0; 
+  margin-bottom: 1.6rem; 
+}
+
+@media (max-width: 767px) {
+  .intro__title {
+    font-size: 4rem;
+    margin: 8rem 1rem 3rem;
+  }
+
+  .intro__description {
+    font-size: 1.4rem;
+    text-align: center;
+    margin: 0 auto 2rem;
+  }
+
+  .about-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .about-description {
+    font-size: 1rem;
+    line-height: 1.4;
+    margin: 0 1rem;
+  }
+}
+
+/* CONTACT */
+
+.contact__title-uno {
+  padding: 14rem 2rem 4rem 2rem; 
+  margin: 0 auto; 
+  font-weight: 700;
+}
+
+.contact__title-dos {
+  padding: 6rem 2rem 4rem 2rem; 
+  margin: 0 auto; 
+  font-weight: 700;
+}
+
+.contact__form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Contenedor del formulario */
+.contact {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Contenedor de cada campo */
+.input-wrapper {
+  position: relative;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #7a7a7a;
+}
+
+/* Input y Textarea */
+.input-wrapper input,
+.input-wrapper textarea {
+  width: 100%;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: #333;
+}
+
+/* Textarea */
+.input-wrapper textarea {
+  resize: none;
+}
+
+/* Etiqueta */
+.input-wrapper label {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #555;
+  pointer-events: none;
+  transition: all 0.4s ease-in-out;
+}
+
+.input-wrapper textarea + label {
+  top: 0;
+  transform: translateY(0);
+}
+
+/* Estado activo: animación */
+.input-wrapper.active label {
+  top: 0;
+  transform: translateY(-100%);
+  font-size: 0.8rem;
+  color: #333;
+}
+
+/* Botón */
+.contact__button {
+  align-self: flex-end;
+  position: relative;
+  display: inline-block;
+  color: #333;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  padding: 0; 
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  line-height: 1;
+}
+
+.contact__button::before {
+  content: '';
+  position: absolute;
+  bottom: -4px; 
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+  transition: transform 0.4s ease;
+}
+
+.contact__button:not(:hover)::before {
+  transition-delay: 0.2s; 
+}
+
+/* Línea secundaria */
+.contact__button::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%; 
+  height: 2px;
+  background-color: #333;
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+  transition: transform 0.4s ease 0.1s; 
+}
+
+/* Hover: línea inicial desaparece y secundaria aparece */
+.contact__button:hover::before {
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+}
+
+.contact__button:hover::after {
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+}
+
+/* Contenedor de los enlaces */
+.redes-links {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-end; 
+  gap: 2rem; 
+  margin-right: 2rem; 
+  margin-top: 2rem;
+}
+
+/* Estilo básico de los enlaces */
+.redes-link {
+  font-size: 4rem; 
+  font-weight: 200;
+  color: #333;
+  text-decoration: none; 
+  position: relative;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* Línea inicial debajo del texto */
+.redes-link::before {
+  content: '';
+  position: absolute;
+  bottom: -4px; 
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+  transition: transform 0.4s ease;
+}
+
+.redes-link:not(:hover)::before {
+  transition-delay: 0.2s; 
+}
+
+/* Línea secundaria (nueva línea) */
+.redes-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%; 
+  height: 2px;
+  background-color: #333;
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+  transition: transform 0.4s ease 0.1s; 
+}
+
+/* Hover: línea inicial desaparece y secundaria aparece */
+.redes-link:hover::before {
+  transform-origin: right; 
+  transform: scaleX(0); 
+  opacity: 1; 
+}
+
+.redes-link:hover::after {
+  transform-origin: left; 
+  transform: scaleX(1); 
+  opacity: 1; 
+}
+
+@media (max-width: 767px) {
+
+  .redes-links {
+    text-align: center;
+  }
+
+  .redes-link {
+    font-size: 1.5rem; 
+  }
+}
+
+/* Pie de página */
+
+.line {
+  border: none;
+  height: 2px;
+  background-color: #333;
+  align-items: center;  
+  width: 90%; 
+  gap: 1rem; 
+  flex-direction: column; 
+  margin-top: 10rem;
+  margin-bottom: 4rem;
+}
+
+.footer {
+  text-align: center;
+  padding: 2rem;
+  justify-content: space-between;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 4rem;
+  gap: 1rem;
+}
+
+.footer__text {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.footer__infos {
+  display: flex;
+  flex-direction: column; 
+  gap: 0.5rem; 
+}
+
+.footer__info {
+  display: flex;
+  justify-content: right;
+}
+
+.footer__link {
+  position: relative;
+  color: #333;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.footer__link::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #333;
+  transition: width 0.3s ease;
+}
+
+.footer__link:hover::before {
+  width: 100%;
+}
+
+.footer__socials {
+  display: flex;
+  gap: 1rem; 
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer__social-link img {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.footer__social-link img:hover {
+  transform: scale(1.2); 
+}
+
+/* Pantallas Grandes (1200px o más) */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1200px; 
+    margin: 0 auto;
+  }
+
+  .intro__title {
+    font-size: 7rem;
+  }
+
+  .header__menu-link {
+    font-size: 1.2rem;
+  }
+}
+
+/* Pantallas Normales (1024px a 1199px) */
+@media (max-width: 1199px) {
+  .intro__title {
+    font-size: 6rem;
+  }
+
+  .carousel__item {
+    min-width: 250px;
+  }
+
+  .skills__text {
+    font-size: 1.8rem;    
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* Tablets (768px a 1023px) */
+@media (max-width: 1023px) {
+  .header {
+    padding: 1rem 1.5rem; 
+    align-items: flex-start;
+  }
+
+  .carousel__item {
+    min-width: 200px;
+  }
+
+  .skills__text {
+    font-size: 1.6rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .carousel__caption span{
+    font-weight: 700; 
+    text-shadow: 0px 0px 6px black;
+    font-size: 14px;
+
+  }
+  .carousel__caption {
+    margin: 6px 8px;
+    padding: 3px;
+  }
+}
+
+/* Móviles (480px a 767px) */
+@media (max-width: 767px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .header__menu {
+    display: none; 
+  }
+
+  .intro__line {
+    font-size: 6rem;
+    margin: 4rem 1rem 0 0;
+  }
+
+  .intro__title {
+    margin: 14rem 0rem 6rem 0;
+  }
+
+  .carousel__item {
+    min-width: 150px; 
+  }
+
+  .carousel__caption {
+    font-size: 0.9rem;
+  }
+
+  .skills__text {
+    font-size: 1.2rem;
+    padding: 3rem 1rem 1.4rem 1rem;
+  }
+
+  .footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    flex-wrap: wrap-reverse;
+  }
+
+  .about-photo {
+    max-width: 260px; 
+    margin: 4rem;
+    display: flex;
+  }
+
+  .carousel__caption span {
+    font-weight: 700; 
+    text-shadow: 0px 0px 6px black;
+    font-size: 11px;
+  }
+
+  .carousel__caption {
+    margin: 4px 6px;
+    padding: 3px;
+  }
+
+  .project__gallery-two-columns {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+/* Móviles Pequeños (Menos de 480px) */
+@media (max-width: 479px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  .intro__line {
+    font-size: 4rem;
+    margin: 1rem 1rem 0 0;
+  }
+
+  .intro__description-container {
+    flex-direction: column;
+  }
+
+  .intro__title {
+    margin: 14rem 0rem 6rem 0;
+  }
+
+  .carousel__item {
+    min-width: 120px;
+  }
+  
+  .footer__text {
+    font-size: 0.8rem;
+  }
+
+  .skills__text {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .about-photo {
+    min-width: 200px; 
+    margin: 4rem;
+    display: flex;
+  }
+  
+  .carousel__caption span{
+    font-weight: 700; 
+    text-shadow: 0px 0px 6px black;
+    font-size: 10px;
+  }
+
+  .carousel__caption {
+    margin: 4px 6px;
+    padding: 3px;
+  }
+
+  .project__intro {
+    display: flex;
+    justify-content: space-between;
+    padding: 4rem 2rem;
+    gap: 2rem;
+    flex-direction: column;
+  }
+
+  .project__two-column-text {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem 0rem;
+    flex-direction: column;
+  }
+
+  .project__gallery-two-columns {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+
+
+
+/* 4. El cursor hecho circulito pequeño */
+.cursor {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  z-index: 9999;
+}
+

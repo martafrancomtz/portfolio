@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <!-- Metadatos básicos para el sitio web -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio">
+
+  <title>Bullet train - Marta Franco</title> <!-- Título de la página -->
+  <link rel="icon" href="images/m-50x50.png" type="image/png"> <!-- Favicon (icono en la pestaña del navegador) -->
+  <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS externo -->
+  <script src="js/script.js" defer></script> <!-- Enlace al archivo JS externo -->
+
+  <!-- Enlace a la fuente de google fonts-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+
+</head>
+
+<body>
+  <!-- Encabezado -->
+  <header class="header">
+    <a href="index.html" class="header__logo">
+      <img src="images/m-50x50.png" alt="Logo" class="header__logo-img">
+    </a>
+    <nav class="header__nav">
+      <button class="header__menu-toggle" aria-label="Toggle menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="header__menu">
+        <li class="header__menu-item"><a href="work.html" class="header__menu-link">Work,</a></li>
+        <li class="header__menu-item"><a href="about.html" class="header__menu-link">About,</a></li>
+        <li class="header__menu-item"><a href="contact.html" class="header__menu-link">Contact,</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="project">
+    <!-- Foto inicial -->
+    <section class="project__hero">
+      <img src="images/Ilustracion3.jpg" alt="Project Hero Image" class="project__hero-image hero__ilustracion">
+    </section>
+
+    <!-- Titulo -->
+    <section class="project__intro">
+      <div class="project__intro-left">
+        <h2 class="project__title">Narrative Illustration</h2>
+        <p class="project__subtitle">— Bullet train</p>
+      </div>
+      <div class="project__intro-right">
+        <p class="project__description">
+          Narrative illustration and editorial layout project based on the film "Bullet Train". </p>
+        <p class="project__description">
+          This narrative illustration and editorial layout project is based on the film "Bullet Train", exploring a
+          futuristic visual approach in a Japanese context. The illustrations capture the enigmatic and colorful essence
+          of the film, using grainy strokes to emphasize its distinctive style.
+        </p>
+      </div>
+    </section>
+
+    <!-- Galeria -->
+    <section class="project__gallery">
+
+      <div class="project__gallery-grid project__gallery-one-column">
+        <img src="images/ilustracion.jpg" alt="Gallery Image 3" class="project__gallery-image" loading="lazy">
+      </div>
+
+      <div class="project__fullwidth">
+        <p>
+          The first illustration features a bullet train entering in a Japanese kitsune mask. This symbolic design
+          combines traditional Japanese elements with a futuristic aesthetic, highlighting the fusion of ancient and
+          modern. The cherry blossoms add a touch of serenity and ephemeral beauty, contrasting with the advanced
+          technology of the bullet train.
+        </p>
+      </div>
+
+      <div class="project__gallery-grid project__gallery-one-column">
+        <img src="images/Ilustracion2.jpg" alt="Gallery Image 3" class="project__gallery-image" loading="lazy">
+      </div>
+
+      <section class="project__two-column-text">
+        <div class="project__column">
+          <p>
+            The second one depicts a bullet train sailing through the air in a Japanese city where the traditional
+            architecture is reversed. This concept plays with perception and reality, offering a surreal
+            reinterpretation of modern Japanese urbanization. The vibrant colors and dynamics highlight the speed and
+            energy of the bullet train, creating a environment that reflects the intrigue and fast pace of the film.
+          </p>
+        </div>
+        <div class="project__column">
+          <p>
+            The tools used for the creation of these illustrations were Adobe Illustrator, Adobe photoshop, and Adobe
+            InDesign.
+          </p>
+        </div>
+      </section>
+
+      <div class="project__gallery-grid project__gallery-two-columns">
+        <img src="images/Ilustracion1.jpg" alt="Gallery Image 1" class="project__gallery-image" loading="lazy">
+        <img src="images/Ilustracion3.jpg" alt="Gallery Image 2" class="project__gallery-image" loading="lazy">
+      </div>
+
+      <!-- CTA -->
+      <section class="project__cta">
+        <a href="work.html" class="project__cta-button">Back to Projects</a>
+      </section>
+    </section>
+  </main>
+
+  <!-- Pie de página -->
+  <hr class="line">
+  <footer class="footer">
+      <p class="footer__text">&copy; 2025 Marta Franco.</p>
+      <ul class="footer__socials">
+          <li class="footer__social"><a href="https://www.instagram.com/martafrancom?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="footer__social-link"><img src="images/instagram.png" alt="Instagram" loading="lazy"></a></li>
+          <li class="footer__social"><a href="https://www.linkedin.com/in/martafrancomartinez/" target="_blank" class="footer__social-link"><img src="images/linkedin.png" alt="LinkedIn" loading="lazy"></a></li>
+          <li class="footer__social"><a href="https://www.behance.net/martafranco1" target="_blank" class="footer__social-link"><img src="images/behance.png" alt="Behance" loading="lazy"></a></li>
+      </ul>
+      <ul class="footer__infos">
+          <li class="footer__info"><a href="#" class="footer__link">martafrancomtz@gmail.com</a></li>
+          <li class="footer__info"><a href="#" class="footer__link">+34 639867532</a></li>
+          <li class="footer__info">
+                <a href="cv/Curriculum_Vitae_Marta_Franco_Martinez.pdf" target="_blank" class="footer__link">Curriculum Vitae</a>
+            </li>
+      </ul>
+  </footer>
+</body>
+
+</html>

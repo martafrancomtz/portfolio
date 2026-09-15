@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Metadatos básicos para el sitio web -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio">
+
+    <title>Contact - Marta Franco</title> <!-- Título de la página -->
+    <link rel="icon" href="images/m-50x50.png" type="image/png"> <!-- Favicon (icono en la pestaña del navegador) -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS externo -->
+    <script src="js/script.js" defer></script> <!-- Enlace al archivo JS externo -->
+
+    <!-- Enlace a la fuente de google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- Encabezado -->
+    <header class="header">
+        <a href="index.html" class="header__logo">
+            <img src="images/m-50x50.png" alt="Logo" class="header__logo-img">
+        </a>
+        <nav class="header__nav">
+            <button class="header__menu-toggle" aria-label="Toggle menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="header__menu">
+                <li class="header__menu-item"><a href="work.html" class="header__menu-link">Work,</a></li>
+                <li class="header__menu-item"><a href="about.html" class="header__menu-link">About,</a></li>
+                <li class="header__menu-item"><a href="contact.html" class="header__menu-link">Contact,</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Formulario -->
+    <h1 class="contact__title-uno">Get in Touch!</h1>
+
+    <section class="contact">
+        <form class="contact__form" action="#" method="post">
+            <!-- Nombre -->
+            <div class="input-wrapper">
+                <input type="text" id="name" name="name" required>
+                <label for="name">Name</label>
+            </div>
+
+            <!-- Email -->
+            <div class="input-wrapper">
+                <input type="email" id="email" name="email" required>
+                <label for="email">Email</label>
+            </div>
+
+            <!-- Mensaje -->
+            <div class="input-wrapper">
+                <textarea id="message" name="message" rows="4" required></textarea>
+                <label for="message">Message</label>
+            </div>
+
+            <!-- Botón de Envío -->
+            <button type="submit" class="contact__button">Send</button>
+        </form>
+    </section>
+
+    <!-- Redes -->
+    <h1 class="contact__title-dos">Or connect with me on socials</h1>
+
+    <div class="redes-links">
+        <a href="https://www.linkedin.com/in/martafrancomartinez/" target="_blank" rel="noreferrer" class="redes-link">LinkedIn</a>
+        <a href="https://www.instagram.com/martafrancom/" target="_blank" rel="noreferrer" class="redes-link">Instagram</a>
+        <a href="https://www.behance.net/martafranco1" target="_blank" rel="noreferrer" class="redes-link">Behance</a>
+    </div>
+
+    <!-- Pie de página -->
+    <hr class="line">
+    <footer class="footer">
+        <p class="footer__text">&copy; 2025 Marta Franco.</p>
+        <ul class="footer__socials">
+            <li class="footer__social"><a href="https://www.instagram.com/martafrancom?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="footer__social-link"><img src="images/instagram.png" alt="Instagram" loading="lazy"></a></li>
+            <li class="footer__social"><a href="https://www.linkedin.com/in/martafrancomartinez/" target="_blank" class="footer__social-link"><img src="images/linkedin.png" alt="LinkedIn" loading="lazy"></a></li>
+            <li class="footer__social"><a href="https://www.behance.net/martafranco1" target="_blank" class="footer__social-link"><img src="images/behance.png" alt="Behance" loading="lazy"></a></li>
+        </ul>
+        <ul class="footer__infos">
+            <li class="footer__info"><a href="#" class="footer__link">martafrancomtz@gmail.com</a></li>
+            <li class="footer__info"><a href="#" class="footer__link">+34 639867532</a></li>
+            <li class="footer__info">
+                <a href="cv/Curriculum_Vitae_Marta_Franco_Martinez.pdf" target="_blank" class="footer__link">Curriculum Vitae</a>
+            </li>
+        </ul>
+    </footer>
+</body>
+
+</html>

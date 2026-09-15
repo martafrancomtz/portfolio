@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <!-- Metadatos básicos para el sitio web -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio">
+
+  <title>Off-white - Marta Franco</title> <!-- Título de la página -->
+  <link rel="icon" href="images/m-50x50.png" type="image/png"> <!-- Favicon (icono en la pestaña del navegador) -->
+  <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS externo -->
+  <script src="js/script.js" defer></script> <!-- Enlace al archivo JS externo -->
+
+  <!-- Enlace a la fuente de google fonts-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+
+</head>
+
+<body>
+  <!-- Encabezado -->
+  <header class="header">
+    <a href="index.html" class="header__logo">
+      <img src="images/m-50x50.png" alt="Logo" class="header__logo-img">
+    </a>
+    <nav class="header__nav">
+      <button class="header__menu-toggle" aria-label="Toggle menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="header__menu">
+        <li class="header__menu-item"><a href="work.html" class="header__menu-link">Work,</a></li>
+        <li class="header__menu-item"><a href="about.html" class="header__menu-link">About,</a></li>
+        <li class="header__menu-item"><a href="contact.html" class="header__menu-link">Contact,</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="project">
+    <!-- Foto inicial -->
+    <section class="project__hero">
+      <img src="images/offwhite.jpg" alt="Project Hero Image" class="project__hero-image hero__offwhite">
+    </section>
+
+    <!-- Titulo -->
+    <section class="project__intro">
+      <div class="project__intro-left">
+        <h2 class="project__title">3D Animation</h2>
+        <p class="project__subtitle">— Off-White</p>
+      </div>
+      <div class="project__intro-right">
+        <p class="project__description">
+          3D advertising animation for Off-White, designed to reflect the brand's distinctive style.
+        </p>
+        <p class="project__description">
+          The animation begins with the Off-White name in the center of the scene, set against a round-shaped artificial
+          grass lawn.
+        </p>
+      </div>
+    </section>
+
+    <!-- Galeria -->
+    <section class="project__gallery">
+
+      <div class="project__gallery-grid project__gallery-two-columns">
+        <img src="images/offwhite5.jpg" alt="Gallery Image 1" class="project__gallery-image" loading="lazy">
+        <img src="images/offwhite3.jpg" alt="Gallery Image 2" class="project__gallery-image" loading="lazy">
+      </div>
+
+      <div class="project__fullwidth">
+        <p>
+          As the animation progresses, different Off-White signature elements begin to appear from below. Among these
+          props are iconic objects such as zip tie tags, the logo and labels. These elements begin to float upwards
+          continuously.
+        </p>
+      </div>
+      <div class="project__fullwidth">
+        <p>
+          The tools used for the animation were Adobe Illustrator, Adobe photoshop, Adobe premiere pro, and 3ds Max. The
+          floating objects not only float upward, but also interact with the Off-White name, gently bumping into it.
+        </p>
+      </div>
+
+      <div class="project__gallery-grid project__gallery-one-column">
+        <video autoplay loop muted playsinline poster="images/offwhite5.jpg" class="project__gallery-video">
+          <!-- Formato mp4 -->
+          <source src="images/offwhitevideo.mp4" type="video/mp4">
+          <!-- Mensaje para navegadores no compatibles -->
+          Tu navegador no soporta la reproducción de videos.
+        </video>
+      </div>
+
+      <div class="project__two-columns">
+        <div class="project__empty-column"></div>
+        <div class="project__text-column">
+          <p>
+            Every detail of the animation has been carefully designed to ensure that the elements reflect Off-White's
+            identity. Textures, colors and movements have been selected to maintain consistency with the brand's
+            aesthetic.
+          </p>
+        </div>
+    </section>
+
+    <div class="project__gallery project__gallery-grid project__gallery-two-columns">
+      <img src="images/offwhite6.jpg" alt="Gallery Image 5" class="project__gallery-image" loading="lazy">
+      <img src="images/offwhite9.jpg" alt="Gallery Image 6" class="project__gallery-image" loading="lazy">
+      <img src="images/offwhite10.jpg" alt="Gallery Image 7" class="project__gallery-image" loading="lazy">
+      <img src="images/offwhite2.jpg" alt="Gallery Image 8" class="project__gallery-image" loading="lazy">
+    </div>
+
+    <!-- CTA -->
+    <section class="project__cta">
+      <a href="work.html" class="project__cta-button">Back to Projects</a>
+    </section>
+  </main>
+
+  <!-- Pie de página -->
+  <hr class="line">
+  <footer class="footer">
+      <p class="footer__text">&copy; 2025 Marta Franco.</p>
+      <ul class="footer__socials">
+          <li class="footer__social"><a href="https://www.instagram.com/martafrancom?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="footer__social-link"><img src="images/instagram.png" alt="Instagram" loading="lazy"></a></li>
+          <li class="footer__social"><a href="https://www.linkedin.com/in/martafrancomartinez/" target="_blank" class="footer__social-link"><img src="images/linkedin.png" alt="LinkedIn" loading="lazy"></a></li>
+          <li class="footer__social"><a href="https://www.behance.net/martafranco1" target="_blank" class="footer__social-link"><img src="images/behance.png" alt="Behance" loading="lazy"></a></li>
+      </ul>
+      <ul class="footer__infos">
+          <li class="footer__info"><a href="#" class="footer__link">martafrancomtz@gmail.com</a></li>
+          <li class="footer__info"><a href="#" class="footer__link">+34 639867532</a></li>
+          <li class="footer__info">
+                <a href="cv/Curriculum_Vitae_Marta_Franco_Martinez.pdf" target="_blank" class="footer__link">Curriculum Vitae</a>
+            </li>
+      </ul>
+  </footer>
+</body>
+
+</html>

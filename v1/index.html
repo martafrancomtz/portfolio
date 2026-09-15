@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Metadatos básicos para el sitio web --> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio">
+
+    <title>Portfolio - Marta Franco</title> <!-- Título de la página -->
+    <link rel="icon" href="images/m-50x50.png" type="image/png"> <!-- Favicon (icono en la pestaña del navegador) -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- Enlace al archivo CSS externo -->
+    <script src="js/script.js" defer></script> <!-- Enlace al archivo JS externo -->
+
+    <!-- Enlace a la fuente de google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+  
+    <!-- Encabezado -->
+    <header class="header">
+        <a href="index.html" class="header__logo">
+            <img src="images/m-50x50.png" alt="Logo" class="header__logo-img">
+        </a>
+        <nav class="header__nav">
+            <button class="header__menu-toggle" aria-label="Toggle menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="header__menu">
+                <li class="header__menu-item"><a href="work.html" class="header__menu-link">Work,</a></li>
+                <li class="header__menu-item"><a href="about.html" class="header__menu-link">About,</a></li>
+                <li class="header__menu-item"><a href="contact.html" class="header__menu-link">Contact,</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <!-- Sección de bienvenida -->
+    <section class="intro">
+        <h1 class="intro__title">
+            <span class="intro__line">MARTA</span>
+            <span class="intro__line">FRANCO</span>
+        </h1>
+        <div class="intro__description-container">
+            <p class="intro__description">Graphic Design, Web<br>Design & UX/UI, 3D</p>
+            <p class="intro__description">Based in Seville, Spain</p>
+            <p class="intro__description">Inspired to inspire</p>
+        </div>
+    </section>
+
+    <!-- Carrusel -->
+    <section class="featured-projects">
+        <h2 class="featured-projects__title">Featured Projects</h2>
+        <div class="carousel">
+            <div class="carousel__track">
+                <div class="carousel__item">
+                    <a href="work-botella.html">
+                      <img src="images/botella.jpg" alt="Botella 3D" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Botella 3D</span>
+                      <span class="half-opacity">Sirius Dalmore</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-offwhite.html">
+                      <img src="images/offwhite.jpg" alt="Off-White animation" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Off-White</span>
+                      <span class="half-opacity">3D animation</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-kilter.html">
+                      <img src="images/kilter.jpg" alt="Kilter typography" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Kilter</span>
+                      <span class="half-opacity">Typography</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-mondo.html">
+                      <img src="images/mondo.jpg" alt="Mondo restaurant" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Mondo</span>
+                      <span class="half-opacity">Restaurant</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-cards.html">
+                      <img src="images/cards.jpg" alt="Students cards" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Students Life</span>
+                      <span class="half-opacity">Cards</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-eco.html">
+                      <img src="images/eco.jpg" alt="Ecological posters" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Ecological</span>
+                      <span class="half-opacity">Posters</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-merkamueble.html">
+                      <img src="images/merkamueble.jpg" alt="Merkamueble web" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Merkamueble</span>
+                      <span class="half-opacity">Web</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-expo.html">
+                      <img src="images/expo.jpg" alt="Expo Sevilla" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Expo</span>
+                      <span class="half-opacity">Sevilla '24</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-ilustration.html">
+                      <img src="images/ilustracion.jpg" alt="Bullet train ilustrations" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Bullet train</span>
+                      <span class="half-opacity">Ilustrations</span>
+                    </p>
+                  </div>
+                  <div class="carousel__item">
+                    <a href="work-akzi.html">
+                      <img src="images/akzi.jpg" alt="Akzidenz Grotesk" class="carousel__image" loading="lazy">
+                    </a>
+                    <p class="carousel__caption">
+                      <span class="full-opacity">Typographic analysis</span>
+                      <span class="half-opacity">Akzidenz Grotesk</span>
+                    </p>
+                  </div>                  
+            </div>
+
+        </div>
+        <a href="work.html" class="carousel__button">View All</a>
+    </section>
+
+    <!-- Sección de habilidades -->
+    <section class="skills">
+        <h2 class="skills__text">With a background in graphic design and a growing specialization in web design, I craft
+            compelling visual stories that blend creativity and functionality.</h2>
+        <a href="about.html" class="skills__button">About Me</a>
+    </section>
+
+    <!-- Pie de página -->
+    <hr class="line">
+    <footer class="footer">
+        <p class="footer__text">&copy; 2025 Marta Franco.</p>
+        <ul class="footer__socials">
+            <li class="footer__social"><a href="https://www.instagram.com/martafrancom?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="footer__social-link"><img src="images/instagram.png" alt="Instagram" loading="lazy"></a></li>
+            <li class="footer__social"><a href="https://www.linkedin.com/in/martafrancomartinez/" target="_blank" class="footer__social-link"><img src="images/linkedin.png" alt="LinkedIn" loading="lazy"></a></li>
+            <li class="footer__social"><a href="https://www.behance.net/martafranco1" target="_blank" class="footer__social-link"><img src="images/behance.png" alt="Behance" loading="lazy"></a></li>
+        </ul>
+        <ul class="footer__infos">
+            <li class="footer__info"><a href="#" class="footer__link">martafrancomtz@gmail.com</a></li>
+            <li class="footer__info"><a href="#" class="footer__link">+34 639867532</a></li>
+            <li class="footer__info">
+                <a href="cv/Curriculum_Vitae_Marta_Franco_Martinez.pdf" target="_blank" class="footer__link">Curriculum Vitae</a>
+            </li>
+            <li class="footer__info"><a href="antonio/index.html" class="footer__link">EN OBRAS</a></li>
+        </ul>
+    </footer>
+</body>
+
+</html>

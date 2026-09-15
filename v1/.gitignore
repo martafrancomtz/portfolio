@@ -1,0 +1,20 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Credenciales — NUNCA
+.vscode/sftp.json
+.env
+
+# Dependencias
+node_modules/
+
+# Temporales
+*.log
+*.tmp
+
+# Archivos de trabajo pesados
+*.fig
+*.psd
+*.ai
