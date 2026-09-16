@@ -39,6 +39,8 @@
     elTime.textContent = ahora.texto;
     var franjaActiva = modoUsuario === "auto" ? franjaDe(ahora.hora) : modoUsuario;
     marcarActivo(modoUsuario === "auto" ? "auto" : franjaActiva);
+    /* expuesto para el fondo animado del hero (assets/js/hero.js) */
+    document.documentElement.dataset.franja = franjaActiva;
   }
 
   botones.forEach(function (b) {

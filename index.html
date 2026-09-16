@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/hero.css">
 <link rel="stylesheet" href="assets/css/rueda.css">
 </head>
 <body>
@@ -17,9 +18,10 @@
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 
 <header class="hero" id="top">
-  <img class="hero__bg" src="assets/img/hero-grainient.png" alt="" aria-hidden="true">
+  <img class="hero__bg" id="heroBgImg" src="assets/img/hero-grainient.png" alt="" aria-hidden="true">
+  <canvas class="hero__bg-canvas" id="heroGL" aria-hidden="true"></canvas>
 
-  <div class="hero__bar">
+  <div class="hero__bar hero-reveal" data-d="1">
     <a href="index.html" class="hero__logo" aria-label="Marta Franco — inicio">
       <img src="assets/img/logo.svg" alt="">
     </a>
@@ -32,12 +34,38 @@
   </div>
 
   <div class="hero__mid">
-    <h1 class="hero__title" role="img" aria-label="Marta Franco"></h1>
-    <p class="hero__subtitle">Front-end, UX research, Interface design</p>
-    <p class="hero__badge">Available for full-time roles</p>
+    <svg class="hero__title hero-reveal" data-d="2" id="heroTitle" viewBox="0 0 678.9 273.701" role="img" aria-label="Marta Franco" focusable="false">
+      <defs>
+        <image id="titleTex" href="assets/img/title-texture.png" x="-419" y="-313" width="1600" height="900"></image>
+        <mask id="mk0"><path fill="#fff" d="M48.9999 123.746V2.39453H91.3175L116.366 104.921H121.5L146.704 2.39453H189.021V123.746H166.462V22.1531H162.573L137.991 123.746H98.6297L74.0482 22.1531H70.1587V123.746H48.9999Z"/></mask>
+        <mask id="mk1"><path fill="#fff" d="M203.382 121.352V120.418L240.722 0H278.372L315.711 120.418V121.352H291.129L260.636 18.514H256.902L226.097 121.352H203.382ZM232.476 89.7693L237.766 71.4109H279.616L284.906 89.7693H232.476Z"/></mask>
+        <mask id="mk2"><path fill="#fff" d="M329.407 123.746V2.39453H379.193C389.565 2.39453 397.966 3.89847 404.397 6.90634C410.827 9.81049 415.547 13.8037 418.554 18.886C421.562 23.8645 423.066 29.6728 423.066 36.3109C423.066 43.9861 420.992 50.6242 416.843 56.225C412.694 61.7222 406.575 65.6116 398.485 67.8935L426.333 122.813V123.746H400.974L375.303 71.3162H352.9V123.746H329.407ZM352.9 53.7357H376.237C383.601 53.7357 389.202 52.4911 393.039 50.0018C396.877 47.4088 398.796 43.1045 398.796 37.0887C398.796 31.073 396.825 26.8205 392.884 24.3312C389.046 21.842 383.497 20.5973 376.237 20.5973H352.9V53.7357Z"/></mask>
+        <mask id="mk3"><path fill="#fff" d="M466.225 123.746V21.3752H429.197V2.39453H527.212V21.3752H490.184V123.746H466.225Z"/></mask>
+        <mask id="mk4"><path fill="#fff" d="M517.975 123.746V122.813L555.314 2.39453H592.964L630.303 122.813V123.746H605.721L575.228 20.9085H571.494L540.689 123.746H517.975ZM547.068 92.1639L552.358 73.8055H594.209L599.498 92.1639H547.068Z"/></mask>
+        <mask id="mk5"><path fill="#fff" d="M0 271.368V150.016H79.6567V168.996H23.6481V198.556H66.588V216.137H23.6481V271.368H0Z"/></mask>
+        <mask id="mk6"><path fill="#fff" d="M96.4471 271.368V150.016H146.233C156.605 150.016 165.006 151.52 171.436 154.527C177.867 157.432 182.586 161.425 185.594 166.507C188.602 171.486 190.106 177.294 190.106 183.932C190.106 191.607 188.032 198.245 183.883 203.846C179.734 209.343 173.615 213.233 165.524 215.515L193.373 270.434V271.368H168.014L142.343 218.937H119.94V271.368H96.4471ZM119.94 201.357H143.277C150.641 201.357 156.242 200.112 160.079 197.623C163.917 195.03 165.836 190.726 165.836 184.71C165.836 178.694 163.865 174.442 159.924 171.952C156.086 169.463 150.537 168.218 143.277 168.218H119.94V201.357Z"/></mask>
+        <mask id="mk7"><path fill="#fff" d="M197.865 271.368V270.434L235.204 150.016H272.855L310.194 270.434V271.368H285.612L255.119 168.53H251.385L220.58 271.368H197.865ZM226.959 239.785L232.248 221.427H274.099L279.389 239.785H226.959Z"/></mask>
+        <mask id="mk8"><path fill="#fff" d="M324.164 271.368V150.016H365.859L406.155 252.542H409.888V150.016H431.514V271.368H389.663L349.368 168.841H345.79V271.368H324.164Z"/></mask>
+        <mask id="mk9"><path fill="#fff" d="M503.953 273.701C486.632 273.701 473.148 268.152 463.503 257.054C453.857 245.956 449.034 230.502 449.034 210.691C449.034 190.985 453.805 175.582 463.347 164.484C472.889 153.283 486.373 147.682 503.798 147.682C514.273 147.682 523.245 149.652 530.713 153.594C538.181 157.431 543.989 162.825 548.138 169.774C552.39 176.723 554.931 184.761 555.761 193.889H531.802C530.972 185.176 528.068 178.331 523.089 173.352C518.215 168.374 511.836 165.884 503.953 165.884C493.996 165.884 486.476 169.826 481.394 177.708C476.312 185.487 473.771 196.534 473.771 210.847C473.771 225.575 476.364 236.725 481.55 244.296C486.839 251.764 494.255 255.498 503.798 255.498C512.095 255.498 518.63 252.905 523.401 247.719C528.275 242.533 531.076 235.791 531.802 227.494H555.761C554.931 236.517 552.39 244.556 548.138 251.609C543.989 258.558 538.181 264.003 530.713 267.945C523.349 271.782 514.429 273.701 503.953 273.701Z"/></mask>
+        <mask id="mk10"><path fill="#fff" d="M622.113 273.544C609.356 273.544 598.725 271.003 590.22 265.921C581.818 260.735 575.543 253.422 571.394 243.984C567.246 234.546 565.171 223.448 565.171 210.69C565.171 197.829 567.246 186.731 571.394 177.396C575.543 167.958 581.818 160.697 590.22 155.615C598.725 150.429 609.356 147.836 622.113 147.836C634.871 147.836 645.45 150.429 653.852 155.615C662.357 160.697 668.632 167.958 672.677 177.396C676.825 186.731 678.9 197.829 678.9 210.69C678.9 223.448 676.825 234.546 672.677 243.984C668.632 253.422 662.357 260.735 653.852 265.921C645.45 271.003 634.871 273.544 622.113 273.544ZM622.113 255.341C633.108 255.341 641.198 251.452 646.384 243.673C651.673 235.894 654.318 224.9 654.318 210.69C654.318 196.377 651.673 185.382 646.384 177.707C641.198 169.928 633.108 166.039 622.113 166.039C611.015 166.039 602.873 169.928 597.687 177.707C592.501 185.382 589.908 196.377 589.908 210.69C589.908 224.9 592.501 235.894 597.687 243.673C602.873 251.452 611.015 255.341 622.113 255.341Z"/></mask>
+      </defs>
+      <g class="ch" data-i="0"><use href="#titleTex" mask="url(#mk0)"></use></g>
+      <g class="ch" data-i="1"><use href="#titleTex" mask="url(#mk1)"></use></g>
+      <g class="ch" data-i="2"><use href="#titleTex" mask="url(#mk2)"></use></g>
+      <g class="ch" data-i="3"><use href="#titleTex" mask="url(#mk3)"></use></g>
+      <g class="ch" data-i="4"><use href="#titleTex" mask="url(#mk4)"></use></g>
+      <g class="ch" data-i="5"><use href="#titleTex" mask="url(#mk5)"></use></g>
+      <g class="ch" data-i="6"><use href="#titleTex" mask="url(#mk6)"></use></g>
+      <g class="ch" data-i="7"><use href="#titleTex" mask="url(#mk7)"></use></g>
+      <g class="ch" data-i="8"><use href="#titleTex" mask="url(#mk8)"></use></g>
+      <g class="ch" data-i="9"><use href="#titleTex" mask="url(#mk9)"></use></g>
+      <g class="ch" data-i="10"><use href="#titleTex" mask="url(#mk10)"></use></g>
+    </svg>
+    <p class="hero__subtitle hero-reveal" data-d="3">Front-end, UX research, Interface design</p>
+    <p class="hero__badge hero-reveal" data-d="3">Available for full-time roles</p>
   </div>
 
-  <div class="hero__bar hero__bar--bottom">
+  <div class="hero__bar hero__bar--bottom hero-reveal" data-d="4">
     <div class="hero__clock" id="clock">
       <span class="hero__clock-loc">Sevilla, ES</span>
       <span class="hero__dot">·</span>
@@ -122,8 +150,8 @@
 
   <div class="rueda-card" id="wheelCard" aria-hidden="true">
     <div class="rueda-card__face a"></div><div class="rueda-card__face b"></div>
-    <div class="rueda-card__meta"><span id="wheelCardIdx">01</span><span id="wheelCardName"></span></div>
-  </div>
+<img class="rueda-card__media" id="wheelCardImg" alt="">
+<video class="rueda-card__media" id="wheelCardVideo" muted loop playsinline preload="metadata"></video>  </div>
 
   <section class="what-i-do" id="what-i-do">
     <h2 class="section-title">What I do</h2>
@@ -264,6 +292,7 @@
 </footer>
 
 <script src="assets/js/clock.js"></script>
+<script src="assets/js/hero.js"></script>
 <script src="assets/js/rueda.js"></script>
 <script src="assets/js/main.js"></script>
 </body>

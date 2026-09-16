@@ -181,21 +181,13 @@ main{ background:var(--bg); }
   text-align:center;
   gap:calc(var(--u) * 20);
 }
+/* Tamaño/posición del título: de Figma. El desglose por letra (para el
+   desenfoque que sigue al cursor) y su textura viven en hero.css/hero.js */
 .hero__title{
+  display:block;
   width:min(70vw,calc(var(--u) * 679));
   aspect-ratio:678.9 / 273.701;
-  background-image:url(../img/title-texture.png);
-  background-repeat:no-repeat;
-  background-size:calc(var(--u) * 1600) calc(var(--u) * 900);
-  background-position:calc(var(--u) * -419) calc(var(--u) * -313);
-  -webkit-mask-image:url(../img/title-mask.svg);
-  mask-image:url(../img/title-mask.svg);
-  -webkit-mask-repeat:no-repeat;
-  mask-repeat:no-repeat;
-  -webkit-mask-size:contain;
-  mask-size:contain;
-  -webkit-mask-position:center;
-  mask-position:center;
+  overflow:visible;
 }
 .hero__subtitle{
   font-size:clamp(20px,calc(var(--u) * 40),40px);

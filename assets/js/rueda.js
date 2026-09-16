@@ -17,6 +17,19 @@
   ];
   var separador = "   ·   ";
 
+  /* Qué se ve en la tarjeta de cada proyecto (ruta desde index.html).
+     - Una imagen o gif:  "assets/img/proyectos/nombre.jpg"
+     - Un vídeo:          "assets/img/proyectos/nombre.mp4"  (sin sonido, en bucle)
+     - Varias imágenes:   ["a.jpg", "b.jpg", "c.jpg"]  → se van cambiando rápido
+     El nombre tiene que ser IGUAL que en la lista de arriba.
+     Si un proyecto no aparece aquí, se ve un degradado de color. */
+  var medios = {
+    "Students Life Cards": "assets/img/playing-cards-mockup.png"
+    // "3D bottle": "assets/img/proyectos/3d-bottle.mp4",
+    // "Off-White": ["assets/img/proyectos/ow-1.jpg", "assets/img/proyectos/ow-2.jpg"],
+  };
+  var VELOCIDAD_FLIPBOOK = 200; // ms entre imagen e imagen. No bajes de ~170: los cambios muy rápidos pueden molestar
+
   /* Los dos círculos comparten centro, anclado fuera del escenario visible
      (esquina superior derecha): así solo se ve la mitad del texto que lee
      del derecho, gire lo que gire. */
@@ -134,11 +147,13 @@
   /* Ajustes del movimiento (juega con ellos) */
   var INERCIA_GRANDE = 0.05;   // 0–1. Más bajo = más pesado, tarda más en alcanzar al scroll
   var INERCIA_PEQUENA = 0.08;  // el pequeño es más ligero: reacciona antes
-  var DERIVA = 3;              // grados por segundo que gira SIEMPRE, se scrollee o no (0 = quieta)
+  var DERIVA = 3;              // grados por segundo que gira sola, se scrollee o no (0 = quieta)
 
   var anguloObjetivo = 0;                  // a dónde manda el scroll
   var anguloGrande = 0, anguloPequeno = 0; // lo que se pinta de verdad
   var derivaAcumulada = 0;
+  var velocidadDeriva = DERIVA;            // velocidad actual del giro constante
+  var FRENADA = 0.08;                      // 0–1. Lo rápido que frena/arranca con el hover (1 = de golpe)
   var ruedaEnPantalla = true;
   var ultimoInstante = null;
 
@@ -175,8 +190,10 @@
     var pasos = segundos * 60;
 
     if (ruedaEnPantalla) {
-      // Giro constante: siempre suma un poco, pase lo que pase.
-      derivaAcumulada += DERIVA * segundos;
+      // Giro constante: con hover frena hasta pararse; al salir, vuelve a arrancar.
+      var derivaDeseada = proyectoActivo === null ? DERIVA : 0;
+      velocidadDeriva = acercar(velocidadDeriva, derivaDeseada, FRENADA, pasos);
+      derivaAcumulada += velocidadDeriva * segundos;
 
       var objetivo = anguloObjetivo + derivaAcumulada;
       anguloGrande = acercar(anguloGrande, objetivo, INERCIA_GRANDE, pasos);
@@ -186,6 +203,7 @@
       grupoPequeno.setAttribute("transform", "rotate(" + (55 + anguloPequeno).toFixed(2) + " " + CENTRO_X + " " + CENTRO_Y + ")");
     }
 
+    actualizarTarjeta(pasos);
     requestAnimationFrame(animar);
   }
 
@@ -194,13 +212,14 @@
      ============================================================ */
   var svg = pin.querySelector("svg");
   var tarjeta = document.getElementById("wheelCard");
-  var tarjetaIndice = document.getElementById("wheelCardIdx");
-  var tarjetaNombre = document.getElementById("wheelCardName");
+  var tarjetaImagen = document.getElementById("wheelCardImg");
+  var tarjetaVideo = document.getElementById("wheelCardVideo");
   var capaA = tarjeta ? tarjeta.querySelector(".a") : null;
   var capaB = tarjeta ? tarjeta.querySelector(".b") : null;
 
   var proyectoActivo = null;
   var temporizadorColor = null;
+  var temporizadorFlipbook = null;
 
   function colorDeProyecto(indice, variante) {
     var tono = Math.round(360 / proyectos.length * indice);
@@ -211,9 +230,179 @@
     return "radial-gradient(120% 120% at 20% 15%, hsl(" + tono2 + " 65% 50%), hsl(" + tono + " 60% 12%))";
   }
 
+  /* ============================================================
+     TARJETA: sitio al azar, sin tocar nunca la rueda
+     ============================================================ */
+  var MARGEN_RUEDA = 80;        // distancia mínima a la rueda, en unidades del SVG
+  var MARGEN_PANTALLA = 24;     // aire con los bordes de la ventana, en px
+  var INERCIA_TARJETA = 0.1;    // 0–1. Más bajo = tarda más en viajar a su nuevo sitio
+  var INCLINACION_MAX = 4;      // grados que se inclina como mucho al moverse
+
+  var tarjetaX = 0, tarjetaY = 0, tarjetaGiro = 0;   // dónde está
+  var destinoX = 0, destinoY = 0;                     // a dónde va
+
+  /* El círculo que ocupa la rueda en la pantalla, en px.
+     getScreenCTM() traduce coordenadas del SVG (viewBox) a píxeles. */
+  function zonaDeLaRueda() {
+    var matriz = svg.getScreenCTM();
+    var centro = new DOMPoint(CENTRO_X, CENTRO_Y).matrixTransform(matriz);
+    return { x: centro.x, y: centro.y, r: (RADIO_GRANDE + MARGEN_RUEDA) * matriz.a };
+  }
+
+  /* Distancia entre el centro de la rueda y el punto de la tarjeta
+     que le queda más cerca. Si es menor que el radio, se solapan. */
+  function distanciaALaRueda(x, y, ancho, alto, rueda) {
+    var px = Math.max(x, Math.min(rueda.x, x + ancho));
+    var py = Math.max(y, Math.min(rueda.y, y + alto));
+    var dx = px - rueda.x, dy = py - rueda.y;
+    return { dx: dx, dy: dy, d: Math.sqrt(dx * dx + dy * dy) };
+  }
+
+  /* Prueba posiciones en una rejilla de 16 px, descarta las que pisan
+     la rueda y devuelve una de las libres al azar. */
+  function buscarHuecoAlAzar(ancho, alto) {
+    var rueda = zonaDeLaRueda();
+    var maxX = window.innerWidth - ancho - MARGEN_PANTALLA;
+    var maxY = window.innerHeight - alto - MARGEN_PANTALLA;
+    var libres = [];
+    var masLejos = { x: MARGEN_PANTALLA, y: Math.max(MARGEN_PANTALLA, maxY) }, masLejosD = -1;
+
+    for (var x = MARGEN_PANTALLA; x <= maxX; x += 16) {
+      for (var y = MARGEN_PANTALLA; y <= maxY; y += 16) {
+        var d = distanciaALaRueda(x, y, ancho, alto, rueda).d;
+        if (d > masLejosD) { masLejosD = d; masLejos = { x: x, y: y }; }
+        if (d >= rueda.r) libres.push({ x: x, y: y });
+      }
+    }
+    if (libres.length) return libres[Math.floor(Math.random() * libres.length)];
+    return masLejos; // sin hueco (pantallas muy pequeñas): lo más lejos posible
+  }
+
+  /* Seguro: si en su camino la tarjeta llega a rozar la rueda, se la empuja hacia fuera. */
+  function empujarFuera(ancho, alto) {
+    var rueda = zonaDeLaRueda();
+    var info = distanciaALaRueda(tarjetaX, tarjetaY, ancho, alto, rueda);
+    if (info.d >= rueda.r) return;
+    if (info.d === 0) { tarjetaX = destinoX; tarjetaY = destinoY; return; }
+    var falta = rueda.r - info.d;
+    tarjetaX += info.dx / info.d * falta;
+    tarjetaY += info.dy / info.d * falta;
+  }
+
+  function pintarTarjeta() {
+    tarjeta.style.translate = tarjetaX.toFixed(1) + "px " + tarjetaY.toFixed(1) + "px";
+    tarjeta.style.rotate = tarjetaGiro.toFixed(2) + "deg";
+  }
+
+  /* Se llama en cada frame desde animar(). */
+  function actualizarTarjeta(pasos) {
+    if (proyectoActivo === null || !tarjeta) return;
+    var ancho = tarjeta.offsetWidth, alto = tarjeta.offsetHeight;
+
+    // Si la rueda se ha movido y su sitio ya no está libre, busca otro.
+    var rueda = zonaDeLaRueda();
+    if (distanciaALaRueda(destinoX, destinoY, ancho, alto, rueda).d < rueda.r) {
+      var hueco = buscarHuecoAlAzar(ancho, alto);
+      destinoX = hueco.x; destinoY = hueco.y;
+    }
+
+    var xAntes = tarjetaX;
+    tarjetaX = acercar(tarjetaX, destinoX, INERCIA_TARJETA, pasos);
+    tarjetaY = acercar(tarjetaY, destinoY, INERCIA_TARJETA, pasos);
+    empujarFuera(ancho, alto);
+
+    // Se inclina hacia donde se mueve, como si colgara.
+    var velocidad = pasos > 0 ? (tarjetaX - xAntes) / pasos : 0;
+    var giroDeseado = Math.max(-INCLINACION_MAX, Math.min(INCLINACION_MAX, velocidad * 0.5));
+    tarjetaGiro = acercar(tarjetaGiro, giroDeseado, 0.1, pasos);
+
+    pintarTarjeta();
+  }
+
+  /* Coloca la tarjeta de golpe en un sitio al azar (al aparecer). */
+  function colocarTarjeta() {
+    var hueco = buscarHuecoAlAzar(tarjeta.offsetWidth, tarjeta.offsetHeight);
+    destinoX = tarjetaX = hueco.x;
+    destinoY = tarjetaY = hueco.y;
+    tarjetaGiro = 0;
+    pintarTarjeta();
+  }
+
+  /* ============================================================
+     CONTENIDO DE LA TARJETA: imagen, gif, vídeo o secuencia
+     ============================================================ */
+  function esVideo(ruta) { return /\.(mp4|webm|mov)$/i.test(ruta); }
+
+  function pararMedios() {
+    clearInterval(temporizadorColor);
+    clearInterval(temporizadorFlipbook);
+    if (tarjetaVideo) tarjetaVideo.pause();
+  }
+
+  function ponerMedio(indice) {
+    pararMedios();
+    var medio = medios[proyectos[indice]];
+    tarjetaImagen.classList.remove("is-on");
+    tarjetaVideo.classList.remove("is-on");
+
+    // El degradado de color hace de fondo mientras carga (o si no hay nada).
+    var variante = 0;
+    capaA.style.background = colorDeProyecto(indice, variante);
+    capaA.classList.add("is-on");
+    capaB.classList.remove("is-on");
+
+    // 1) Sin imagen: los degradados se van alternando, como antes.
+    if (!medio) {
+      temporizadorColor = setInterval(function () {
+        variante++;
+        var estaVisibleA = capaA.classList.contains("is-on");
+        var capaQueEntra = estaVisibleA ? capaB : capaA;
+        var capaQueSale = estaVisibleA ? capaA : capaB;
+        capaQueEntra.style.background = colorDeProyecto(indice, variante);
+        capaQueEntra.classList.add("is-on");
+        capaQueSale.classList.remove("is-on");
+      }, 1200);
+      return;
+    }
+
+    // 2) Vídeo: se reproduce desde el principio, sin sonido y en bucle.
+    if (typeof medio === "string" && esVideo(medio)) {
+      if (tarjetaVideo.getAttribute("src") !== medio) tarjetaVideo.src = medio;
+      tarjetaVideo.currentTime = 0;
+      tarjetaVideo.classList.add("is-on");
+      if (!reduce) tarjetaVideo.play().catch(function () {});
+      return;
+    }
+
+    // 3) Una imagen o gif, o 4) una lista de imágenes que se van cambiando.
+    var lista = typeof medio === "string" ? [medio] : medio;
+    lista.forEach(function (ruta) { new Image().src = ruta; }); // precarga
+    var paso = 0;
+    tarjetaImagen.src = lista[0];
+    tarjetaImagen.classList.add("is-on");
+
+    if (lista.length > 1 && !reduce) {
+      temporizadorFlipbook = setInterval(function () {
+        paso = (paso + 1) % lista.length;
+        tarjetaImagen.src = lista[paso];
+      }, VELOCIDAD_FLIPBOOK);
+    }
+  }
+
+  /* ============================================================
+     HOVER: difuminar el resto y mostrar la tarjeta
+     ============================================================ */
   function mostrarProyecto(indice) {
     if (proyectoActivo === indice || !tarjeta) return;
+    var estabaOculta = proyectoActivo === null;
     proyectoActivo = indice;
+
+    if (estabaOculta || reduce) {
+      colocarTarjeta();
+    } else {
+      var hueco = buscarHuecoAlAzar(tarjeta.offsetWidth, tarjeta.offsetHeight);
+      destinoX = hueco.x; destinoY = hueco.y; // viaja hasta el nuevo sitio
+    }
 
     svg.querySelectorAll(".rueda-item").forEach(function (palabra) {
       var esEste = Number(palabra.dataset.idx) === indice;
@@ -222,25 +411,8 @@
     });
     svg.querySelectorAll(".rueda-sep").forEach(function (punto) { punto.classList.add("is-blur"); });
 
-    tarjetaIndice.textContent = String(indice + 1).padStart(2, "0");
-    tarjetaNombre.textContent = proyectos[indice];
+    ponerMedio(indice);
     tarjeta.classList.add("is-visible");
-
-    clearInterval(temporizadorColor);
-    var variante = 0;
-    capaA.style.background = colorDeProyecto(indice, variante);
-    capaA.classList.add("is-on");
-    capaB.classList.remove("is-on");
-
-    temporizadorColor = setInterval(function () {
-      variante++;
-      var estaVisibleA = capaA.classList.contains("is-on");
-      var capaQueEntra = estaVisibleA ? capaB : capaA;
-      var capaQueSale = estaVisibleA ? capaA : capaB;
-      capaQueEntra.style.background = colorDeProyecto(indice, variante);
-      capaQueEntra.classList.add("is-on");
-      capaQueSale.classList.remove("is-on");
-    }, 1200);
   }
 
   function ocultarTarjeta() {
@@ -249,13 +421,26 @@
       el.classList.remove("is-active", "is-blur");
     });
     if (tarjeta) tarjeta.classList.remove("is-visible");
-    clearInterval(temporizadorColor);
+    pararMedios();
   }
 
-  svg.addEventListener("pointerover", function (evento) {
+  /* Al hacer scroll la tarjeta se esconde, y no vuelve a salir mientras
+     sigas scrolleando. Cuando paras, sale si el ratón está sobre un proyecto. */
+  var scrollEnMarcha = null;
+  function esconderAlScrollear() {
+    if (proyectoActivo !== null) ocultarTarjeta();
+    clearTimeout(scrollEnMarcha);
+    scrollEnMarcha = setTimeout(function () { scrollEnMarcha = null; }, 250);
+  }
+
+  function hoverSobre(evento) {
+    if (scrollEnMarcha) return;
     var palabra = evento.target.closest(".rueda-item");
     if (palabra) mostrarProyecto(Number(palabra.dataset.idx));
-  });
+  }
+
+  svg.addEventListener("pointerover", hoverSobre);
+  svg.addEventListener("pointermove", hoverSobre); // para volver a mostrarla tras el scroll
 
   svg.addEventListener("pointerout", function (evento) {
     var salioDeUnaPalabra = evento.target.closest(".rueda-item");
@@ -271,6 +456,7 @@
 
   function preparar() {
     rellenarLosDosCirculos();
+    window.addEventListener("scroll", esconderAlScrollear, { passive: true });
 
     if (reduce) {
       grupoGrande.setAttribute("transform", "rotate(8 " + CENTRO_X + " " + CENTRO_Y + ")");

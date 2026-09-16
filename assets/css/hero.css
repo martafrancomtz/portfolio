@@ -1,0 +1,44 @@
+/* ==========================================================
+   HERO: fondo animado (shader), título letra a letra y
+   entrada escalonada.
+   Tamaño, posición y color vienen de Figma/styles.css: aquí
+   solo la mecánica de la animación.
+   ========================================================== */
+
+/* ---- fondo: el canvas se pinta encima de la imagen estática,
+   que queda como reserva si WebGL no está disponible ---- */
+.hero__bg-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:0;
+  display:block;
+}
+.hero.is-no-webgl .hero__bg-canvas{ display:none }
+
+/* ---- título letra a letra: cada <g class="ch"> es la misma
+   textura recortada por su propia letra (ver index.html) ---- */
+.hero__title .ch{
+  will-change:filter,transform,opacity;
+  transform-box:fill-box;
+  transform-origin:center;
+}
+
+/* ---- entrada escalonada al cargar (cascada, sin JS) ---- */
+.hero-reveal{
+  opacity:0;
+  transform:translateY(18px);
+  animation:hero-rise .95s cubic-bezier(.22,1,.36,1) forwards;
+}
+.hero-reveal[data-d="1"]{ animation-delay:.05s }
+.hero-reveal[data-d="2"]{ animation-delay:.16s }
+.hero-reveal[data-d="3"]{ animation-delay:.34s }
+.hero-reveal[data-d="4"]{ animation-delay:.46s }
+@keyframes hero-rise{ to{ opacity:1; transform:none } }
+
+@media (prefers-reduced-motion:reduce){
+  .hero-reveal{ opacity:1; transform:none; animation:none }
+  .hero__title .ch{ will-change:auto }
+}
