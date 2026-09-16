@@ -1,0 +1,95 @@
+/* ==========================================================
+   RUEDA: pin de scroll + hover
+   Usa las variables de :root (styles.css): tipografía, color,
+   fondo. Solo la mecánica y la geometría vienen del prototipo.
+   ========================================================== */
+
+.rueda-pin{
+  margin-top: 30rem;
+  position:relative;
+  height:300vh;
+}
+.rueda-stage{
+  position:sticky;
+  top:0;
+  height:100vh;
+  /*overflow:hidden;*/
+  background:var(--bg);
+}
+
+.rueda-wrap{
+  position:absolute;
+  top:0;
+  right:0;
+  width:95vmax;
+  height:95vmax;
+}
+.rueda-wrap svg{ width:100%; height:100%; overflow:visible; display:block }
+.rueda-wrap text{ font-family:var(--font); font-weight:600; fill:var(--black) }
+
+.rueda-item{ cursor:pointer; transition:filter .4s ease, opacity .4s ease }
+.rueda-item.is-active{ opacity:1 }
+.rueda-item.is-blur{ filter:blur(7px); opacity:.25 }
+.rueda-sep{ fill:var(--text-secondary); transition:filter .4s ease, opacity .4s ease }
+.rueda-sep.is-blur{ filter:blur(7px); opacity:.12 }
+
+@media (max-width:760px){
+  .rueda-wrap{ width:118vmax; height:118vmax }
+}
+
+.rueda-hint{
+  position:absolute;
+  left:50%;
+  bottom:5.5vh;
+  transform:translateX(-50%);
+  font-family:var(--font);
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.1em;
+  color:var(--text-secondary);
+  transition:opacity .4s ease;
+}
+
+/* ---- tarjeta flotante que aparece al hacer hover sobre un proyecto ---- */
+.rueda-card{
+  position:fixed;
+  top:70%; left:30%;
+  width:min(42vw,460px);
+  aspect-ratio:4/5;
+  transform:translate(-50%,-50%) scale(.9);
+  opacity:0;
+  pointer-events:none;
+  background:#222;
+  overflow:hidden;
+  transition:opacity .4s ease, transform .5s ease;
+  z-index:50;
+}
+.rueda-card.is-visible{ opacity:1; transform:translate(-50%,-50%) scale(1) }
+.rueda-card__face{
+  position:absolute; inset:0;
+  opacity:0;
+  transition:opacity 1s ease;
+  background-size:cover;
+}
+.rueda-card__face.is-on{ opacity:1 }
+.rueda-card__meta{
+  position:absolute; left:0; right:0; bottom:0;
+  padding:16px 18px;
+  color:var(--bg);
+  background:linear-gradient(0deg,rgba(0,0,0,.55),transparent);
+  font-family:var(--font);
+  font-size:19px;
+  font-weight:700;
+}
+.rueda-card__meta span{
+  font-size:12px;
+  font-weight:500;
+  opacity:.7;
+  margin-right:12px;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rueda-pin{ height:auto }
+  .rueda-stage{ position:relative; height:auto; min-height:72vmax; padding:60px 0 }
+  .rueda-hint{ display:none }
+}

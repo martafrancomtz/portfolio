@@ -109,7 +109,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* ==========================================================
    3. LAYOUT: grid, contenedores, espaciado
    ========================================================== */
-main{ background:var(--bg); overflow:hidden; }
+main{ background:var(--bg); }
 .selected-work,
 .statement,
 .what-i-do,
@@ -281,32 +281,10 @@ main{ background:var(--bg); overflow:hidden; }
 }
 .statement > .link-reveal{ align-self:start }
 
-.statement__wheel-wrap{
-  position:relative;
-  align-self:flex-end;
-  width:min(58vw,760px);
-  margin-top:72px;
-}
-.statement__wheel{
-  width:100%;
-  aspect-ratio:1/1;
-  overflow:hidden;
-  pointer-events:none;
-  opacity:.94;
-}
-.statement__wheel svg{ width:100%; height:100%; display:block; overflow:hidden }
-.statement__wheel text{ font-family:var(--font); font-weight:600; fill:var(--black) }
+/* La rueda (pin de scroll + hover) vive en assets/css/rueda.css.
+   Aquí solo queda el aspecto visual de la foto, reutilizado allí. 
+   quitada*/
 
-.statement__thumb{
-  position:absolute;
-  left:6%;
-  bottom:6%;
-  width:min(46%,449px);
-  aspect-ratio:449/299;
-  object-fit:cover;
-  border-radius:6px;
-  box-shadow:0 18px 40px rgba(0,0,0,.18);
-}
 
 /* ---------- WHAT I DO ---------- */
 .what-i-do{ padding-top:140px; padding-bottom:60px }
@@ -450,7 +428,6 @@ main{ background:var(--bg); overflow:hidden; }
    ========================================================== */
 @media (max-width:900px){
   .statement__quote{ text-align:left; margin-left:0 }
-  .statement__wheel-wrap{ align-self:center; width:min(90vw,520px) }
   .what-i-do__item{ grid-template-columns:1fr; gap:12px }
   .all-work__group{ grid-template-columns:1fr }
   .all-work__cat{ padding:18px 0 6px; opacity:.55; font-size:var(--fs-small); text-transform:uppercase; letter-spacing:.06em }

@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/rueda.css">
 </head>
 <body>
 
@@ -106,17 +107,23 @@
       <span>More about me</span>
     </a>
 
-    <div class="statement__wheel-wrap">
-      <div class="statement__wheel" id="wheel" aria-hidden="true">
-        <svg viewBox="0 0 1000 1000" focusable="false">
-          <defs><path id="wheelPathBig"/><path id="wheelPathSmall"/></defs>
-          <g id="wheelBig"><text id="wheelTextBig"><textPath href="#wheelPathBig"></textPath></text></g>
-          <g id="wheelSmall"><text id="wheelTextSmall"><textPath href="#wheelPathSmall"></textPath></text></g>
-        </svg>
+    <div class="rueda-pin" id="ruedaPin">
+      <div class="rueda-stage">
+        <div class="rueda-wrap" id="wheel" aria-hidden="true">
+          <svg viewBox="0 0 1000 1000" focusable="false">
+            <defs><path id="wheelPathBig"/><path id="wheelPathSmall"/></defs>
+            <g id="wheelBig"><text id="wheelTextBig"><textPath href="#wheelPathBig"></textPath></text></g>
+            <g id="wheelSmall"><text id="wheelTextSmall"><textPath href="#wheelPathSmall"></textPath></text></g>
+          </svg>
+        </div>
       </div>
-      <img class="statement__thumb" src="assets/img/playing-cards-mockup.png" alt="Mockup ilustrado de cartas de juego">
     </div>
   </section>
+
+  <div class="rueda-card" id="wheelCard" aria-hidden="true">
+    <div class="rueda-card__face a"></div><div class="rueda-card__face b"></div>
+    <div class="rueda-card__meta"><span id="wheelCardIdx">01</span><span id="wheelCardName"></span></div>
+  </div>
 
   <section class="what-i-do" id="what-i-do">
     <h2 class="section-title">What I do</h2>
@@ -257,6 +264,7 @@
 </footer>
 
 <script src="assets/js/clock.js"></script>
+<script src="assets/js/rueda.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
