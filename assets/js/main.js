@@ -39,8 +39,11 @@
   /* ============================================================
      2) REVEAL AL HACER SCROLL
      ============================================================ */
+  /* .selected-work__row queda fuera: dentro del pin de scroll (3work.js) su
+     opacidad la controla ese script fotograma a fotograma, y el fundido
+     genérico de aquí chocaría con esas animaciones. */
   var revelables = document.querySelectorAll(
-    ".section-title, .selected-work__row, .statement__quote, .statement__now, " +
+    ".section-title, .statement__quote, .statement__now, " +
     ".what-i-do__item, .all-work__group, .cta__title, .cta__lead, .cta__text"
   );
   revelables.forEach(function (el) { el.classList.add("reveal"); });

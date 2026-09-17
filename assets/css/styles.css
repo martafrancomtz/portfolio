@@ -230,8 +230,9 @@ main{ background:var(--bg); }
 .hero__scroll-arrow{ width:15px; height:15px; transform:rotate(90deg) }
 
 /* ---------- SELECTED WORK ---------- */
+/* El scroll fijado (pin) + interacciones viven en assets/css/3work.css y
+   assets/js/3work.js. Aquí solo el aspecto de cada fila, igual que antes. */
 .selected-work{ padding-top:80px }
-.selected-work__list{ margin-top:56px; display:flex; flex-direction:column }
 .selected-work__row{
   display:flex;
   align-items:baseline;
@@ -245,9 +246,6 @@ main{ background:var(--bg); }
 .selected-work__row:hover{ opacity:.55 }
 .selected-work__meta{ font-weight:700; white-space:nowrap; font-size:var(--fs-minititle) }
 .selected-work__name{ min-width:0 }
-
-.selected-work > .link-reveal{ margin-top:40px; float:right }
-.selected-work::after{ content:""; display:block; clear:both }
 
 /* ---------- STATEMENT + RUEDA ---------- */
 .statement{
@@ -438,7 +436,6 @@ main{ background:var(--bg); }
   .selected-work__row{ flex-direction:column; align-items:stretch; gap:4px }
   .selected-work__meta{ white-space:normal }
   .selected-work__meta,.selected-work__name{ font-size:20px }
-  .selected-work > .link-reveal{ float:none; display:flex; justify-content:flex-end }
   .section-title{ font-size:34px }
   .statement__quote{ font-size:26px }
   .cta{ padding:100px 20px 90px }

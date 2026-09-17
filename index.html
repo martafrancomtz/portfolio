@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/hero.css">
+<link rel="stylesheet" href="assets/css/3work.css">
 <link rel="stylesheet" href="assets/css/rueda.css">
 </head>
 <body>
@@ -90,31 +91,72 @@
   <section class="selected-work" id="work">
     <h2 class="section-title">Selected work</h2>
 
-    <ul class="selected-work__list">
-      <li>
-        <a href="work/antonio-franco/index.html" class="selected-work__row">
-          <span class="selected-work__name">(01)&emsp;Antonio Franco — Fashion portfolio</span>
-          <span class="selected-work__meta">Web design, Front end&emsp;&emsp;2026</span>
-        </a>
-      </li>
-      <li>
-        <a href="work/consentio/index.html" class="selected-work__row">
-          <span class="selected-work__name">(02)&emsp;ConSentío</span>
-          <span class="selected-work__meta">UX Research, UI Design&emsp;&emsp;2025</span>
-        </a>
-      </li>
-      <li>
-        <a href="work/portfolio-v1-v2/index.html" class="selected-work__row">
-          <span class="selected-work__name">(03)&emsp;Portfolio v1 → v2</span>
-          <span class="selected-work__meta">Web design, Front-end&emsp;&emsp;2025–26</span>
-        </a>
-      </li>
-    </ul>
+    <div class="work-pin" id="workPin">
+      <div class="work-pin__stage">
 
-    <a href="work/index.html" class="link-reveal link-reveal--diagonal">
-      <span>All work</span>
-      <img src="assets/img/icon-arrow-allwork.svg" alt="">
-    </a>
+        <div class="work-pin__list" id="workList">
+          <a href="work/antonio-franco/index.html" class="selected-work__row">
+            <span class="selected-work__name"><span class="cel c-n">(01)</span>&emsp;<span class="cel c-t">Antonio Franco — Fashion portfolio</span></span>
+            <span class="selected-work__meta"><span class="cel c-r">Web design, Front end</span>&emsp;&emsp;<span class="cel c-a">2026</span></span>
+          </a>
+          <a href="work/consentio/index.html" class="selected-work__row">
+            <span class="selected-work__name"><span class="cel c-n">(02)</span>&emsp;<span class="cel c-t">ConSentío</span></span>
+            <span class="selected-work__meta"><span class="cel c-r">UX Research, UI Design</span>&emsp;&emsp;<span class="cel c-a">2025</span></span>
+          </a>
+          <a href="work/portfolio-v1-v2/index.html" class="selected-work__row">
+            <span class="selected-work__name"><span class="cel c-n">(03)</span>&emsp;<span class="cel c-t">Portfolio v1 → v2</span></span>
+            <span class="selected-work__meta"><span class="cel c-r">Web design, Front-end</span>&emsp;&emsp;<span class="cel c-a">2025–26</span></span>
+          </a>
+        </div>
+
+        <a href="work/index.html" class="link-reveal link-reveal--diagonal work-pin__all" id="workAll">
+          <span>All work</span>
+          <img src="assets/img/icon-arrow-allwork.svg" alt="">
+        </a>
+
+        <!-- data-a = celda de origen (fila+columna) · data-c = celda de llegada ·
+             data-b = ancla en la ficha. Las que llevan data-campo se quedan con el texto. -->
+        <div class="work-pin__viajeros" id="workViajeros" aria-hidden="true">
+          <span class="vj" data-a="1n" data-c="2n" data-b="workAnchorTitulo" data-lado="izq"></span>
+          <span class="vj" data-a="1t" data-c="2t" data-b="workAnchorTitulo" data-lado="izq" data-campo="titulo"></span>
+          <span class="vj" data-a="1r" data-c="2r" data-b="workAnchorIndice" data-lado="der"></span>
+          <span class="vj" data-a="1a" data-c="2a" data-b="workAnchorIndice" data-lado="der" data-campo="indice"></span>
+          <span class="vj" data-a="2n" data-c="3n" data-b="workAnchorRoles"  data-lado="izq"></span>
+          <span class="vj" data-a="2t" data-c="3t" data-b="workAnchorRoles"  data-lado="izq" data-campo="roles"></span>
+          <span class="vj" data-a="2r" data-c="3r" data-b="workAnchorAno"    data-lado="der"></span>
+          <span class="vj" data-a="2a" data-c="3a" data-b="workAnchorAno"    data-lado="der" data-campo="ano"></span>
+        </div>
+
+        <div class="work-pin__anchor work-pin__anchor--top" aria-hidden="true">
+          <span id="workAnchorTitulo">A</span><span id="workAnchorIndice">A</span>
+        </div>
+        <div class="work-pin__anchor work-pin__anchor--bottom" aria-hidden="true">
+          <span id="workAnchorRoles">A</span><span id="workAnchorAno">A</span>
+        </div>
+
+        <div class="work-pin__scene" id="workScene">
+          <a class="work-pin__photo" data-i="0" href="work/antonio-franco/index.html">
+            <span class="work-pin__view">View <span>↗</span></span>
+          </a>
+          <a class="work-pin__photo" data-i="1" href="work/consentio/index.html">
+            <span class="work-pin__view">View <span>↗</span></span>
+          </a>
+          <a class="work-pin__photo" data-i="2" href="work/portfolio-v1-v2/index.html">
+            <span class="work-pin__view">View <span>↗</span></span>
+          </a>
+        </div>
+
+      </div>
+
+      <div class="work-pin__marks" aria-hidden="true">
+        <span class="work-pin__mark-in"></span>
+        <span class="work-pin__mark-fase"></span>
+        <span class="work-pin__mark-fase"></span>
+        <span class="work-pin__mark-fase"></span>
+        <span class="work-pin__mark-fase work-pin__mark-fase--short"></span>
+        <span class="work-pin__mark-out"></span>
+      </div>
+    </div>
   </section>
 
   <section class="statement">
@@ -293,6 +335,7 @@
 
 <script src="assets/js/clock.js"></script>
 <script src="assets/js/hero.js"></script>
+<script src="assets/js/3work.js"></script>
 <script src="assets/js/rueda.js"></script>
 <script src="assets/js/main.js"></script>
 </body>

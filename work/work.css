@@ -1,0 +1,138 @@
+/* ==========================================================
+   WORK: rejilla de proyectos con "imagen que se convierte
+   en cursor". Tipografía, color y contenedor: variables del
+   sitio (:root en assets/css/styles.css), no las de un
+   prototipo aparte.
+   ========================================================== */
+:root{
+  --work-gap:clamp(10px, 1.389vw, 28px);
+  --fs-project-meta:clamp(14px, 1.736vw, 25px);
+  --fs-project-title:clamp(26px, 3.333vw, 48px);
+  --orb:clamp(110px, 13.4vw, 260px);
+  --ratio:672 / 813;
+}
+
+/* ---------- Cabecera ---------- */
+.work-header{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:32px var(--gutter) 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.work-header__logo{ display:block; line-height:0 }
+.work-header__logo img{ width:40px; height:auto; display:block }
+.work-header__nav{ display:flex; gap:32px; font-size:var(--fs-minititle); font-weight:500 }
+.work-header__nav a.is-current{ font-weight:700 }
+
+/* ---------- Rejilla ---------- */
+.work{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:64px var(--gutter) 35vh;
+}
+
+.work__grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:var(--work-gap);
+}
+
+/* ---------- Proyecto ---------- */
+.project {
+  position: relative;
+  display: block;
+  aspect-ratio: var(--ratio);
+  outline-offset: 4px;
+}
+
+/* huecos a la espera de fotografía real: un tono plano por posición,
+   igual convención que .work-pin__photo en 3work.css */
+.project__img {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+
+.project__img img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.work__grid > li:nth-child(4n+1) .project__img{ background:rgba(51,51,51,.10) }
+.work__grid > li:nth-child(4n+2) .project__img{ background:rgba(51,51,51,.16) }
+.work__grid > li:nth-child(4n+3) .project__img{ background:rgba(51,51,51,.22) }
+.work__grid > li:nth-child(4n+4) .project__img{ background:rgba(51,51,51,.28) }
+
+.project.is-active .project__img{ opacity:0; transition-duration:.25s }
+.project.is-instant .project__img{ transition:none }
+
+/* ---------- Texto que aparece donde estaba el hueco ---------- */
+.project__info{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:flex-start;
+  text-align:left;
+  padding:24px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease;
+}
+.work__grid > li:nth-child(even) .project__info{ align-items:flex-end; text-align:right }
+
+.project.is-active .project__info{ opacity:1; transition:opacity .35s var(--ease) .12s }
+.project.is-leaving .project__info{ opacity:0; transition:opacity .15s ease }
+
+.project__meta{ font-size:var(--fs-project-meta); font-weight:500 }
+.project__title{ margin-top:.4em; font-size:var(--fs-project-title); font-weight:400; line-height:1.2 }
+
+/* ---------- El círculo-cursor ----------
+   Sustituye al cursor del sitio mientras hay un proyecto activo: sigue
+   al puntero y copia el color plano del hueco que tiene debajo. Sin
+   fotografía real todavía no hay nada que recortar ni hacer zoom;
+   cuando la haya, revisar work.js antes de tocar nada. */
+html.orb-on, html.orb-on *{ cursor:none !important }
+html.orb-on .cursor{ opacity:0 }
+html.orb-open{ overflow:hidden }
+
+.orb{
+  position:fixed;
+  left:0; top:0;
+  z-index:50;
+  width:0; height:0;
+  background:var(--text);
+  visibility:hidden;
+  pointer-events:none;
+  transition:background-color .25s ease;
+  will-change:transform, width, height;
+}
+.orb.is-visible{ visibility:visible }
+
+/* sirve para leer el tamaño del círculo definido en --orb */
+.orb-probe{
+  position:fixed; left:0; top:0;
+  width:var(--orb); height:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width:700px){
+  .work-header{ padding-top:24px }
+  .work-header__nav{ gap:16px; font-size:15px }
+  .work__grid{ grid-template-columns:minmax(0, 1fr) }
+  .project{ aspect-ratio:4 / 5 }
+  .work__grid > li:nth-child(even) .project__info{ align-items:flex-start; text-align:left }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .project__img, .project__info{ transition:none !important }
+}

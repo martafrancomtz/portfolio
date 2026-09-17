@@ -1,0 +1,122 @@
+/* ==========================================================
+   SELECTED WORK: scroll fijado (pin) + ficha por proyecto
+   Animaciones/interacciones.
+   Tipografía, colores y tamaños: variables del sitio (:root en
+   styles.css), no las del prototipo (Poppins / --oro).
+   ========================================================== */
+
+.work-pin{
+  --work-entrada:20vh;
+  --work-fase:70vh;
+  --work-salida:26vh;
+  --work-ratio:1.419;
+  --work-marco:min(60vw, calc(64vh * var(--work-ratio)));
+  --work-thumb:110px;
+  position:relative;
+  margin-top:56px;
+  height:calc(100vh + var(--work-entrada) + var(--work-fase) * 3.7 + var(--work-salida));
+}
+.work-pin__stage{
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* ---------- la lista ---------- */
+.work-pin__list{
+  position:absolute; z-index:3; left:0; right:0;
+  top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:32px;
+}
+/* la fila 02 nunca se ve como tal: la representan las piezas viajeras
+   (ver .vj / 3work.js) mientras se abre y se cierra la ficha */
+.work-pin__list .selected-work__row:nth-of-type(2){ opacity:0 }
+
+/* ---------- "All work" (mismo componente, ahora dentro del pin) ---------- */
+.work-pin__all{ position:absolute; z-index:3; right:0; bottom:8vh }
+
+/* ---------- las ocho piezas que viajan ----------
+   Cada media fila se convierte en un texto de la ficha; la que lleva el
+   texto se reescribe (scramble), la que la acompaña converge con ella y
+   se apaga. Ver 3work.js. */
+.work-pin__viajeros{ position:absolute; inset:0; z-index:4; pointer-events:none }
+.vj{
+  position:absolute; left:0; top:0; white-space:nowrap;
+  font-size:var(--fs-minititle); font-weight:700; line-height:1.25;
+  color:var(--text);
+  transform-origin:0% 50%; will-change:transform,opacity;
+}
+/* durante el scramble, una caja de ancho fijo por letra para no recomponer nada */
+.vj .w{ display:inline-block; white-space:nowrap }
+.vj .g{ display:inline-block; text-align:center }
+
+/* ---------- anclas invisibles de la ficha ----------
+   Marcan dónde aterriza cada texto; su tamaño fija también la escala. */
+.work-pin__anchor{
+  position:absolute; left:0; right:0;
+  display:flex; justify-content:space-between;
+  font-size:var(--fs-subtitle); font-weight:500; line-height:1.3;
+  color:var(--text);
+  visibility:hidden; pointer-events:none;
+}
+.work-pin__anchor--top{ top:6vh }
+.work-pin__anchor--bottom{ bottom:6vh }
+
+/* ---------- las "fotos" ----------
+   Sin fotografía real todavía (assets/img/work/* vacío): tinta plana como
+   marcador de posición, misma coreografía (transform/opacity) que tendrán
+   las imágenes cuando existan. Sustituir por <img> cuando haya material. */
+.work-pin__scene{ position:absolute; inset:0; z-index:2; pointer-events:none }
+.work-pin__photo{
+  position:absolute; top:50%; left:50%; opacity:0;
+  width:var(--work-marco); aspect-ratio:var(--work-ratio);
+  transform:translate(-50%,-50%) scale(.12);
+  transform-origin:50% 50%; overflow:hidden;
+  display:block; text-decoration:none; pointer-events:none;
+  will-change:transform,opacity; backface-visibility:hidden;
+}
+.work-pin__photo:nth-of-type(1){ background:rgba(51,51,51,.12) }
+.work-pin__photo:nth-of-type(2){ background:rgba(51,51,51,.18) }
+.work-pin__photo:nth-of-type(3){ background:rgba(51,51,51,.24) }
+
+.work-pin__view{
+  position:absolute; top:8%; right:6%;
+  color:var(--text); opacity:0; pointer-events:none;
+  font-size:var(--fs-small); font-weight:500;
+  display:flex; gap:.6em; align-items:center;
+}
+
+/* ---------- marcas que reparten el scroll ---------- */
+.work-pin__marks{ position:absolute; inset:0; pointer-events:none }
+.work-pin__mark-in{ display:block; height:var(--work-entrada) }
+.work-pin__mark-fase{ display:block; height:var(--work-fase) }
+.work-pin__mark-fase--short{ height:calc(var(--work-fase) * .7) }
+.work-pin__mark-out{ display:block; height:var(--work-salida) }
+
+@media (max-width:80rem){
+  .work-pin{ --work-marco:min(70vw, calc(58vh * var(--work-ratio))) }
+}
+@media (max-width:52rem){
+  .work-pin{
+    --work-thumb:96px;
+    --work-marco:min(86vw, calc(48vh * var(--work-ratio)));
+  }
+  .work-pin__anchor{ font-size:var(--fs-small) }
+  .work-pin__all{ bottom:6vh }
+}
+
+/* ---------- sin movimiento: la ficha desaparece, queda una lista simple ---------- */
+@media (prefers-reduced-motion:reduce){
+  .work-pin{ height:auto }
+  .work-pin__stage{ position:static; height:auto; overflow:visible }
+  .work-pin__list{ position:static; transform:none; margin-bottom:40px }
+  .work-pin__viajeros,.work-pin__anchor,.work-pin__marks{ display:none }
+  .work-pin__scene{ position:static; display:grid; gap:24px; pointer-events:auto }
+  .work-pin__photo{
+    position:static; transform:none!important; opacity:1!important;
+    pointer-events:auto; width:100%;
+  }
+  .work-pin__view{ position:static; opacity:1!important; margin-top:8px }
+  .work-pin__all{ position:static; display:flex; justify-content:flex-end; margin-top:24px }
+}
