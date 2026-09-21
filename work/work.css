@@ -6,8 +6,8 @@
    ========================================================== */
 :root{
   --work-gap:clamp(10px, 1.389vw, 28px);
-  --fs-project-meta:clamp(14px, 1.736vw, 25px);
-  --fs-project-title:clamp(26px, 3.333vw, 48px);
+  --fs-project-meta:clamp(14px, 1.736vw, 34px);
+  --fs-project-title:clamp(26px, 3.333vw, 64px);
   --orb:clamp(110px, 13.4vw, 260px);
   --ratio:672 / 813;
 }
@@ -47,41 +47,28 @@
   outline-offset: 4px;
 }
 
-/* huecos a la espera de fotografía real: un tono plano por posición,
-   igual convención que .work-pin__photo en 3work.css */
 .project__img {
   position: absolute;
   inset: 0;
-  overflow: hidden;
-}
-
-
-.project__img img {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
-  object-position: center;
+  object-position: var(--pos, 50% 50%);
+  transition: opacity .45s var(--ease);
 }
-
-.work__grid > li:nth-child(4n+1) .project__img{ background:rgba(51,51,51,.10) }
-.work__grid > li:nth-child(4n+2) .project__img{ background:rgba(51,51,51,.16) }
-.work__grid > li:nth-child(4n+3) .project__img{ background:rgba(51,51,51,.22) }
-.work__grid > li:nth-child(4n+4) .project__img{ background:rgba(51,51,51,.28) }
 
 .project.is-active .project__img{ opacity:0; transition-duration:.25s }
 .project.is-instant .project__img{ transition:none }
 
-/* ---------- Texto que aparece donde estaba el hueco ---------- */
+/* ---------- Texto que aparece donde estaba la imagen ---------- */
 .project__info{
   position:absolute;
   inset:0;
   display:flex;
   flex-direction:column;
-  justify-content:flex-end;
   align-items:flex-start;
   text-align:left;
-  padding:24px;
   opacity:0;
   pointer-events:none;
   transition:opacity .18s ease;
@@ -91,14 +78,14 @@
 .project.is-active .project__info{ opacity:1; transition:opacity .35s var(--ease) .12s }
 .project.is-leaving .project__info{ opacity:0; transition:opacity .15s ease }
 
-.project__meta{ font-size:var(--fs-project-meta); font-weight:500 }
-.project__title{ margin-top:.4em; font-size:var(--fs-project-title); font-weight:400; line-height:1.2 }
+.project__meta{ margin:0; font-size:var(--fs-project-meta); font-weight:500 }
+.project__title{ margin:auto 0 0; font-size:var(--fs-project-title); font-weight:400; line-height:1.2 }
 
 /* ---------- El círculo-cursor ----------
-   Sustituye al cursor del sitio mientras hay un proyecto activo: sigue
-   al puntero y copia el color plano del hueco que tiene debajo. Sin
-   fotografía real todavía no hay nada que recortar ni hacer zoom;
-   cuando la haya, revisar work.js antes de tocar nada. */
+   Sustituye al cursor del sitio mientras hay un proyecto activo: la
+   imagen de la celda se convierte en un círculo que sigue al puntero
+   (capas .orb__layer dentro de .orb__scale, pintadas por work.js con
+   los mismos cálculos de encuadre/zoom que la referencia). */
 html.orb-on, html.orb-on *{ cursor:none !important }
 html.orb-on .cursor{ opacity:0 }
 html.orb-open{ overflow:hidden }
@@ -108,13 +95,29 @@ html.orb-open{ overflow:hidden }
   left:0; top:0;
   z-index:50;
   width:0; height:0;
-  background:var(--text);
+  overflow:hidden;
   visibility:hidden;
   pointer-events:none;
-  transition:background-color .25s ease;
+  isolation:isolate;
   will-change:transform, width, height;
 }
 .orb.is-visible{ visibility:visible }
+
+.orb__scale{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  border-radius:inherit;
+  transform-origin:50% 50%;
+}
+
+.orb__layer{
+  position:absolute;
+  left:0; top:0;
+  display:block;
+  max-width:none;
+  will-change:transform;
+}
 
 /* sirve para leer el tamaño del círculo definido en --orb */
 .orb-probe{

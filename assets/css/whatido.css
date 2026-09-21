@@ -1,0 +1,53 @@
+/* ==========================================================
+   WHAT I DO: scroll fijado (pin), un paso a la vez.
+   Animaciones/interacciones.
+   Tipografía, colores y tamaños: variables del sitio, no las del
+   prototipo (Poppins/DM Mono, ni la inversión de fondo oscuro).
+   ========================================================== */
+
+.whatido-pin{
+  --wid-entrada:40vh;
+  --wid-paso:80vh;
+  position:relative;
+  margin-top:100px;
+  height:calc(100vh + var(--wid-entrada) * 2 + var(--wid-paso) * 4);
+}
+.whatido-pin__stage{
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+}
+.whatido-pin__grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(280px,44%) 1fr;
+  gap:40px;
+  align-items:center;
+}
+
+.what-i-do__list{ display:flex; flex-direction:column }
+
+/* letras del scramble: caja de ancho fijo para no recomponer la línea */
+.what-i-do__desc .w{ display:inline-block; white-space:nowrap }
+.what-i-do__desc .g{ display:inline-block; text-align:center }
+
+.whatido-pin__marks{ position:absolute; inset:0; pointer-events:none }
+.whatido-pin__mark-in{ display:block; height:var(--wid-entrada) }
+.whatido-pin__mark-step{ display:block; height:var(--wid-paso) }
+.whatido-pin__mark-out{ display:block; height:var(--wid-entrada) }
+
+@media (max-width:60rem){
+  .whatido-pin__grid{ grid-template-columns:1fr; gap:24px }
+}
+
+/* ---------- sin movimiento: nada de pin, lista + descripción en flujo normal ---------- */
+@media (prefers-reduced-motion:reduce){
+  .whatido-pin{ height:auto }
+  .whatido-pin__stage{ position:static; height:auto }
+  .whatido-pin__grid{ display:block }
+  .whatido-pin__marks{ display:none }
+  .what-i-do__item h3{ filter:none }
+  .what-i-do__desc{ margin-top:24px }
+}

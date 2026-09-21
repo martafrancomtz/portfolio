@@ -41,10 +41,12 @@
      ============================================================ */
   /* .selected-work__row queda fuera: dentro del pin de scroll (3work.js) su
      opacidad la controla ese script fotograma a fotograma, y el fundido
-     genérico de aquí chocaría con esas animaciones. */
+     genérico de aquí chocaría con esas animaciones. .work-group__label y
+     .work-item tampoco entran: su entrada escalonada la controla
+     allmywork.js con su propio IntersectionObserver. */
   var revelables = document.querySelectorAll(
     ".section-title, .statement__quote, .statement__now, " +
-    ".what-i-do__item, .all-work__group, .cta__title, .cta__lead, .cta__text"
+    ".what-i-do__item, .cta__title, .cta__lead, .cta__text"
   );
   revelables.forEach(function (el) { el.classList.add("reveal"); });
 
@@ -62,19 +64,6 @@
     revelables.forEach(function (el) { el.classList.add("is-visible"); });
   }
 
-  /* ============================================================
-     3) "WHAT I DO": el ítem activo se enfoca, el resto se desenfoca
-     ============================================================ */
-  var itemsQueHace = document.querySelectorAll(".what-i-do__item");
-  if (itemsQueHace.length) {
-    function activar(item) {
-      itemsQueHace.forEach(function (i) { i.classList.toggle("is-active", i === item); });
-    }
-    itemsQueHace.forEach(function (item) {
-      item.addEventListener("mouseenter", function () { activar(item); });
-      item.addEventListener("focus", function () { activar(item); });
-    });
-  }
-
-  /* La rueda (pin de scroll + hover) vive en assets/js/rueda.js */
+  /* "What I do" (pin de scroll + hover + scramble) vive en assets/js/whatido.js.
+     La rueda (pin de scroll + hover) vive en assets/js/rueda.js */
 })();

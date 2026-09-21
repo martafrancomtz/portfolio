@@ -2,9 +2,10 @@
   'use strict';
 
   const CONFIG = {
+    zoom: 2.4,      // zoom de la imagen dentro del círculo (lado corto = zoom × diámetro)
     follow: 20,     // seguimiento del ratón con un muelle sin rebote (más alto = más pegado)
-    morph: 12,       // velocidad hueco ⇄ círculo
-    open: 13,        // velocidad círculo → pantalla completa al hacer clic
+    morph: 12,      // velocidad imagen ⇄ círculo
+    open: 13,       // velocidad círculo → pantalla completa al hacer clic
     openDelay: 550  // ms hasta navegar al proyecto
   };
 
@@ -17,10 +18,13 @@
   const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   const root = document.documentElement;
+  const scaleEl = orb.querySelector('.orb__scale');
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
   let state = 'idle'; // idle | active | leaving | opening
   let active = null;  // .project activo
+  let layers = [];    // imágenes dentro del círculo
+  let swapId = 0;
   let rafId = 0;
   let lastT = 0;
   let leaveTimer = 0;
@@ -34,7 +38,51 @@
   const cur = { x: 0, y: 0, w: 0, h: 0, r: 0 }; // estado actual del círculo
   const tgt = { x: 0, y: 0, w: 0, h: 0, r: 0 }; // hacia dónde va
 
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
   const diameter = () => probe.getBoundingClientRect().width || 190;
+
+  function pair(str) {
+    const n = String(str || '').trim().split(/\s+/).map(parseFloat);
+    return [
+      Number.isFinite(n[0]) ? n[0] / 100 : 0.5,
+      Number.isFinite(n[1]) ? n[1] / 100 : 0.5
+    ];
+  }
+
+  function dataOf(project) {
+    const img = project.querySelector('.project__img');
+    return {
+      project,
+      img,
+      src: img.currentSrc || img.src,
+      nw: img.naturalWidth || 1000,
+      nh: img.naturalHeight || 1000,
+      focus: pair(project.dataset.foco),                     // qué parte se ve en el círculo
+      zoom: parseFloat(project.dataset.zoom) || CONFIG.zoom,  // zoom propio (opcional)
+      pos: pair(getComputedStyle(img).objectPosition)         // encuadre en la rejilla
+    };
+  }
+
+  // la imagen tal y como se ve en la celda (object-fit: cover)
+  function coverBox(d, w, h, px, py) {
+    const s = Math.max(w / d.nw, h / d.nh);
+    const bw = d.nw * s;
+    const bh = d.nh * s;
+    return { bw, bh, bx: (w - bw) * px, by: (h - bh) * py };
+  }
+
+  // la imagen dentro del círculo, centrada en su punto de foco
+  function circleBox(d, D) {
+    const s = (d.zoom * D) / Math.min(d.nw, d.nh);
+    const bw = d.nw * s;
+    const bh = d.nh * s;
+    return {
+      bw,
+      bh,
+      bx: clamp(D / 2 - d.focus[0] * bw, D - bw, 0),
+      by: clamp(D / 2 - d.focus[1] * bh, D - bh, 0)
+    };
+  }
 
   function setFromRect(o, rect) {
     o.x = rect.left + rect.width / 2;
@@ -44,9 +92,55 @@
     o.r = 0;
   }
 
-  function colorOf(project) {
-    const hole = project.querySelector('.project__img');
-    return hole ? getComputedStyle(hole).backgroundColor : '';
+  /* ---------- capas de imagen dentro del círculo ---------- */
+  function addLayer(d, box) {
+    const el = document.createElement('img');
+    el.className = 'orb__layer';
+    el.alt = '';
+    el.decoding = 'async';
+    el.src = d.src;
+    const layer = { el, d, cur: { ...box }, tgt: { ...box } };
+    scaleEl.appendChild(el);
+    layers.push(layer);
+    paintLayer(layer);
+    return layer;
+  }
+
+  function clearLayers(keep) {
+    layers.forEach((l) => { if (l !== keep) l.el.remove(); });
+    layers = keep ? [keep] : [];
+  }
+
+  const topLayer = () => layers[layers.length - 1];
+
+  // si hay un cambio de imagen a medias, deja solo la del proyecto activo
+  function keepActiveLayer() {
+    const top = topLayer();
+    if (top && top.d.project === active) {
+      clearLayers(top);
+    } else {
+      clearLayers();
+      addLayer(dataOf(active), circleBox(dataOf(active), cur.w || diameter()));
+    }
+    return topLayer();
+  }
+
+  function stopScale() {
+    scaleEl.getAnimations().forEach((a) => a.cancel());
+  }
+
+  function currentScale() {
+    const m = getComputedStyle(scaleEl).transform;
+    if (!m || m === 'none') return 1;
+    const v = m.match(/matrix\(([^,]+)/);
+    return v ? parseFloat(v[1]) : 1;
+  }
+
+  /* ---------- pintar ---------- */
+  function paintLayer(l) {
+    l.el.style.width = l.cur.bw + 'px';
+    l.el.style.height = l.cur.bh + 'px';
+    l.el.style.transform = `translate3d(${l.cur.bx}px, ${l.cur.by}px, 0)`;
   }
 
   function paint() {
@@ -54,6 +148,7 @@
     orb.style.height = cur.h + 'px';
     orb.style.borderRadius = Math.min(cur.r, cur.w / 2, cur.h / 2) + 'px';
     orb.style.transform = `translate3d(${cur.x - cur.w / 2}px, ${cur.y - cur.h / 2}px, 0)`;
+    layers.forEach(paintLayer);
   }
 
   function start() {
@@ -94,6 +189,13 @@
     cur.h += (tgt.h - cur.h) * ks;
     cur.r += (tgt.r - cur.r) * kr;
 
+    for (const l of layers) {
+      l.cur.bw += (l.tgt.bw - l.cur.bw) * ks;
+      l.cur.bh += (l.tgt.bh - l.cur.bh) * ks;
+      l.cur.bx += (l.tgt.bx - l.cur.bx) * ks;
+      l.cur.by += (l.tgt.by - l.cur.by) * ks;
+    }
+
     paint();
 
     if (state === 'leaving' && settled()) finishLeave();
@@ -115,7 +217,11 @@
   }
 
   function retargetToCell() {
-    if (active) setFromRect(tgt, active.getBoundingClientRect());
+    if (!active) return;
+    const rect = active.getBoundingClientRect();
+    setFromRect(tgt, rect);
+    const l = topLayer();
+    if (l) l.tgt = coverBox(l.d, rect.width, rect.height, l.d.pos[0], l.d.pos[1]);
   }
 
   /* ---------- estados ---------- */
@@ -124,18 +230,23 @@
     if (project === active && state === 'active') return;
 
     const D = diameter();
-    orb.style.backgroundColor = colorOf(project);
 
     if (state === 'idle') {
-      // el hueco de la celda se convierte en el círculo
-      setFromRect(cur, project.getBoundingClientRect());
+      // la imagen de la celda se convierte en el círculo
+      const d = dataOf(project);
+      const rect = d.img.getBoundingClientRect();
+      setFromRect(cur, rect);
+      clearLayers();
+      addLayer(d, coverBox(d, rect.width, rect.height, d.pos[0], d.pos[1]));
       project.classList.add('is-instant', 'is-active');
       requestAnimationFrame(() => requestAnimationFrame(() => project.classList.remove('is-instant')));
       orb.classList.add('is-visible');
       paint();
     } else if (project !== active) {
+      // ya hay círculo: cambia de imagen
       active.classList.remove('is-active', 'is-leaving');
       project.classList.add('is-active');
+      swap(dataOf(project), D);
     }
 
     project.classList.remove('is-leaving');
@@ -147,13 +258,51 @@
     root.classList.add('orb-on');
 
     Object.assign(tgt, { x: pointer.x, y: pointer.y, w: D, h: D, r: D / 2 });
+    layers.forEach((l) => { l.tgt = circleBox(l.d, D); });
     start();
   }
 
-  // el círculo vuelve a su celda y el hueco reaparece
+  function swap(d, D) {
+    const id = ++swapId;
+
+    if (reduceMotion.matches) {
+      stopScale();
+      clearLayers();
+      addLayer(d, circleBox(d, D));
+      return;
+    }
+
+    // salto: se encoge, cambia de imagen y vuelve a crecer con rebote
+    const s0 = currentScale();
+    stopScale();
+    const shrink = scaleEl.animate(
+      [{ transform: `scale(${s0})` }, { transform: 'scale(0)' }],
+      { duration: 60 + 140 * s0, easing: 'cubic-bezier(.55, 0, .9, .45)', fill: 'forwards' }
+    );
+    shrink.onfinish = () => {
+      if (id !== swapId) return;
+      clearLayers();
+      addLayer(d, circleBox(d, diameter()));
+      const grow = scaleEl.animate(
+        [
+          { transform: 'scale(0)', easing: 'cubic-bezier(.2, .7, .3, 1)' },
+          { transform: 'scale(1.12)', offset: 0.55, easing: 'cubic-bezier(.4, 0, .4, 1)' },
+          { transform: 'scale(.97)', offset: 0.8 },
+          { transform: 'scale(1)' }
+        ],
+        { duration: 460, fill: 'forwards' }
+      );
+      grow.onfinish = () => { if (id === swapId) grow.cancel(); };
+    };
+  }
+
+  // el círculo vuelve a su celda y la imagen reaparece
   function leave() {
     if (state !== 'active' || !active) return;
     state = 'leaving';
+    swapId++;
+    stopScale();
+    keepActiveLayer();
     posRate = CONFIG.morph;
     sizeRate = CONFIG.morph;
     active.classList.add('is-leaving');
@@ -177,6 +326,9 @@
   }
 
   function hideOrb() {
+    swapId++;
+    stopScale();
+    clearLayers();
     orb.classList.remove('is-visible');
     root.classList.remove('orb-on', 'orb-open');
     active = null;
@@ -196,9 +348,13 @@
   function open() {
     if (state !== 'active' || !active) return;
     state = 'opening';
+    swapId++;
+    stopScale();
+    const l = keepActiveLayer();
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     Object.assign(tgt, { x: vw / 2, y: vh / 2, w: vw, h: vh, r: 0 });
+    l.tgt = coverBox(l.d, vw, vh, 0.5, 0.5);
     posRate = CONFIG.open;
     sizeRate = CONFIG.open;
     root.classList.add('orb-open');
@@ -216,7 +372,7 @@
     const project = el.closest('.project');
     if (project && work.contains(project)) activate(project);
     else if (!work.contains(el)) leave(); // fuera de la rejilla
-    // entre proyectos (separaciones): se mantiene el proyecto activo
+    // entre imágenes (separaciones): se mantiene el proyecto activo
   }
 
   if (canHover) {
@@ -254,6 +410,7 @@
       if (state !== 'active') return;
       const D = diameter();
       Object.assign(tgt, { w: D, h: D, r: D / 2 });
+      layers.forEach((l) => { l.tgt = circleBox(l.d, D); });
       start();
     });
   }
@@ -263,7 +420,7 @@
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     if (state === 'active' && active) {
       e.preventDefault();
-      open();
+      open(); // vale hacer clic en cualquier parte de la galería (también entre imágenes)
     }
   });
 

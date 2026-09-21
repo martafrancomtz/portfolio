@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>document.documentElement.classList.add('js');</script>
 <title>Marta Franco — Front-end, UX research, Interface design</title>
 <meta name="description" content="Marta Franco. Front-end, UX research, Interface design. Junior looking for my first full-time role.">
 <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
@@ -12,6 +13,8 @@
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/hero.css">
 <link rel="stylesheet" href="assets/css/3work.css">
+<link rel="stylesheet" href="assets/css/whatido.css">
+<link rel="stylesheet" href="assets/css/allmywork.css">
 <link rel="stylesheet" href="assets/css/rueda.css">
 </head>
 <body>
@@ -198,106 +201,141 @@
   <section class="what-i-do" id="what-i-do">
     <h2 class="section-title">What I do</h2>
 
-    <ul class="what-i-do__list">
-      <li class="what-i-do__item is-active" data-i="0" tabindex="0">
-        <h3>(01) Interface design</h3>
-        <p>Layout, type, colour and the states in between. Figma, components and systems, responsive from the first frame.</p>
-      </li>
-      <li class="what-i-do__item" data-i="1" tabindex="0">
-        <h3>(02) UX &amp; Research</h3>
-        <p>Interviews, surveys, benchmarking, usability testing. Working out what the thing is for before deciding what it looks like — and testing whether I got it right.</p>
-      </li>
-      <li class="what-i-do__item" data-i="2" tabindex="0">
-        <h3>(03) Front-end</h3>
-        <p>I build what I design in HTML and CSS, and I'm learning JavaScript properly. Designing something you'll have to build yourself changes how you design it.</p>
-      </li>
-      <li class="what-i-do__item" data-i="3" tabindex="0">
-        <h3>(04) Type &amp; systems</h3>
-        <p>Type scales, spacing, colour and components — the rules that keep fifty screens looking like one product. Typography is the part I care most about, and two years of print is where I learned to.</p>
-      </li>
-    </ul>
+    <div class="whatido-pin" id="whatidoPin">
+      <div class="whatido-pin__stage">
+        <div class="whatido-pin__grid">
+
+          <ul class="what-i-do__list" id="whatidoList">
+            <li class="what-i-do__item is-active" data-i="0" tabindex="0">
+              <h3>(01) Interface design</h3>
+            </li>
+            <li class="what-i-do__item" data-i="1" tabindex="0">
+              <h3>(02) UX &amp; Research</h3>
+            </li>
+            <li class="what-i-do__item" data-i="2" tabindex="0">
+              <h3>(03) Front-end</h3>
+            </li>
+            <li class="what-i-do__item" data-i="3" tabindex="0">
+              <h3>(04) Type &amp; systems</h3>
+            </li>
+          </ul>
+
+          <p class="what-i-do__desc" id="whatidoDesc">Layout, type, colour and the states in between. Figma, components and systems, responsive from the first frame.</p>
+
+        </div>
+      </div>
+
+      <div class="whatido-pin__marks" aria-hidden="true">
+        <span class="whatido-pin__mark-in"></span>
+        <span class="whatido-pin__mark-step"></span>
+        <span class="whatido-pin__mark-step"></span>
+        <span class="whatido-pin__mark-step"></span>
+        <span class="whatido-pin__mark-step"></span>
+        <span class="whatido-pin__mark-out"></span>
+      </div>
+    </div>
   </section>
 
   <section class="all-work" id="all-work">
     <h2 class="section-title">All my work</h2>
 
-    <div class="all-work__table">
+    <div class="work-groups">
 
-      <div class="all-work__group">
-        <h3 class="all-work__cat">Web design</h3>
-        <div class="all-work__rows">
-          <a class="all-work__row" href="work/antonio-franco/index.html">
-            <span class="all-work__role">Web design, Art direction</span>
-            <span class="all-work__name">Antonio Franco portfolio<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="work/consentio/index.html">
-            <span class="all-work__role">UX Research, UI Design</span>
-            <span class="all-work__name">ConSentío<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="work/portfolio-v1-v2/index.html">
-            <span class="all-work__role">Web design, Front-end</span>
-            <span class="all-work__name">Portfolio v1 → v2<i aria-hidden="true">↗</i></span>
-          </a>
-        </div>
-      </div>
+      <section class="work-group" aria-labelledby="cat-web">
+        <h3 class="work-group__label" id="cat-web">Web design</h3>
+        <ul class="work-group__list" role="list">
+          <li>
+            <a class="work-item" href="work/antonio-franco/index.html" aria-label="Antonio Franco portfolio — Web design, Art direction">
+              <span class="work-item__title" aria-hidden="true">Antonio Franco portfolio</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Web design, Art direction</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/consentio/index.html" aria-label="ConSentío — UX Research, UI Design">
+              <span class="work-item__title" aria-hidden="true">ConSentío</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">UX Research, UI Design</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/portfolio-v1-v2/index.html" aria-label="Portfolio v1 to v2 — Web design, Front-end">
+              <span class="work-item__title" aria-hidden="true">Portfolio v1 → v2</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Web design, Front-end</span></span>
+            </a>
+          </li>
+        </ul>
+      </section>
 
-      <div class="all-work__group">
-        <h3 class="all-work__cat">3D</h3>
-        <div class="all-work__rows">
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">3D, Packaging</span>
-            <span class="all-work__name">3D bottle<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">3D, Animation</span>
-            <span class="all-work__name">Off-White<i aria-hidden="true">↗</i></span>
-          </a>
-        </div>
-      </div>
+      <section class="work-group" aria-labelledby="cat-3d">
+        <h3 class="work-group__label" id="cat-3d">3D</h3>
+        <ul class="work-group__list" role="list">
+          <li>
+            <a class="work-item" href="work/3d-bottle/index.html" aria-label="3D bottle — 3D, Packaging">
+              <span class="work-item__title" aria-hidden="true">3D bottle</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">3D, Packaging</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/off-white/index.html" aria-label="Off-White — 3D, Animation">
+              <span class="work-item__title" aria-hidden="true">Off-White</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">3D, Animation</span></span>
+            </a>
+          </li>
+        </ul>
+      </section>
 
-      <div class="all-work__group">
-        <h3 class="all-work__cat">Typography</h3>
-        <div class="all-work__rows">
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">Typography</span>
-            <span class="all-work__name">Kilter Typography<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">Typography, Investigation</span>
-            <span class="all-work__name">Typographic Analysis<i aria-hidden="true">↗</i></span>
-          </a>
-        </div>
-      </div>
+      <section class="work-group" aria-labelledby="cat-typography">
+        <h3 class="work-group__label" id="cat-typography">Typography</h3>
+        <ul class="work-group__list" role="list">
+          <li>
+            <a class="work-item" href="work/kilter-typography/index.html" aria-label="Kilter Typography — Typography">
+              <span class="work-item__title" aria-hidden="true">Kilter Typography</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Typography</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/typographic-analysis/index.html" aria-label="Typographic Analysis — Typography, Investigation">
+              <span class="work-item__title" aria-hidden="true">Typographic Analysis</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Typography, Investigation</span></span>
+            </a>
+          </li>
+        </ul>
+      </section>
 
-      <div class="all-work__group">
-        <h3 class="all-work__cat">Graphic design</h3>
-        <div class="all-work__rows">
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">Branding, Graphic design</span>
-            <span class="all-work__name">Mondo Restaurant<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">Web design, Graphic design</span>
-            <span class="all-work__name">Merkamueble Redesign<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">Illustration, Graphic design</span>
-            <span class="all-work__name">Students Life Cards<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">Graphic design</span>
-            <span class="all-work__name">Ecological Posters<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">Illustration, Graphic design</span>
-            <span class="all-work__name">Bullet Train Illustrations<i aria-hidden="true">↗</i></span>
-          </a>
-          <a class="all-work__row" href="#">
-            <span class="all-work__role">Branding, Graphic design</span>
-            <span class="all-work__name">Expo Sevilla '24<i aria-hidden="true">↗</i></span>
-          </a>
-        </div>
-      </div>
+      <section class="work-group" aria-labelledby="cat-graphic">
+        <h3 class="work-group__label" id="cat-graphic">Graphic design</h3>
+        <ul class="work-group__list" role="list">
+          <li>
+            <a class="work-item" href="work/mondo-restaurant/index.html" aria-label="Mondo Restaurant — Branding, Graphic design">
+              <span class="work-item__title" aria-hidden="true">Mondo Restaurant</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Branding, Graphic design</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/merkamueble-redesign/index.html" aria-label="Merkamueble Redesign — Web design, Graphic design">
+              <span class="work-item__title" aria-hidden="true">Merkamueble Redesign</span>
+          <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Illustration, Graphic design</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/ecological-posters/index.html" aria-label="Ecological Posters — Graphic design">
+              <span class="work-item__title" aria-hidden="true">Ecological Posters</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Graphic design</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/bullet-train-illustrations/index.html" aria-label="Bullet Train Illustrations — Illustration, Graphic design">
+              <span class="work-item__title" aria-hidden="true">Bullet Train Illustrations</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Illustration, Graphic design</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/expo-sevilla-24/index.html" aria-label="Expo Sevilla '24 — Branding, Graphic design">
+              <span class="work-item__title" aria-hidden="true">Expo Sevilla '24</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Branding, Graphic design</span></span>
+            </a>
+          </li>
+        </ul>
+      </section>
 
     </div>
   </section>
@@ -336,7 +374,16 @@
 <script src="assets/js/clock.js"></script>
 <script src="assets/js/hero.js"></script>
 <script src="assets/js/3work.js"></script>
+<script src="assets/js/whatido.js"></script>
+<script src="assets/js/allmywork.js"></script>
 <script src="assets/js/rueda.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
+     <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Web design, Graphic design</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/students-life-cards/index.html" aria-label="Students Life Cards — Illustration, Graphic design">
+              <span class="work-item__title" aria-hidden="true">Students Life Cards</span>
+             

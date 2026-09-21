@@ -277,16 +277,11 @@ main{ background:var(--bg); }
 
 
 /* ---------- WHAT I DO ---------- */
+/* El scroll fijado (pin) + interacciones viven en assets/css/whatido.css y
+   assets/js/whatido.js. Aquí solo la tipografía de título/párrafo, igual
+   que antes (blur+opacity de is-active ya eran así). */
 .what-i-do{ padding-top:140px; padding-bottom:60px }
-.what-i-do__list{ margin-top:100px; display:flex; flex-direction:column }
-.what-i-do__item{
-  display:grid;
-  grid-template-columns:minmax(280px,44%) 1fr;
-  gap:40px;
-  align-items:start;
-  padding:22px 0;
-  cursor:pointer;
-}
+.what-i-do__item{ padding:22px 0; cursor:pointer }
 .what-i-do__item h3{
   font-size:var(--fs-title);
   font-weight:400;
@@ -295,56 +290,21 @@ main{ background:var(--bg); }
   transition:filter .45s var(--ease),opacity .45s var(--ease);
   opacity:.7;
 }
-.what-i-do__item p{
+.what-i-do__item.is-active h3{ filter:blur(0); opacity:1 }
+.what-i-do__desc{
   font-size:var(--fs-subtitle);
   font-weight:500;
   max-width:563px;
   line-height:1.5;
-  opacity:0;
-  transform:translateY(6px);
-  transition:opacity .4s var(--ease),transform .4s var(--ease);
+  color:var(--text);
 }
-.what-i-do__item.is-active h3{ filter:blur(0); opacity:1 }
-.what-i-do__item.is-active p{ opacity:1; transform:none }
 
 /* ---------- ALL MY WORK ---------- */
+/* El diseño/estructura de la lista (work-group/work-item) y sus animaciones
+   vienen, portados a
+   assets/css/allmywork.css + assets/js/allmywork.js. Aquí solo el
+   espaciado de la sección en sí. */
 .all-work{ padding-top:120px; padding-bottom:120px }
-.all-work__table{ margin-top:88px }
-.all-work__group{
-  display:grid;
-  grid-template-columns:minmax(120px,34%) 1fr;
-  border-top:2px solid var(--black);
-}
-.all-work__cat{
-  font-size:var(--fs-listitem);
-  font-weight:400;
-  padding:14px 24px 0 0;
-}
-.all-work__row{
-  display:grid;
-  grid-template-columns:minmax(0,60%) 1fr;
-  align-items:baseline;
-  gap:12px;
-  padding:14px 0;
-  border-bottom:2px solid var(--black);
-  font-size:var(--fs-listitem);
-}
-.all-work__group .all-work__row:last-child{ border-bottom:none }
-.all-work__group:not(:last-of-type) .all-work__row:last-child{ border-bottom:2px solid var(--black) }
-.all-work__role,.all-work__name{
-  display:inline-block;
-  white-space:nowrap;
-  transition:transform .55s cubic-bezier(.16,.84,.28,1);
-}
-.all-work__name{ font-weight:600; justify-self:start }
-.all-work__name i{
-  display:inline-block; margin-left:8px; font-style:normal; font-weight:600;
-  opacity:0; transform:translateX(6px);
-  transition:opacity .3s ease,transform .55s cubic-bezier(.16,.84,.28,1);
-}
-.all-work__row:hover .all-work__role,
-.all-work__row:hover .all-work__name{ transform:translateX(-14px) }
-.all-work__row:hover .all-work__name i{ opacity:1; transform:translateX(0) }
 
 /* ---------- CTA / LET'S TALK ---------- */
 .cta{
@@ -418,11 +378,6 @@ main{ background:var(--bg); }
    ========================================================== */
 @media (max-width:900px){
   .statement__quote{ text-align:left; margin-left:0 }
-  .what-i-do__item{ grid-template-columns:1fr; gap:12px }
-  .all-work__group{ grid-template-columns:1fr }
-  .all-work__cat{ padding:18px 0 6px; opacity:.55; font-size:var(--fs-small); text-transform:uppercase; letter-spacing:.06em }
-  .all-work__row{ grid-template-columns:1fr; padding:10px 0 }
-  .all-work__role{ display:block; opacity:.6; font-size:var(--fs-small); margin-bottom:4px }
 }
 
 @media (max-width:640px){
