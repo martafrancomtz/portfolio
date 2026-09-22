@@ -5,10 +5,11 @@
   --bg:#f4f4f4;
   --text:#333;
   --text-secondary:#a29f9f;
-  --black:#000;
+  --black:#000;           /* solo la rueda (va por su cuenta); el "negro" de texto es --text */
   --white:#fff;
 
   /* acentos del frame HERO (Figma "Desktop - 102") */
+  --hero-bg:#0b0714;      /* fondo de reserva mientras carga el degradado */
   --hero-mint:#88fac5;
   --hero-yellow:#ffff94;
   --hero-cyan-1:#30edd3;
@@ -16,21 +17,58 @@
 
   /* tipografía: Rethink Sans, tal y como está definida en Figma */
   --font:'Rethink Sans','Helvetica Neue',Arial,sans-serif;
+  --fw-regular:400;
+  --fw-medium:500;
+  --fw-semibold:600;
+  --fw-bold:700;
 
   /* escala tipográfica (tokens con nombre en Figma + tamaños repetidos) */
   --fs-title:48px;        /* "titles": Regular */
-  --fs-quote:40px;        /* cita del statement */
+  --fs-title-m:34px;      /* títulos de sección en móvil */
+  --fs-quote:40px;        /* cita del statement, subtítulo del hero */
+  --fs-quote-m:26px;      /* cita del statement en móvil */
   --fs-listitem:26px;     /* nombres/roles en "All my work" */
   --fs-button:24px;       /* "button": Medium */
   --fs-minititle:24px;    /* "mini title": Bold, (01)/(02)/(03) */
+  --fs-body:24px;         /* textos del CTA y del statement */
   --fs-subtitle:20px;     /* "subtitle": Medium */
   --fs-small:16px;
 
-  --container:1364px;
-  --gutter:38px;
+  /* interlineado: "normal" de Figma en Rethink Sans (24→31, 20→26, 16→21) */
+  --lh-tight:1;
+  --lh-normal:1.3;
 
+  /* espaciado */
+  --space-3xs:10px;       /* texto ↔ flecha de los botones */
+  --space-s:38px;         /* ritmo vertical del CTA */
+  --space-m:70px;         /* bloques del statement (Figma) */
+  /* entre secciones: todas iguales, tomando como referencia la de
+     All my work → CTA (270px a 1440), proporcional por debajo */
+  --space-section:clamp(120px, calc(100vw * 270 / 1440), 270px);
+
+  /* grid (Figma, frame de 1440): 6 columnas, margen 38, gutter 20;
+     el bloque estrecho de contenido va a 146 de cada borde.
+     Márgenes proporcionales al ancho (como --u del hero), con mínimo */
+  --grid-cols:6;
+  --grid-gutter:20px;
+  --grid-margin:max(20px, calc(100vw * 38 / 1440));
+  --content-margin:max(var(--grid-margin), calc(100vw * 146 / 1440));
+
+  /* botones */
+  --btn-fs:var(--fs-button);
+  --btn-fw:var(--fw-medium);
+  --btn-gap:var(--space-3xs);
+  --btn-icon:18px;
+
+  /* motion */
   --ease:cubic-bezier(.65,0,.35,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-snap:cubic-bezier(.12,.9,.2,1);
+  --blur-soft:8px;
+  --blur-title:12px;
 }
+@media (max-width:1023px){ :root{ --grid-cols:4 } }
+@media (max-width:699px){ :root{ --grid-cols:2; --grid-gutter:16px } }
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -39,7 +77,7 @@ body{
   background:var(--bg);
   color:var(--text);
   font-family:var(--font);
-  font-weight:400;
+  font-weight:var(--fw-regular);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
@@ -50,16 +88,16 @@ h1,h2,h3,blockquote,p{margin:0}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 
 @media (pointer:fine){ body,a,button{cursor:none} }
-::selection{background:var(--black);color:var(--bg)}
+::selection{background:var(--text);color:var(--bg)}
 
 /* ==========================================================
    2. TIPOGRAFÍA
    ========================================================== */
 .section-title{
   font-size:var(--fs-title);
-  font-weight:400;
-  line-height:1;
-  color:var(--black);
+  font-weight:var(--fw-regular);
+  line-height:var(--lh-tight);
+  color:var(--text);
 }
 
 .u-underline{
@@ -91,13 +129,13 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   position:relative;
   display:inline-flex;
   align-items:center;
-  gap:10px;
-  font-size:var(--fs-button);
-  font-weight:500;
-  color:var(--black);
+  gap:var(--btn-gap);
+  font-size:var(--btn-fs);
+  font-weight:var(--fw-medium);
+  color:var(--text);
 }
 .link-reveal span{ display:inline-block; transition:transform .5s var(--ease) }
-.link-reveal img{ width:18px; height:18px; transition:transform .5s var(--ease),opacity .35s ease }
+.link-reveal img{ width:var(--btn-icon); height:var(--btn-icon); transition:transform .5s var(--ease),opacity .35s ease }
 .link-reveal--diagonal img{ opacity:.85 }
 .link-reveal:hover span{ transform:translateX(-6px) }
 .link-reveal--diagonal:hover img{ transform:translate(4px,-4px);opacity:1 }
@@ -116,15 +154,18 @@ main{ background:var(--bg); }
 .cta,
 .selected-work .section-title{
   position:relative;
-  max-width:var(--container);
-  margin:0 auto;
-  padding-left:var(--gutter);
-  padding-right:var(--gutter);
+  padding-left:var(--grid-margin);
+  padding-right:var(--grid-margin);
 }
 /* .selected-work queda fuera: como el hero, necesita todo el ancho de la
    ventana para que --u (assets/css/selected-work.css) escale igual que en
-   Figma, no el ancho ya recortado por --container/--gutter. Su <h2> sí
-   entra, para quedar alineado con el resto de títulos de sección. */
+   Figma. Su <h2> sí entra, para quedar alineado con el resto de títulos.
+
+   Separación entre secciones: siempre --space-section, puesta como
+   padding-top de la sección siguiente (ninguna lleva padding-bottom).
+   En las que se quedan fijas con el scroll (Selected work, rueda,
+   What I do) se cuenta desde el final de su escenario fijo, que ya
+   ocupa una pantalla entera. */
 
 /* ==========================================================
    4. COMPONENTES: nav, footer, project-card, status-bar
@@ -139,7 +180,7 @@ main{ background:var(--bg); }
   min-height:560px;
   max-height:1000px;
   overflow:hidden;
-  background:#0b0714;
+  background:var(--hero-bg);
   color:var(--white);
   display:flex;
   flex-direction:column;
@@ -168,13 +209,13 @@ main{ background:var(--bg); }
 .hero__nav{ display:flex; gap:clamp(20px,calc(var(--u) * 32),32px) }
 .hero__nav a{
   font-size:var(--fs-minititle);
-  font-weight:500;
+  font-weight:var(--fw-medium);
   background:linear-gradient(90deg,var(--hero-cyan-1),var(--hero-cyan-2));
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
 }
-.hero__nav a.is-current{ font-weight:700 }
+.hero__nav a.is-current{ font-weight:var(--fw-bold) }
 
 .hero__mid{
   flex:1;
@@ -195,28 +236,28 @@ main{ background:var(--bg); }
 }
 .hero__subtitle{
   font-size:clamp(20px,calc(var(--u) * 40),40px);
-  font-weight:500;
+  font-weight:var(--fw-medium);
   color:var(--hero-mint);
 }
 .hero__badge{
   font-size:var(--fs-small);
-  font-weight:500;
+  font-weight:var(--fw-medium);
   color:var(--hero-yellow);
 }
 
 .hero__clock{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:var(--btn-gap);
   font-size:var(--fs-small);
-  font-weight:500;
+  font-weight:var(--fw-medium);
   color:var(--white);
 }
 .hero__dot{ opacity:.7 }
 .hero__modes{ display:flex; gap:16px }
 .tm{
   font-size:var(--fs-small);
-  font-weight:500;
+  font-weight:var(--fw-medium);
   color:var(--white);
   opacity:.6;
   position:relative;
@@ -227,10 +268,10 @@ main{ background:var(--bg); }
   background:currentColor; transform:scaleX(0); transition:transform .3s var(--ease);
 }
 .tm:hover{ opacity:.9 }
-.tm.is-on{ opacity:1; font-weight:700 }
+.tm.is-on{ opacity:1; font-weight:var(--fw-bold) }
 .tm.is-on::after{ transform:scaleX(1) }
 
-.hero__scroll{ display:flex; align-items:center; gap:10px; color:var(--hero-yellow); font-size:var(--fs-small); font-weight:500 }
+.hero__scroll{ display:flex; align-items:center; gap:var(--space-3xs); color:var(--hero-yellow); font-size:var(--fs-small); font-weight:var(--fw-medium) }
 .hero__scroll-arrow{ width:15px; height:15px; transform:rotate(90deg) }
 
 /* ---------- SELECTED WORK ---------- */
@@ -239,25 +280,24 @@ main{ background:var(--bg); }
 
 /* ---------- STATEMENT + RUEDA ---------- */
 .statement{
-  padding-top:180px;
-  padding-bottom:60px;
+  padding-top:var(--space-section);
   display:flex;
   flex-direction:column;
-  row-gap:28px;
+  row-gap:var(--space-m);
 }
 .statement__quote{
   font-size:var(--fs-quote);
-  font-weight:400;
+  font-weight:var(--fw-regular);
   text-align:right;
   max-width:900px;
   margin-left:auto;
 }
 .statement__quote p + p{ margin-top:2px }
 .statement__now{
-  font-size:var(--fs-button);
-  font-weight:600;
+  font-size:var(--fs-body);
+  font-weight:var(--fw-semibold);
   max-width:650px;
-  line-height:1.45;
+  line-height:var(--lh-normal);
 }
 .statement > .link-reveal{ align-self:start }
 
@@ -270,11 +310,11 @@ main{ background:var(--bg); }
 /* El scroll fijado (pin) + interacciones viven en assets/css/whatido.css y
    assets/js/whatido.js. Aquí solo la tipografía de título/párrafo, igual
    que antes (blur+opacity de is-active ya eran así). */
-.what-i-do{ padding-top:140px; padding-bottom:60px }
+.what-i-do{ padding-top:var(--space-section) }
 .what-i-do__item{ padding:22px 0; cursor:pointer }
 .what-i-do__item h3{
   font-size:var(--fs-title);
-  font-weight:400;
+  font-weight:var(--fw-regular);
   filter:blur(8.65px);
   text-shadow:0 0 16px rgba(0,0,0,.16);
   transition:filter .45s var(--ease),opacity .45s var(--ease);
@@ -283,9 +323,9 @@ main{ background:var(--bg); }
 .what-i-do__item.is-active h3{ filter:blur(0); opacity:1 }
 .what-i-do__desc{
   font-size:var(--fs-subtitle);
-  font-weight:500;
+  font-weight:var(--fw-medium);
   max-width:563px;
-  line-height:1.5;
+  line-height:var(--lh-normal);
   color:var(--text);
 }
 
@@ -294,40 +334,39 @@ main{ background:var(--bg); }
    vienen, portados a
    assets/css/all-my-work.css + assets/js/all-my-work.js. Aquí solo el
    espaciado de la sección en sí. */
-.all-work{ padding-top:120px; padding-bottom:120px }
+.all-work{ padding-top:var(--space-section) }
 
 /* ---------- CTA / LET'S TALK ---------- */
 .cta{
-  padding:150px var(--gutter) 120px;
+  padding-top:var(--space-section);
   text-align:center;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:26px;
+  gap:var(--space-s);
 }
-.cta__title{ font-size:var(--fs-minititle); font-weight:700 }
-.cta__lead{ font-size:var(--fs-minititle); font-weight:500; max-width:713px; line-height:1.4 }
+.cta__title{ font-size:var(--fs-minititle); font-weight:var(--fw-bold) }
+.cta__lead{ font-size:var(--fs-body); font-weight:var(--fw-medium); max-width:713px; line-height:var(--lh-normal) }
 .cta__lead u{ text-decoration-thickness:12%; text-underline-offset:2px }
-.cta__text{ font-size:var(--fs-minititle); font-weight:500; max-width:589px; line-height:1.4; color:var(--text) }
-.cta__email{ font-size:var(--fs-minititle); font-weight:500 }
+.cta__text{ font-size:var(--fs-body); font-weight:var(--fw-medium); max-width:589px; line-height:var(--lh-normal); color:var(--text) }
+.cta__email{ font-size:var(--btn-fs); font-weight:var(--btn-fw) }
 
 /* ---------- FOOTER ---------- */
 .site-footer{
-  max-width:var(--container);
-  margin:0 auto;
-  padding:64px var(--gutter) 80px;
+  padding:var(--space-section) var(--grid-margin) 80px;
   display:flex;
   flex-wrap:wrap;
   justify-content:space-between;
   gap:40px;
 }
-.site-footer__contact p{ font-size:var(--fs-small); font-weight:500; margin:0 0 6px }
-.site-footer__contact p span{ opacity:.7; margin-right:10px }
-.site-footer__copy{ margin-top:28px !important; opacity:.7 }
+/* contacto a 20 (Figma "subtitle"); el copyright y el CV siguen a 16 */
+.site-footer__contact p{ font-size:var(--fs-subtitle); font-weight:var(--fw-medium); line-height:var(--lh-normal); margin:0 0 6px }
+.site-footer__contact p span{ opacity:.7; margin-right:var(--space-3xs) }
+.site-footer__contact .site-footer__copy{ font-size:var(--fs-small); margin-top:28px; opacity:.7 }
 .site-footer__image{ width:310px; max-width:40vw; aspect-ratio:310/241; object-fit:cover; border-radius:4px }
 .site-footer__links{ display:flex; flex-direction:column; align-items:flex-end; gap:14px }
-.site-footer__links .link-reveal{ font-size:var(--fs-minititle); font-weight:500 }
-.site-footer__cv{ font-size:var(--fs-small); font-weight:500; margin-top:6px }
+.site-footer__links .link-reveal{ font-size:var(--btn-fs); font-weight:var(--btn-fw) }
+.site-footer__cv{ font-size:var(--fs-small); font-weight:var(--fw-medium); margin-top:6px }
 
 /* ==========================================================
    5. PÁGINAS: home, work, case study, about
@@ -374,13 +413,12 @@ main{ background:var(--bg); }
   .hero{ min-height:680px }
   .hero__bar{ flex-wrap:wrap; row-gap:14px }
   .hero__nav{ gap:12px; flex-wrap:wrap }
-  .hero__nav a{ font-size:15px }
+  .hero__nav a{ font-size:var(--fs-small) }
   .hero__bar--bottom{ flex-direction:column; align-items:flex-start; gap:18px }
   .hero__clock{ flex-wrap:wrap; row-gap:8px }
-  .hero__modes{ gap:10px }
-  .section-title{ font-size:34px }
-  .statement__quote{ font-size:26px }
-  .cta{ padding:100px 20px 90px }
+  .hero__modes{ gap:var(--space-3xs) }
+  .section-title{ font-size:var(--fs-title-m) }
+  .statement__quote{ font-size:var(--fs-quote-m) }
   .site-footer{ flex-direction:column; align-items:flex-start }
   .site-footer__links{ align-items:flex-start }
   .site-footer__image{ order:3; max-width:100% }

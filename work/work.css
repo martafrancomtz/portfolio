@@ -14,23 +14,19 @@
 
 /* ---------- Cabecera ---------- */
 .work-header{
-  max-width:var(--container);
-  margin:0 auto;
-  padding:32px var(--gutter) 0;
+  padding:32px var(--grid-margin) 0;
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
 .work-header__logo{ display:block; line-height:0 }
 .work-header__logo img{ width:40px; height:auto; display:block }
-.work-header__nav{ display:flex; gap:32px; font-size:var(--fs-minititle); font-weight:500 }
-.work-header__nav a.is-current{ font-weight:700 }
+.work-header__nav{ display:flex; gap:32px; font-size:var(--fs-minititle); font-weight:var(--fw-medium) }
+.work-header__nav a.is-current{ font-weight:var(--fw-bold) }
 
 /* ---------- Rejilla ---------- */
 .work{
-  max-width:var(--container);
-  margin:0 auto;
-  padding:64px var(--gutter) 35vh;
+  padding:64px var(--grid-margin) 35vh;
 }
 
 .work__grid{
@@ -130,7 +126,7 @@ html.orb-open{ overflow:hidden }
 /* ---------- Móvil ---------- */
 @media (max-width:700px){
   .work-header{ padding-top:24px }
-  .work-header__nav{ gap:16px; font-size:15px }
+  .work-header__nav{ gap:16px; font-size:var(--fs-small) }
   .work__grid{ grid-template-columns:minmax(0, 1fr) }
   .project{ aspect-ratio:4 / 5 }
   .work__grid > li:nth-child(even) .project__info{ align-items:flex-start; text-align:left }

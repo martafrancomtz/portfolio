@@ -16,8 +16,6 @@
   container-type: inline-size;      /* --u mide el ancho real, sin la barra de scroll */
   --u: calc(100vw / 1440);          /* alternativa si el navegador no entiende cqw */
   --ease-io: cubic-bezier(.76, 0, .24, 1);     /* abrir/cerrar */
-  --ease-out: cubic-bezier(.22, 1, .36, 1);
-  --blur-soft: 8px;
 }
 @supports (width: 1cqw){
   .selected-work__in{ --u: calc(100cqw / 1440); }
@@ -39,7 +37,7 @@
   --fs: max(calc(24 * var(--u)), 15px);
   --lh: 1.2917;                           /* 31/24 */
 
-  padding-top: calc(189 * var(--u));      /* "Selected work" en y=189 */
+  padding-top: var(--space-section);      /* misma separación que el resto de secciones (styles.css) */
 }
 
 /* la pista da el recorrido de scroll; el escenario se queda fijo */
@@ -263,7 +261,6 @@
     --pin-top: 76px;
     --panel-top: 20px;
     --fs: 15px;
-    padding-top: 96px;
   }
 
   .sw__head{ flex-direction: column; align-items: stretch; gap: 2px; }

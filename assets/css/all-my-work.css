@@ -11,11 +11,11 @@
   --aw-group-gap: clamp(20px, 2.431vw, 48px);
   --aw-tag-gap: 26px;
 
-  --aw-ease-out: cubic-bezier(.22,1,.36,1);
-  --aw-ease-snap: cubic-bezier(.12,.9,.2,1);
-  --aw-blur-soft: 8px;
+  --aw-ease-out: var(--ease-out);
+  --aw-ease-snap: var(--ease-snap);
+  --aw-blur-soft: var(--blur-soft);
   --aw-time-soft: .9s;
-  --aw-blur-title: 12px;
+  --aw-blur-title: var(--blur-title);
   --aw-slide: 1em;
 }
 
@@ -31,7 +31,7 @@
 .work-group__label{
   margin:0;
   font-size:var(--aw-fs-small);
-  font-weight:400;
+  font-weight:var(--fw-regular);
   line-height:var(--aw-row);
   letter-spacing:.015em;
   color:var(--text);
@@ -51,7 +51,7 @@
 .work-item__title{
   flex:0 1 auto;
   font-size:var(--aw-fs-title);
-  font-weight:600;
+  font-weight:var(--fw-semibold);
   line-height:var(--aw-row);
   white-space:nowrap;
   color:var(--text);
@@ -61,7 +61,7 @@
   flex:none;
   margin-left:auto;
   font-size:var(--aw-fs-small);
-  font-weight:400;
+  font-weight:var(--fw-regular);
   line-height:1.4;
   letter-spacing:.02em;
   white-space:nowrap;
