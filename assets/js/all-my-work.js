@@ -6,15 +6,10 @@
 
   /* ================== AJUSTES ================== */
   const CONFIG = {
-    // Efecto al pasar el ratón (una sola vez, al entrar en la fila):
-    // 'aino'       = letras al azar que se van colocando de izquierda a derecha
-    // 'locomotive' = las letras de cada palabra se barajan un instante y vuelven
-    style: 'aino',
+    // Efecto al pasar el ratón (una sola vez, al entrar en la fila): el
+    // estilo (aino/locomotive) y sus tiempos se eligen en rewrite.js
     ainoTitle: 600,    // ms (aino) para el título
     ainoTags: 500,     // ms (aino) para el subtítulo
-    ainoTick: 30,      // ms entre cambios de letra (aino)
-    shuffleSteps: 3,   // veces que se barajan las letras (locomotive)
-    shuffleTick: 55,   // ms entre barajadas (locomotive)
     stagger: 90,       // ms entre un título y el siguiente al entrar
     groupPause: 140    // ms extra al pasar de un grupo al siguiente
   };
@@ -63,139 +58,8 @@
     targets.forEach((el) => io.observe(el));
   }
 
-  /* ---------- 2. Reescritura del texto ---------- */
-  // Se cambia el texto real (sin capas encima): no hay letras superpuestas
-  // y el texto nunca salta de línea.
-  const IS_LETTER = /[\p{L}\p{N}]/u;
-  const LOWER = 'abcdefghijklmnopqrstuvwxyz';
-  const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const DIGITS = '0123456789';
-
-  // Las letras al azar se eligen con un ancho parecido al de la original:
-  // así la palabra mide casi lo mismo y no choca con el subtítulo.
-  const canvas = document.createElement('canvas').getContext('2d');
-  const pools = new Map();
-
-  function poolFor(ch, el) {
-    const cs = getComputedStyle(el);
-    const font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-    const key = font + '|' + ch;
-    if (pools.has(key)) return pools.get(key);
-    canvas.font = font;
-    const set = /\d/.test(ch) ? DIGITS : ch !== ch.toLowerCase() ? UPPER : LOWER;
-    const w0 = canvas.measureText(ch).width;
-    const widths = [...set].map((c) => [c, canvas.measureText(c).width]);
-    let pool = [];
-    for (let tol = 0.08; pool.length < 3 && tol <= 0.6; tol += 0.08) {
-      pool = widths.filter(([c, w]) => c !== ch && Math.abs(w - w0) <= w0 * tol).map(([c]) => c);
-    }
-    if (!pool.length) pool = [...set].filter((c) => c !== ch);
-    pools.set(key, pool);
-    return pool;
-  }
-
-  function randomLike(ch, el) {
-    const pool = poolFor(ch, el);
-    return pool[(Math.random() * pool.length) | 0];
-  }
-
-  // los trozos de texto del elemento
-  function pieces(el) {
-    if (!el._pieces) {
-      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-      const list = [];
-      while (walker.nextNode()) list.push({ node: walker.currentNode, text: walker.currentNode.nodeValue });
-      el._pieces = list;
-    }
-    return el._pieces;
-  }
-
-  function reset(el) {
-    if (el._timer) cancelAnimationFrame(el._timer);
-    el._timer = 0;
-    (el._pieces || []).forEach((p) => { p.node.nodeValue = p.text; });
-  }
-
-  // Aino: letras al azar que se van resolviendo de izquierda a derecha
-  function decode(el, duration, onDone) {
-    const list = pieces(el);
-    const total = list.reduce((n, p) => n + [...p.text].filter((c) => IS_LETTER.test(c)).length, 0);
-    const t0 = performance.now();
-    let last = -Infinity;
-    const tick = (now) => {
-      const t = now - t0;
-      if (t >= duration) {
-        reset(el);
-        if (onDone) onDone();
-        return;
-      }
-      if (now - last >= CONFIG.ainoTick) {
-        last = now;
-        const solved = Math.floor((t / duration) * (total + 1));
-        let k = 0;
-        list.forEach((p) => {
-          let out = '';
-          for (const c of p.text) {
-            if (IS_LETTER.test(c)) {
-              out += k < solved ? c : randomLike(c, el);
-              k += 1;
-            } else {
-              out += c;
-            }
-          }
-          p.node.nodeValue = out;
-        });
-      }
-      el._timer = requestAnimationFrame(tick);
-    };
-    el._timer = requestAnimationFrame(tick);
-  }
-
-  // Locomotive: las letras de cada palabra se barajan unas veces y vuelven
-  function shuffleWord(word) {
-    const a = [...word];
-    if (a.length < 2) return word;
-    for (let tries = 0; tries < 6; tries++) {
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = (Math.random() * (i + 1)) | 0;
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      if (a.join('') !== word) break;
-    }
-    return a.join('');
-  }
-
-  function shuffle(el, onDone) {
-    const list = pieces(el);
-    const t0 = performance.now();
-    let step = 0;
-    const tick = (now) => {
-      const due = Math.floor((now - t0) / CONFIG.shuffleTick);
-      if (due >= CONFIG.shuffleSteps) {
-        reset(el);
-        if (onDone) onDone();
-        return;
-      }
-      if (due >= step) {
-        step = due + 1;
-        list.forEach((p) => {
-          p.node.nodeValue = p.text.replace(/[\p{L}\p{N}]+/gu, shuffleWord);
-        });
-      }
-      el._timer = requestAnimationFrame(tick);
-    };
-    el._timer = requestAnimationFrame(tick);
-  }
-
-  function rewrite(el, duration, onDone) {
-    reset(el);
-    if (reduceMotion.matches) {
-      if (onDone) onDone();
-      return;
-    }
-    if (CONFIG.style === 'locomotive') shuffle(el, onDone);
-    else decode(el, duration, onDone);
-  }
+  /* ---------- 2. Reescritura del texto: assets/js/rewrite.js ---------- */
+  const { run: rewrite, reset } = window.Rewrite;
 
   /* ---------- 3. Hover ---------- */
   const pointer = { x: -1, y: -1 };

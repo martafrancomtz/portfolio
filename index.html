@@ -21,26 +21,40 @@
 
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 
+<div class="hero__bar site-header hero-reveal" data-d="1" id="siteHeader">
+  <a href="index.html" class="hero__logo" aria-label="Marta Franco — inicio">
+    <img src="assets/img/logo.svg" alt="">
+  </a>
+  <nav class="hero__nav" aria-label="Principal">
+    <a href="index.html" class="btn btn--inline is-current" aria-current="page"><span class="btn__label">Home</span></a>
+    <a href="work/index.html" class="btn btn--inline"><span class="btn__label">Work</span></a>
+    <a href="about/index.html" class="btn btn--inline"><span class="btn__label">About</span></a>
+    <a href="contact/index.html" class="btn btn--inline"><span class="btn__label">Contact</span></a>
+  </nav>
+  <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navPanel" aria-label="Abrir menú">
+    <span class="nav-toggle__line"></span><span class="nav-toggle__line"></span>
+  </button>
+</div>
+
+<div class="nav-panel" id="navPanel">
+  <canvas class="nav-panel__bg" id="navPanelBg" aria-hidden="true"></canvas>
+  <nav class="nav-panel__nav" aria-label="Principal (móvil)">
+    <a href="index.html" class="btn btn--inline is-current" aria-current="page"><span class="btn__label">Home</span></a>
+    <a href="work/index.html" class="btn btn--inline"><span class="btn__label">Work</span></a>
+    <a href="about/index.html" class="btn btn--inline"><span class="btn__label">About</span></a>
+    <a href="contact/index.html" class="btn btn--inline"><span class="btn__label">Contact</span></a>
+  </nav>
+</div>
+
 <header class="hero" id="top">
   <img class="hero__bg" id="heroBgImg" src="assets/img/hero-grainient.png" alt="" aria-hidden="true">
   <canvas class="hero__bg-canvas" id="heroGL" aria-hidden="true"></canvas>
 
-  <div class="hero__bar hero-reveal" data-d="1">
-    <a href="index.html" class="hero__logo" aria-label="Marta Franco — inicio">
-      <img src="assets/img/logo.svg" alt="">
-    </a>
-    <nav class="hero__nav" aria-label="Principal">
-      <a href="index.html" class="u-underline is-current" aria-current="page">Home</a>
-      <a href="work/index.html" class="u-underline">Work</a>
-      <a href="about/index.html" class="u-underline">About</a>
-      <a href="contact/index.html" class="u-underline">Contact</a>
-    </nav>
-  </div>
-
   <div class="hero__mid">
-    <svg class="hero__title hero-reveal" data-d="2" id="heroTitle" viewBox="0 0 678.9 273.701" role="img" aria-label="Marta Franco" focusable="false">
+    <div class="hero__title-wrap hero-reveal" data-d="2" id="heroTitleWrap">
+    <svg class="hero__title" id="heroTitle" viewBox="0 0 678.9 273.701" role="img" aria-label="Marta Franco" focusable="false">
       <defs>
-        <image id="titleTex" href="assets/img/title-texture.png" x="-419" y="-313" width="1600" height="900"></image>
+        <rect id="titleTex" x="0" y="0" width="678.9" height="273.701" fill="#fff"></rect>
         <mask id="mk0"><path fill="#fff" d="M48.9999 123.746V2.39453H91.3175L116.366 104.921H121.5L146.704 2.39453H189.021V123.746H166.462V22.1531H162.573L137.991 123.746H98.6297L74.0482 22.1531H70.1587V123.746H48.9999Z"/></mask>
         <mask id="mk1"><path fill="#fff" d="M203.382 121.352V120.418L240.722 0H278.372L315.711 120.418V121.352H291.129L260.636 18.514H256.902L226.097 121.352H203.382ZM232.476 89.7693L237.766 71.4109H279.616L284.906 89.7693H232.476Z"/></mask>
         <mask id="mk2"><path fill="#fff" d="M329.407 123.746V2.39453H379.193C389.565 2.39453 397.966 3.89847 404.397 6.90634C410.827 9.81049 415.547 13.8037 418.554 18.886C421.562 23.8645 423.066 29.6728 423.066 36.3109C423.066 43.9861 420.992 50.6242 416.843 56.225C412.694 61.7222 406.575 65.6116 398.485 67.8935L426.333 122.813V123.746H400.974L375.303 71.3162H352.9V123.746H329.407ZM352.9 53.7357H376.237C383.601 53.7357 389.202 52.4911 393.039 50.0018C396.877 47.4088 398.796 43.1045 398.796 37.0887C398.796 31.073 396.825 26.8205 392.884 24.3312C389.046 21.842 383.497 20.5973 376.237 20.5973H352.9V53.7357Z"/></mask>
@@ -65,6 +79,8 @@
       <g class="ch" data-i="9"><use href="#titleTex" mask="url(#mk9)"></use></g>
       <g class="ch" data-i="10"><use href="#titleTex" mask="url(#mk10)"></use></g>
     </svg>
+    <canvas class="hero__title-gl" id="heroTitleGL" aria-hidden="true"></canvas>
+    </div>
     <p class="hero__subtitle hero-reveal" data-d="3">Front-end, UX research, Interface design</p>
     <p class="hero__badge hero-reveal" data-d="3">Available for full-time roles</p>
   </div>
@@ -82,10 +98,10 @@
         <button type="button" class="tm" data-mode="night">night</button>
       </div>
     </div>
-    <a href="#work" class="hero__scroll u-underline">
+    <p class="hero__scroll">
       <span>Scroll to explore</span>
       <img src="assets/img/arrow-down.svg" alt="" class="hero__scroll-arrow">
-    </a>
+    </p>
   </div>
 </header>
 
@@ -109,11 +125,11 @@
                   <div class="sw__body">
                     <div class="sw__text">
                       <p>I’m looking for my first full-time role in <u>web design and UI/UX</u>. Junior, curious, and much more interested in learning how you work than in showing you I already know.</p>
-                      <a class="sw__cta" href="work/antonio-franco/index.html">View case <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M0 8h14.8M8.6 1.8 14.8 8l-6.2 6.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+                      <a class="sw__cta btn" href="work/antonio-franco/index.html"><span class="btn__label">View case</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
                     </div>
-                    <div class="sw__media" style="--pos: 50% 50%">
-                      <img src="assets/img/work/antonio/sw-01.jpg" alt="Antonio Franco — Fashion portfolio" width="1006" height="1216" loading="lazy" decoding="async">
-                    </div>
+                    <a class="sw__media media-link" data-cursor="view" href="work/antonio-franco/index.html" style="--pos: 50% 50%" tabindex="-1">
+                      <img src="assets/img/1 61.png" alt="Antonio Franco — Fashion portfolio" width="1006" height="1216" loading="lazy" decoding="async">
+                    </a>
                   </div>
                 </div>
               </div>
@@ -129,11 +145,11 @@
                   <div class="sw__body">
                     <div class="sw__text">
                       <p>I’m looking for my first full-time role in <u>web design and UI/UX</u>. Junior, curious, and much more interested in learning how you work than in showing you I already know.</p>
-                      <a class="sw__cta" href="work/consentio/index.html">View case <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M0 8h14.8M8.6 1.8 14.8 8l-6.2 6.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+                      <a class="sw__cta btn" href="work/consentio/index.html"><span class="btn__label">View case</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
                     </div>
-                    <div class="sw__media" style="--pos: 50% 50%">
-                      <img src="assets/img/work/consentio/sw-02.jpg" alt="ConSentío" width="672" height="473" loading="lazy" decoding="async">
-                    </div>
+                    <a class="sw__media media-link" data-cursor="view" href="work/consentio/index.html" style="--pos: 50% 50%" tabindex="-1">
+                      <img src="assets/img/1 61.png" alt="ConSentío" width="672" height="473" loading="lazy" decoding="async">
+                    </a>
                   </div>
                 </div>
               </div>
@@ -149,11 +165,11 @@
                   <div class="sw__body">
                     <div class="sw__text">
                       <p>I’m looking for my first full-time role in <u>web design and UI/UX</u>. Junior, curious, and much more interested in learning how you work than in showing you I already know.</p>
-                      <a class="sw__cta" href="work/portfolio-v1-v2/index.html">View case <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M0 8h14.8M8.6 1.8 14.8 8l-6.2 6.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+                      <a class="sw__cta btn" href="work/portfolio-v1-v2/index.html"><span class="btn__label">View case</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
                     </div>
-                    <div class="sw__media" style="--pos: 50% 50%">
-                      <img src="assets/img/work/portfolio/sw-03.jpg" alt="Portfolio v1 to v2" width="1824" height="1216" loading="lazy" decoding="async">
-                    </div>
+                    <a class="sw__media media-link" data-cursor="view" href="work/portfolio-v1-v2/index.html" style="--pos: 50% 50%" tabindex="-1">
+                      <img src="assets/img/1 61.png" alt="Portfolio v1 to v2" width="1824" height="1216" loading="lazy" decoding="async">
+                    </a>
                   </div>
                 </div>
               </div>
@@ -161,10 +177,7 @@
 
           </ol>
 
-          <a class="selected-work__all selected-reveal" href="work/index.html">
-            All work
-            <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M1 17 17 1M4.5 1H17v12.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-          </a>
+          <a class="selected-work__all btn selected-reveal" href="work/index.html"><span class="btn__label">All work</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
         </div>
       </div>
     </div>
@@ -183,10 +196,7 @@
       Cooking a lot, and quietly planning a website about it.
     </p>
 
-    <a href="about/index.html" class="link-reveal link-reveal--lead">
-      <img src="assets/img/icon-arrow-small.svg" alt="">
-      <span>More about me</span>
-    </a>
+    <a href="about/index.html" class="btn"><span class="btn__label">More about me</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
 
     <div class="rueda-pin" id="ruedaPin">
       <div class="rueda-stage">
@@ -358,33 +368,31 @@
     <h2 class="cta__title">Let's talk.</h2>
     <p class="cta__lead">I'm looking for my first full-time role in <u>web design and UI/UX</u>. Junior, curious, and much more interested in learning how you work than in showing you I already know.</p>
     <p class="cta__text">If you're building something, or hiring someone who'll ask a lot of questions — I'd like to hear about it.</p>
-    <a href="mailto:martafrancomtz@gmail.com" class="cta__email u-underline">martafrancomtz@gmail.com →</a>
-    <a href="about/index.html" class="link-reveal link-reveal--lead">
-      <span>More about me</span>
-      <img src="assets/img/arrow-right.svg" alt="">
-    </a>
+    <a href="mailto:martafrancomtz@gmail.com" class="cta__email btn btn--external"><span class="btn__label">martafrancomtz@gmail.com</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="about/index.html" class="btn"><span class="btn__label">More about me</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
   </section>
 
 </main>
 
 <footer class="site-footer">
   <div class="site-footer__contact">
-    <p><span>(Call me maybe)</span> +34 639 867 532</p>
-    <p><span>(Or just write)</span> <a href="mailto:martafrancomtz@gmail.com" class="u-underline">martafrancomtz@gmail.com</a></p>
+    <p><span>(Call me maybe)</span> <a href="tel:+34639867532" class="btn btn--inline"><span class="btn__label">+34 639 867 532</span></a></p>
+    <p><span>(Or just write)</span> <a href="mailto:martafrancomtz@gmail.com" class="btn btn--inline"><span class="btn__label">martafrancomtz@gmail.com</span></a></p>
     <p class="site-footer__copy">Seville, Spain. © 2026 Marta Franco. Designed and built by me.</p>
   </div>
 
   <img class="site-footer__image" src="assets/img/footer-image.png" alt="">
 
   <div class="site-footer__links">
-    <a href="#" class="link-reveal link-reveal--diagonal"><span>LinkedIn</span><img src="assets/img/arrow-diagonal.svg" alt=""></a>
-    <a href="#" class="link-reveal link-reveal--diagonal"><span>Instagram</span><img src="assets/img/arrow-diagonal.svg" alt=""></a>
-    <a href="#" class="link-reveal link-reveal--diagonal"><span>GitHub</span><img src="assets/img/arrow-diagonal.svg" alt=""></a>
-    <a href="#" class="link-reveal link-reveal--diagonal"><span>Behance</span><img src="assets/img/arrow-diagonal.svg" alt=""></a>
-    <a href="#" class="site-footer__cv u-underline">Curriculum Vitae (PDF)</a>
+    <a href="#" class="btn btn--external"><span class="btn__label">LinkedIn</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">Instagram</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">GitHub</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">Behance</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="site-footer__cv btn btn--external"><span class="btn__label">Curriculum Vitae (PDF)</span></a>
   </div>
 </footer>
 
+<script src="assets/js/rewrite.js"></script>
 <script src="assets/js/clock.js"></script>
 <script src="assets/js/hero.js"></script>
 <script src="assets/js/selected-work.js"></script>

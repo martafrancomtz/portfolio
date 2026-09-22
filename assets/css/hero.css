@@ -18,13 +18,18 @@
 }
 .hero.is-no-webgl .hero__bg-canvas{ display:none }
 
-/* ---- título letra a letra: cada <g class="ch"> es la misma
-   textura recortada por su propia letra (ver index.html) ---- */
-.hero__title .ch{
-  will-change:filter,transform,opacity;
-  transform-box:fill-box;
-  transform-origin:center;
+/* ---- título "melting blur": el SVG da el tamaño y queda de reserva;
+   encima, un canvas WebGL (más grande que el título, para que quepa lo
+   que se derrite) pinta las letras en blanco y las derrite alrededor del
+   cursor. Al estar dentro de .hero__mid, también va en inversión. ---- */
+.hero__title-wrap{ position:relative; line-height:0 }
+.hero__title-gl{
+  position:absolute;
+  pointer-events:none;
+  display:none;          /* hero.js lo coloca y lo muestra si hay WebGL */
 }
+.hero.is-title-gl .hero__title-gl{ display:block }
+.hero.is-title-gl .hero__title{ visibility:hidden }
 
 /* ---- entrada escalonada al cargar (cascada, sin JS) ---- */
 .hero-reveal{
@@ -40,5 +45,4 @@
 
 @media (prefers-reduced-motion:reduce){
   .hero-reveal{ opacity:1; transform:none; animation:none }
-  .hero__title .ch{ will-change:auto }
 }

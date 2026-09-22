@@ -80,8 +80,8 @@
 
     if (!mobileMQ.matches) {
       const u = section.clientWidth / 1440;                        // 1px de Figma
-      // lo que se encoge: 118 arriba + 74 entre filas + 74 hasta la imagen + 474 de imagen + 38 abajo
-      const scalable = (118 + 74 * (N - 1) + 74 + 474 + 38) * u;
+      // lo que se encoge: 118 arriba + 96 entre filas + 96 hasta la imagen + 474 de imagen + 38 abajo
+      const scalable = (118 + 96 * (N - 1) + 96 + 474 + 38) * u;
       // el párrafo y "View case" tienen que caber al lado de la imagen
       const textH = Math.max(...items.map((it) => {
         const t = it.querySelector('.sw__text');
@@ -108,6 +108,16 @@
     }
   }
 
+  // alto del escenario con todos los proyectos cerrados: arriba + filas + "All work"
+  function closedHeight() {
+    const cs = getComputedStyle(stage);
+    const all = section.querySelector('.selected-work__all');
+    const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
+    const rows = heads.reduce((sum, h) => sum + h.offsetHeight, 0);
+    return (parseFloat(cs.paddingTop) || 0) + rows + gap * (N - 1) +
+      (all ? all.offsetHeight + (parseFloat(getComputedStyle(all).marginTop) || 0) : 0);
+  }
+
   /* ---------- 4. Fijar la lista y abrir según el scroll ---------- */
   function measure() {
     lastW = window.innerWidth;
@@ -116,6 +126,7 @@
     section.classList.toggle('is-static', !pinned);
 
     if (!pinned) {
+      section.style.marginBottom = '';
       track.style.height = '';
       stage.style.position = '';
       stage.style.top = '';
@@ -135,7 +146,14 @@
     stage.style.position = 'sticky';
     stage.style.top = '0px';
     stage.style.height = vh + 'px';
-    track.style.height = vh + distance + 'px';
+    // Con todo cerrado, el escenario (una pantalla) deja un hueco vacío bajo
+    // "All work". La siguiente sección sube a ocuparlo mientras la lista
+    // sigue fija, ya cerrada: la pista se alarga ese hueco y la sección lo
+    // recupera con un margen negativo, así la separación con la siguiente
+    // es solo --space-section, como en el resto de la web.
+    const empty = Math.max(0, Math.round(vh - closedHeight()));
+    track.style.height = vh + distance + empty + 'px';
+    section.style.marginBottom = -empty + 'px';
     pinStart = track.getBoundingClientRect().top + window.scrollY;
     active = -2;
     update();

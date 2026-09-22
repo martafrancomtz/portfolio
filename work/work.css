@@ -1,137 +1,70 @@
 /* ==========================================================
-   WORK: rejilla de proyectos con "imagen que se convierte
-   en cursor". Tipografía, color y contenedor: variables del
+   WORK: rejilla de proyectos (imagen + nombre), con el mismo
+   hover que las imágenes de la home. Tipografía, color y contenedor: variables del
    sitio (:root en assets/css/styles.css), no las de un
    prototipo aparte.
    ========================================================== */
 :root{
   --work-gap:clamp(10px, 1.389vw, 28px);
-  --fs-project-meta:clamp(14px, 1.736vw, 34px);
-  --fs-project-title:clamp(26px, 3.333vw, 64px);
-  --orb:clamp(110px, 13.4vw, 260px);
   --ratio:672 / 813;
 }
 
-/* ---------- Cabecera ---------- */
-.work-header{
-  padding:32px var(--grid-margin) 0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.work-header__logo{ display:block; line-height:0 }
-.work-header__logo img{ width:40px; height:auto; display:block }
-.work-header__nav{ display:flex; gap:32px; font-size:var(--fs-minititle); font-weight:var(--fw-medium) }
-.work-header__nav a.is-current{ font-weight:var(--fw-bold) }
+/* ---------- Cabecera: la común (.site-header, en assets/css/styles.css) ---------- */
 
 /* ---------- Rejilla ---------- */
 .work{
-  padding:64px var(--grid-margin) 35vh;
+  /* la cabecera es fija: se deja su hueco arriba */
+  padding:calc(var(--header-h) + 64px) var(--grid-margin) 35vh;
 }
 
 .work__grid{
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:var(--work-gap);
+  row-gap:var(--space-s);        /* debajo de cada imagen va su nombre */
 }
 
-/* ---------- Proyecto ---------- */
-.project {
-  position: relative;
-  display: block;
-  aspect-ratio: var(--ratio);
-  outline-offset: 4px;
-}
-
-.project__img {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--pos, 50% 50%);
-  transition: opacity .45s var(--ease);
-}
-
-.project.is-active .project__img{ opacity:0; transition-duration:.25s }
-.project.is-instant .project__img{ transition:none }
-
-/* ---------- Texto que aparece donde estaba la imagen ---------- */
-.project__info{
-  position:absolute;
-  inset:0;
+/* ---------- Proyecto ----------
+   Mismo efecto que las imágenes de la home (.media-link en styles.css):
+   en hover la imagen crece un poco dentro de su marco y el cursor pasa a
+   ser "View case ↗". Debajo, el nombre y las etiquetas. */
+.project{
   display:flex;
   flex-direction:column;
-  align-items:flex-start;
-  text-align:left;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .18s ease;
+  gap:var(--space-3xs);
+  overflow:visible;              /* el recorte lo hace el marco de la imagen */
+  outline-offset:4px;
 }
-.work__grid > li:nth-child(even) .project__info{ align-items:flex-end; text-align:right }
 
-.project.is-active .project__info{ opacity:1; transition:opacity .35s var(--ease) .12s }
-.project.is-leaving .project__info{ opacity:0; transition:opacity .15s ease }
-
-.project__meta{ margin:0; font-size:var(--fs-project-meta); font-weight:500 }
-.project__title{ margin:auto 0 0; font-size:var(--fs-project-title); font-weight:400; line-height:1.2 }
-
-/* ---------- El círculo-cursor ----------
-   Sustituye al cursor del sitio mientras hay un proyecto activo: la
-   imagen de la celda se convierte en un círculo que sigue al puntero
-   (capas .orb__layer dentro de .orb__scale, pintadas por work.js con
-   los mismos cálculos de encuadre/zoom que la referencia). */
-html.orb-on, html.orb-on *{ cursor:none !important }
-html.orb-on .cursor{ opacity:0 }
-html.orb-open{ overflow:hidden }
-
-.orb{
-  position:fixed;
-  left:0; top:0;
-  z-index:50;
-  width:0; height:0;
+.project__media{
+  position:relative;
+  display:block;
+  aspect-ratio:var(--ratio);
   overflow:hidden;
-  visibility:hidden;
-  pointer-events:none;
-  isolation:isolate;
-  will-change:transform, width, height;
 }
-.orb.is-visible{ visibility:visible }
 
-.orb__scale{
+.project__img{
   position:absolute;
   inset:0;
-  overflow:hidden;
-  border-radius:inherit;
-  transform-origin:50% 50%;
-}
-
-.orb__layer{
-  position:absolute;
-  left:0; top:0;
   display:block;
-  max-width:none;
-  will-change:transform;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-/* sirve para leer el tamaño del círculo definido en --orb */
-.orb-probe{
-  position:fixed; left:0; top:0;
-  width:var(--orb); height:0;
-  visibility:hidden;
-  pointer-events:none;
+.project__info{
+  display:flex;
+  flex-direction:column-reverse;   /* título arriba, etiquetas debajo */
 }
+.project__meta{ margin:0; font-size:var(--fs-small); font-weight:var(--fw-medium); line-height:var(--lh-normal) }
+.project__title{ margin:0; font-size:var(--fs-body); font-weight:var(--fw-bold); line-height:var(--lh-normal) }
 
 /* ---------- Móvil ---------- */
 @media (max-width:700px){
-  .work-header{ padding-top:24px }
-  .work-header__nav{ gap:16px; font-size:var(--fs-small) }
   .work__grid{ grid-template-columns:minmax(0, 1fr) }
-  .project{ aspect-ratio:4 / 5 }
-  .work__grid > li:nth-child(even) .project__info{ align-items:flex-start; text-align:left }
+  .project__media{ aspect-ratio:4 / 5 }
 }
 
 @media (prefers-reduced-motion:reduce){
-  .project__img, .project__info{ transition:none !important }
+  .project__img{ transition:none !important }
 }

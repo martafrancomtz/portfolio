@@ -23,19 +23,19 @@
 
 .selected-work__in{
   /* ---- Medidas del Figma (px de un frame de 1440), pasadas por --u ---- */
-  --margin: calc(38 * var(--u));          /* texto a la izquierda e imagen a la derecha */
-  --row-x: calc(146 * var(--u));          /* filas: empiezan en x=146 y acaban en x=1294 */
+  --margin: var(--grid-margin);           /* texto a la izquierda e imagen a la derecha: el margen de toda la web */
+  --row-x: var(--content-margin);         /* filas: el bloque estrecho de contenido (146 a 1440) */
   /* --sv = 1 salvo en ventanas bajas, donde el JS lo baja para que el proyecto abierto quepa */
-  --row-gap: calc(74 * var(--u) * var(--sv, 1));    /* 105 entre filas = 31 de texto + 74 */
+  --row-gap: calc(96 * var(--u) * var(--sv, 1));    /* entre filas (Figma 74; más aire) */
   --pin-top: calc(118 * var(--u) * var(--sv, 1));   /* donde se queda fija la primera fila */
-  --panel-top: calc(74 * var(--u) * var(--sv, 1));  /* de la fila a la imagen */
+  --panel-top: calc(96 * var(--u) * var(--sv, 1));  /* de la fila a la imagen (Figma 74; más aire) */
   --media-w: 674;                         /* imagen 674 × 474 */
   --media-h: 474;
   --text-w: calc(441 * var(--u));         /* ancho del párrafo */
 
-  /* tipografía: 24/31 del Figma; nunca menos de 15px para que se lea */
-  --fs: max(calc(24 * var(--u)), 15px);
-  --lh: 1.2917;                           /* 31/24 */
+  /* tipografía: la misma que el resto de la web (24/1.3, fija) */
+  --fs: var(--fs-body);
+  --lh: var(--lh-normal);
 
   padding-top: var(--space-section);      /* misma separación que el resto de secciones (styles.css) */
 }
@@ -124,24 +124,13 @@
   text-decoration-skip-ink: none;
 }
 
+/* botón (.btn de styles.css) a la escala de la sección: 24/500 × --u */
 .sw__cta{
-  display: inline-flex;
-  align-items: center;
-  gap: .4367em;                     /* 10,5px */
   align-self: flex-start;
+  font: inherit;
+  gap: var(--btn-gap);
   color: inherit;
-  text-decoration: none;
 }
-
-.sw__cta svg{
-  width: .6653em;                   /* 15,97 × 15,68 */
-  height: .6533em;
-  overflow: visible;
-  transform: translate(var(--hx, 0), .08em);
-  transition: transform .5s var(--ease-out);
-}
-
-.sw__cta:hover svg{ --hx: .2em; }
 
 .sw__media{
   /* 674 × 474; en ventanas bajas se reduce con --sv, sin deformarse */
@@ -171,7 +160,7 @@
 
 .js .sw__media img{
   --zoom: 1.12;
-  transition: transform .9s var(--ease-out);
+  transition: transform .9s var(--ease-out), scale .9s var(--ease-out);
 }
 
 .js .sw__text > *{
@@ -188,7 +177,7 @@
 
 .js .sw.is-open .sw__media img{
   --zoom: 1;
-  transition: transform 1.4s var(--ease-out) .12s;
+  transition: transform 1.4s var(--ease-out) .12s, scale .9s var(--ease-out);
 }
 
 .js .sw.is-open .sw__text > *{
@@ -206,8 +195,7 @@
 /* ---------- Enlace final ---------- */
 .selected-work__all{
   display: flex;
-  align-items: center;
-  gap: .4167em;                                /* 10px */
+  gap: var(--btn-gap);                         /* botón: .btn de styles.css */
   width: max-content;
   /* 152 bajo la última fila; el texto acaba a 66 del borde y la flecha a 38 */
   margin: calc(152 * var(--u)) var(--margin) 0 auto;
@@ -215,15 +203,6 @@
   font: 500 var(--fs) / var(--lh) var(--font);
   text-decoration: none;
 }
-
-.selected-work__all svg{
-  width: .7554em;                              /* 18,13 × 18,13 */
-  height: .7554em;
-  overflow: visible;
-  transition: transform .5s var(--ease-out);
-}
-
-.selected-work__all:hover svg{ transform: translate(.12em, -.12em); }
 
 /* ---------- Aparición al llegar a la sección (solo el enlace "All work":
    el <h2> ya se revela con el sistema genérico de main.js) ---------- */
@@ -255,12 +234,13 @@
 /* ---------- Móvil: misma interacción, filas en dos líneas e imagen a todo el ancho ---------- */
 @media (max-width: 699px){
   .selected-work__in{
-    --margin: 20px;
-    --row-x: 20px;
-    --row-gap: 26px;
+    --row-x: var(--grid-margin);
+    --row-gap: 36px;
     --pin-top: 76px;
-    --panel-top: 20px;
-    --fs: 15px;
+    --panel-top: 28px;
+    /* en móvil, a 24px las etiquetas y el año no cabían en la fila y
+       ensanchaban la página: aquí van a 20 (como el contacto del footer) */
+    --fs: var(--fs-subtitle);
   }
 
   .sw__head{ flex-direction: column; align-items: stretch; gap: 2px; }

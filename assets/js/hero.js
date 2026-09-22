@@ -1,8 +1,9 @@
 /* ==================================================================
    HERO: fondo "Grainient" (shader WebGL),
-   desenfoque del título letra a letra siguiendo el cursor, y el
+   título con efecto "melting blur" alrededor del cursor, y el
    cursor global creciendo sobre el título.
-   Tamaño/posición/color del resto del hero: intactos (Figma).
+   Tamaño/posición del resto del hero: Figma; el color de todo el
+   texto es inversión (mix-blend-mode, en styles.css).
    ================================================================== */
 (function () {
   "use strict";
@@ -14,80 +15,173 @@
   var fine = window.matchMedia("(pointer: fine)").matches;
 
   /* ============================================================
-     1) TÍTULO LETRA A LETRA: desenfoque que sigue al cursor
+     1) TÍTULO: "melting blur" (WebGL): alrededor del cursor las
+     letras se desenfocan y se derriten hacia abajo, con inercia.
+     Las letras salen de los <path> de las máscaras del SVG, que
+     queda debajo para el tamaño, la accesibilidad y como reserva.
      ============================================================ */
   var titleEl = document.getElementById("heroTitle");
-  var chars = titleEl
-    ? Array.prototype.slice.call(titleEl.querySelectorAll(".ch")).map(function (el) {
-        return { el: el, x: 0, y: 0, v: 0, last: -1 };
-      })
-    : [];
+  var titleWrap = document.getElementById("heroTitleWrap");
+  var tCanvas = document.getElementById("heroTitleGL");
 
-  var RX = 240, RY = 150, MAXBLUR = 9, LIFT = 4;
+  /* Efecto y valores (la "marca
+     fundida"): el cursor abre un charco de desenfoque a su alrededor y, al
+     moverse, arrastra la tinta tras él; se derrite mientras te mueves y se
+     rehace al parar. Las medidas en px son las de la referencia, donde la
+     marca medía 594px de ancho: aquí se escalan con el ancho del título. */
+  var MELT = {
+    radius: 230,    // hasta dónde llega el charco
+    spread: 58,     // cuánto se abre el desenfoque
+    drag: 2.3,      // cuánto arrastra la tinta al moverse
+    melt: 0.7,      // cuánto tira hacia abajo (goteo)
+    inertia: 0.11,  // lo que el charco se acerca al ratón por fotograma (60 fps)
+    samples: 20,    // pases del desenfoque (calidad)
+    refWidth: 594   // ancho de la marca en la referencia
+  };
 
-  /* getBoundingClientRect() de un <g> enmascarado devuelve el rectángulo
-     de la imagen SIN recortar (el mask no achica la geometría, solo lo
-     que se pinta): por eso medimos el <path> de la máscara de cada letra
-     y lo pasamos a coordenadas de pantalla con getScreenCTM(). */
-  function measureChars() {
-    if (!chars.length || !titleEl) return;
-    for (var k = 0; k < chars.length; k++) chars[k].el.style.transform = "";
-    var ctm = titleEl.getScreenCTM();
-    if (!ctm) return;
-    var pt = titleEl.createSVGPoint();
-    var wSum = 0, lineH = 100;
-    for (var i = 0; i < chars.length; i++) {
-      var pathEl = titleEl.querySelector("#mk" + i + " path");
-      var bbox = pathEl.getBBox();
-      pt.x = bbox.x + bbox.width / 2;
-      pt.y = bbox.y + bbox.height / 2;
-      var screenPt = pt.matrixTransform(ctm);
-      chars[i].x = screenPt.x;
-      chars[i].y = screenPt.y;
-      chars[i].last = -1;
-      var screenW = bbox.width * ctm.a;
-      wSum += screenW;
-      if (i === 0) lineH = bbox.height * ctm.d;
+  var MELT_FRAG = [
+    "precision highp float;",
+    "uniform sampler2D uTex;",
+    "uniform vec2  uRes;",      // tamaño del canvas en px css
+    "uniform float uDpr;",
+    "uniform vec2  uPtr;",      // dónde está el charco
+    "uniform vec2  uDrag;",     // cuánto se arrastra la tinta, en px css
+    "uniform float uRadius;",
+    "uniform float uSpread;",
+    "uniform float uMelt;",
+    "uniform float uOn;",       // 0..1
+    "float hash(vec2 p){ return fract(sin(dot(p, vec2(41.3, 289.7))) * 43758.5453); }",
+    "void main(){",
+    "  vec2 px = vec2(gl_FragCoord.x, uRes.y * uDpr - gl_FragCoord.y) / uDpr;",
+    "  float d = distance(px, uPtr);",
+    "  float f = 1.0 - smoothstep(uRadius * 0.12, uRadius, d);",
+    "  f = pow(f, 1.3) * uOn;",
+    "  if (f < 0.004){ gl_FragColor = vec4(texture2D(uTex, px / uRes).a); return; }",
+    "  vec2 radial = d > 0.001 ? (px - uPtr) / d : vec2(0.0);",
+    "  float sag = pow(f, 1.6);",
+    /* primero se desplaza la tinta, después se desenfoca alrededor */
+    "  vec2 base = uDrag * 0.6 * f + vec2(0.0, 1.0) * uSpread * uMelt * sag;",
+    "  vec2 span = uDrag * 0.9 * f + radial * uSpread * f;",
+    "  float jit = hash(px + uDrag);",
+    "  float acc = 0.0, wsum = 0.0;",
+    "  for (int i = 0; i < " + MELT.samples + "; i++){",
+    "    float t = (float(i) + jit) / " + MELT.samples + ".0;",
+    "    vec2 off = base + span * (t - 0.5);",
+    "    float w = 1.0 - 0.55 * abs(t - 0.5) * 2.0;",
+    "    acc += texture2D(uTex, (px - off) / uRes).a * w;",
+    "    wsum += w;",
+    "  }",
+    "  gl_FragColor = vec4(acc / wsum);",   /* tinta blanca, alfa premultiplicado */
+    "}"
+  ].join("\n");
+
+  var melt = null;
+  var mx = -1e4, my = -1e4, sx = -1e4, sy = -1e4, mOn = 0, mWant = 0;
+
+  function initMelt() {
+    if (!titleEl || !titleWrap || !tCanvas) return null;
+    var g = null;
+    try { g = tCanvas.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) { g = null; }
+    if (!g) return null;
+    function sh(type, src) {
+      var s = g.createShader(type); g.shaderSource(s, src); g.compileShader(s);
+      return g.getShaderParameter(s, g.COMPILE_STATUS) ? s : null;
     }
-    var avgW = wSum / Math.max(chars.length, 1);
-    RX = Math.max(avgW * 2.15, 90);
-    RY = Math.max(lineH * 1.35, 70);
-    MAXBLUR = Math.min(Math.max(lineH * 0.09, 3.5), 12);
-    LIFT = Math.min(Math.max(lineH * 0.04, 2), 7);
+    var vs = sh(g.VERTEX_SHADER, "attribute vec2 position; void main(){ gl_Position = vec4(position, 0.0, 1.0); }");
+    var fs = sh(g.FRAGMENT_SHADER, MELT_FRAG);
+    if (!vs || !fs) return null;
+    var p = g.createProgram();
+    g.attachShader(p, vs); g.attachShader(p, fs); g.linkProgram(p);
+    if (!g.getProgramParameter(p, g.LINK_STATUS)) return null;
+    g.useProgram(p);
+    var b = g.createBuffer();
+    g.bindBuffer(g.ARRAY_BUFFER, b);
+    g.bufferData(g.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), g.STATIC_DRAW);
+    var loc = g.getAttribLocation(p, "position");
+    g.enableVertexAttribArray(loc);
+    g.vertexAttribPointer(loc, 2, g.FLOAT, false, 0, 0);
+    var tex = g.createTexture();
+    g.bindTexture(g.TEXTURE_2D, tex);
+    g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
+    g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
+    g.texParameteri(g.TEXTURE_2D, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE);
+    g.texParameteri(g.TEXTURE_2D, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
+    var u = {};
+    ["uTex", "uRes", "uDpr", "uPtr", "uDrag", "uRadius", "uSpread", "uMelt", "uOn"].forEach(function (n) { u[n] = g.getUniformLocation(p, n); });
+    g.uniform1i(u.uTex, 0);
+    g.clearColor(0, 0, 0, 0);
+    return { gl: g, u: u, scale: 1, paths: Array.prototype.map.call(titleEl.querySelectorAll("mask path"), function (el) { return new Path2D(el.getAttribute("d")); }) };
   }
 
-  measureChars();
-  window.addEventListener("load", measureChars);
-  setTimeout(measureChars, 1700);
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(function () { setTimeout(measureChars, 60); }).catch(function () {});
+  /* coloca el canvas sobre el título (con aire alrededor para lo que se
+     derrite y se arrastra) y pinta las letras en blanco en una textura */
+  function layoutMelt() {
+    if (!melt) return;
+    var r = titleEl.getBoundingClientRect();
+    if (!r.width) return;
+    var sc = r.width / MELT.refWidth;
+    var M = Math.round(MELT.spread * sc * 2.5);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var cw = r.width + M * 2, ch = r.height + M * 2;
+    tCanvas.style.left = -M + "px"; tCanvas.style.top = -M + "px";
+    tCanvas.style.width = cw + "px"; tCanvas.style.height = ch + "px";
+    tCanvas.width = Math.round(cw * dpr); tCanvas.height = Math.round(ch * dpr);
+    melt.scale = sc;
+
+    var off = document.createElement("canvas");
+    off.width = tCanvas.width; off.height = tCanvas.height;
+    var c = off.getContext("2d");
+    var s = (r.width / 678.9) * dpr;
+    c.setTransform(s, 0, 0, s, M * dpr, M * dpr);
+    c.fillStyle = "#fff";
+    melt.paths.forEach(function (path) { c.fill(path); });
+
+    var g = melt.gl;
+    g.viewport(0, 0, tCanvas.width, tCanvas.height);
+    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, off);
+    g.uniform2f(melt.u.uRes, cw, ch);
+    g.uniform1f(melt.u.uDpr, tCanvas.width / cw);
+    g.uniform1f(melt.u.uRadius, MELT.radius * sc);
+    g.uniform1f(melt.u.uSpread, MELT.spread * sc);
+    g.uniform1f(melt.u.uMelt, MELT.melt);
+    drawMelt(0, 0);
   }
 
-  function updateChars(kBlur) {
-    var activo = fine && pointerInside;
-    for (var i = 0; i < chars.length; i++) {
-      var s = chars[i], objetivo = 0;
-      if (activo) {
-        var dx = (cx - s.x) / RX, dy = (cy - s.y) / RY;
-        var d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 1) objetivo = 0.5 + 0.5 * Math.cos(d * Math.PI);
-      }
-      if (reduced) s.v = objetivo;
-      else s.v += (objetivo - s.v) * kBlur;
-      if (s.v < 0.004) s.v = 0;
+  function drawMelt(dragX, dragY) {
+    var g = melt.gl;
+    g.uniform2f(melt.u.uPtr, sx, sy);
+    g.uniform2f(melt.u.uDrag, dragX, dragY);
+    g.uniform1f(melt.u.uOn, mOn);
+    g.clear(g.COLOR_BUFFER_BIT);
+    g.drawArrays(g.TRIANGLES, 0, 3);
+  }
 
-      var cambia = s.v === 0 ? s.last !== 0 : Math.abs(s.v - s.last) > 0.004;
-      if (!cambia) continue;
-      s.last = s.v;
+  melt = initMelt();
+  if (melt) {
+    hero.classList.add("is-title-gl");
+    layoutMelt();
+    window.addEventListener("load", layoutMelt);
+  }
 
-      if (s.v === 0) {
-        s.el.style.filter = ""; s.el.style.opacity = ""; s.el.style.transform = "";
-      } else {
-        s.el.style.filter = "blur(" + (MAXBLUR * s.v).toFixed(2) + "px)";
-        s.el.style.opacity = (1 - 0.16 * s.v).toFixed(3);
-        s.el.style.transform = "translateY(" + (-LIFT * s.v).toFixed(2) + "px)";
-      }
-    }
+  /* el charco va con retraso respecto al ratón, y ese retraso es el arrastre */
+  function updateMelt(dt) {
+    if (!melt) return;
+    var r = tCanvas.getBoundingClientRect();
+    mx = tx - r.left; my = ty - r.top;
+    var dentro = fine && !reduced && pointerInside &&
+      mx >= 0 && my >= 0 && mx <= r.width && my <= r.height;
+    if (dentro && mWant === 0) { sx = mx; sy = my; }
+    mWant = dentro ? 1 : 0;
+
+    var k = 1 - Math.pow(1 - MELT.inertia, dt * 60);
+    sx += (mx - sx) * k; sy += (my - sy) * k;
+    var antes = mOn;
+    mOn += (mWant - mOn) * (1 - Math.exp(-dt / 0.16));
+    if (mOn < 0.002) mOn = 0;
+    if (mOn === 0 && antes === 0) return;   // quieto y fuera: no se repinta
+
+    var gain = MELT.drag;
+    drawMelt((mx - sx) * gain, (my - sy) * gain);
   }
 
   /* ============================================================
@@ -105,9 +199,9 @@
     document.addEventListener("mouseleave", function () { pointerInside = false; });
 
     var cursorGlobal = document.getElementById("cursor");
-    if (cursorGlobal && titleEl) {
-      titleEl.addEventListener("mouseenter", function () { cursorGlobal.classList.add("is-grow"); });
-      titleEl.addEventListener("mouseleave", function () { cursorGlobal.classList.remove("is-grow"); });
+    if (cursorGlobal && titleWrap) {
+      titleWrap.addEventListener("mouseenter", function () { cursorGlobal.classList.add("is-grow"); });
+      titleWrap.addEventListener("mouseleave", function () { cursorGlobal.classList.remove("is-grow"); });
     }
   }
 
@@ -310,6 +404,12 @@
   if (gl && initGL()) { usaGL = true; resizeGL(); }
   else { hero.classList.add("is-no-webgl"); }
 
+  /* fondo del menú hamburguesa: copia del degradado (sin WebGL se queda
+     la imagen de reserva que pone el CSS) */
+  var panelBg = document.getElementById("navPanelBg");
+  var panelCtx = usaGL && panelBg ? panelBg.getContext("2d") : null;
+  if (panelBg && !panelCtx) panelBg.style.display = "none";
+
   /* ---- paleta activa, con transición suave, enganchada al reloj ---- */
   var modoActivo = document.documentElement.dataset.franja || "day";
   var actual = copiaPaleta(PALETAS[modoActivo] || PALETAS.day);
@@ -338,7 +438,7 @@
     tPrev = ts;
     if (!reduced) reloj = (ts - t0) / 1000;
 
-    updateChars(suave(dt, 0.10));
+    updateMelt(dt);
     comprobarModo();
 
     if (usaGL) {
@@ -375,6 +475,15 @@
       gl.uniform3fv(uni.uColor3, actual.c3);
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      // menú abierto: su fondo es este mismo degradado (se copia en el
+      // mismo fotograma, antes de que el navegador limpie el canvas)
+      if (panelCtx && document.documentElement.classList.contains("is-menu-open")) {
+        if (panelBg.width !== canvas.width || panelBg.height !== canvas.height) {
+          panelBg.width = canvas.width; panelBg.height = canvas.height;
+        }
+        panelCtx.drawImage(canvas, 0, 0);
+      }
     }
 
     requestAnimationFrame(frame);
@@ -383,7 +492,7 @@
   requestAnimationFrame(frame);
 
   window.addEventListener("resize", function () {
-    measureChars();
+    layoutMelt();
     if (usaGL) resizeGL();
   }, { passive: true });
 })();

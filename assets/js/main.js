@@ -27,6 +27,19 @@
       el.addEventListener("mouseleave", function () { cursor.classList.remove("is-grow"); });
     });
 
+    // sobre una imagen-enlace (data-cursor="view") el círculo se convierte en
+    // "View case ↗"; sobre las palabras de la rueda, en un círculo grande
+    var etiqueta = document.createElement("span");
+    etiqueta.className = "cursor__label";
+    etiqueta.innerHTML = 'View case<svg viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false">' +
+      '<path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg>';
+    cursor.appendChild(etiqueta);
+    document.addEventListener("pointerover", function (e) {
+      var t = e.target && e.target.closest ? e.target : null;
+      cursor.classList.toggle("is-label", !!(t && t.closest('[data-cursor="view"]')));
+      cursor.classList.toggle("is-big", !!(t && t.closest(".rueda-item")));
+    });
+
     (function loop() {
       var k = reduce ? 1 : 0.18;
       cx += (tx - cx) * k;
@@ -34,6 +47,91 @@
       cursor.style.transform = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
       requestAnimationFrame(loop);
     })();
+  }
+
+  /* ============================================================
+     1b) BOTONES: el texto se reescribe una vez al entrar (como en
+         All my work, assets/js/rewrite.js); no se mueve nada
+     ============================================================ */
+  if (window.Rewrite) {
+    document.querySelectorAll(".btn").forEach(function (btn) {
+      var label = btn.querySelector(".btn__label");
+      if (!label) return;
+      // el ancho del texto se fija mientras se reescribe: las letras al azar
+      // no miden exactamente lo mismo y la flecha (o el botón) se movería
+      function run() {
+        window.Rewrite.reset(label);
+        label.style.width = label.getBoundingClientRect().width + "px";
+        window.Rewrite.run(label, 500, function () { label.style.width = ""; });
+      }
+      btn.addEventListener("pointerenter", function (e) {
+        if (e.pointerType === "mouse") run();
+      });
+      btn.addEventListener("focus", function () {
+        if (btn.matches(":focus-visible")) run();
+      });
+    });
+  }
+
+  /* ============================================================
+     1c) CABECERA: se esconde al bajar y vuelve en cuanto se sube
+         un poco (como studio-move); arriba del todo, siempre visible
+     ============================================================ */
+  var header = document.getElementById("siteHeader");
+  var menuOpen = false;
+  if (header) {
+    var lastY = window.scrollY, ticking = false;
+    var BAJA = 8, SUBE = 4;   // px que hay que moverse para esconderla / sacarla
+
+    function onScroll() {
+      ticking = false;
+      var y = window.scrollY;
+      if (menuOpen || y <= header.offsetHeight) {
+        header.classList.remove("is-hidden");
+      } else if (y > lastY + BAJA) {
+        header.classList.add("is-hidden");
+      } else if (y < lastY - SUBE) {
+        header.classList.remove("is-hidden");
+      } else {
+        return;   // movimiento mínimo: se acumula hasta pasar el umbral
+      }
+      lastY = y;
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+    }, { passive: true });
+    // con el teclado, que se vea en cuanto un enlace suyo tiene el foco
+    header.addEventListener("focusin", function () { header.classList.remove("is-hidden"); });
+  }
+
+  /* ============================================================
+     1d) MENÚ HAMBURGUESA (pantallas pequeñas)
+     ============================================================ */
+  var toggle = document.getElementById("navToggle");
+  var panel = document.getElementById("navPanel");
+  if (toggle && panel) {
+    function setMenu(open) {
+      menuOpen = open;
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+      panel.classList.toggle("is-open", open);
+      // al bloquear el scroll desaparece la barra: su ancho se guarda en
+      // --sbw para que la cabecera (y la X) no se muevan
+      var root = document.documentElement;
+      if (open) root.style.setProperty("--sbw", (window.innerWidth - root.clientWidth) + "px");
+      else root.style.removeProperty("--sbw");
+      root.classList.toggle("is-menu-open", open);
+      if (open && header) header.classList.remove("is-hidden");
+    }
+    toggle.addEventListener("click", function () { setMenu(!menuOpen); });
+    panel.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && menuOpen) { setMenu(false); toggle.focus(); }
+    });
+    // si se agranda la ventana con el menú abierto, se cierra
+    window.matchMedia("(min-width: 700px)").addEventListener("change", function (m) {
+      if (m.matches && menuOpen) setMenu(false);
+    });
   }
 
   /* ============================================================

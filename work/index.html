@@ -16,24 +16,36 @@
 
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 
-<header class="work-header">
-  <a class="work-header__logo" href="../index.html" aria-label="Marta Franco — inicio">
+<header class="hero__bar site-header" id="siteHeader">
+  <a href="../index.html" class="hero__logo" aria-label="Marta Franco — inicio">
     <img src="../assets/img/logo.svg" alt="">
   </a>
-  <nav class="work-header__nav" aria-label="Principal">
-    <a href="../index.html" class="u-underline">Home</a>
-    <a href="index.html" class="u-underline is-current" aria-current="page">Work</a>
-    <a href="../about/index.html" class="u-underline">About</a>
-    <a href="../contact/index.html" class="u-underline">Contact</a>
+  <nav class="hero__nav" aria-label="Principal">
+    <a href="../index.html" class="btn btn--inline"><span class="btn__label">Home</span></a>
+    <a href="index.html" class="btn btn--inline is-current" aria-current="page"><span class="btn__label">Work</span></a>
+    <a href="../about/index.html" class="btn btn--inline"><span class="btn__label">About</span></a>
+    <a href="../contact/index.html" class="btn btn--inline"><span class="btn__label">Contact</span></a>
   </nav>
+  <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navPanel" aria-label="Abrir menú">
+    <span class="nav-toggle__line"></span><span class="nav-toggle__line"></span>
+  </button>
 </header>
+
+<div class="nav-panel" id="navPanel">
+  <nav class="nav-panel__nav" aria-label="Principal (móvil)">
+    <a href="../index.html" class="btn btn--inline"><span class="btn__label">Home</span></a>
+    <a href="index.html" class="btn btn--inline is-current" aria-current="page"><span class="btn__label">Work</span></a>
+    <a href="../about/index.html" class="btn btn--inline"><span class="btn__label">About</span></a>
+    <a href="../contact/index.html" class="btn btn--inline"><span class="btn__label">Contact</span></a>
+  </nav>
+</div>
 
 <main class="work">
   <h1 hidden>Work</h1>
   <ul class="work__grid">
     <li>
-      <a class="project" href="antonio-franco/index.html" data-foco="50% 50%" aria-labelledby="t-antonio-franco">
-        <img class="project__img" src="img work/Captura de pantalla 2026-09-17 142553.png" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="antonio-franco/index.html" aria-labelledby="t-antonio-franco">
+        <span class="project__media"><img class="project__img" src="img work/Captura de pantalla 2026-09-17 142553.png" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Web design, Art direction</p>
           <h2 class="project__title" id="t-antonio-franco">Antonio Franco portfolio</h2>
@@ -41,8 +53,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="consentio/index.html" data-foco="50% 50%" aria-labelledby="t-consentio">
-        <img class="project__img" src="img work/Captura de pantalla 2026-09-17 135919.png" alt="Consentio preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="consentio/index.html" aria-labelledby="t-consentio">
+        <span class="project__media"><img class="project__img" src="img work/Captura de pantalla 2026-09-17 135919.png" alt="Consentio preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">UX Research, UI Design</p>
           <h2 class="project__title" id="t-consentio">ConSentío</h2>
@@ -50,8 +62,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="portfolio-v1-v2/index.html" data-foco="50% 50%" aria-labelledby="t-portfolio-v1-v2">
-        <img class="project__img" src="img work/Captura de pantalla 2026-09-17 142702.png" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="portfolio-v1-v2/index.html" aria-labelledby="t-portfolio-v1-v2">
+        <span class="project__media"><img class="project__img" src="img work/Captura de pantalla 2026-09-17 142702.png" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Web design, Front-end</p>
           <h2 class="project__title" id="t-portfolio-v1-v2">Portfolio v1 → v2</h2>
@@ -59,8 +71,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="3d-bottle/index.html" data-foco="50% 50%" aria-labelledby="t-3d-bottle">
-        <img class="project__img" src="img work/renderer final.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="3d-bottle/index.html" aria-labelledby="t-3d-bottle">
+        <span class="project__media"><img class="project__img" src="img work/renderer final.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">3D, Packaging</p>
           <h2 class="project__title" id="t-3d-bottle">3D bottle</h2>
@@ -68,8 +80,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="off-white/index.html" data-foco="50% 50%" aria-labelledby="t-off-white">
-        <img class="project__img" src="img work/e.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="off-white/index.html" aria-labelledby="t-off-white">
+        <span class="project__media"><img class="project__img" src="img work/e.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">3D, Animation</p>
           <h2 class="project__title" id="t-off-white">Off-White</h2>
@@ -77,8 +89,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="kilter-typography/index.html" data-foco="50% 50%" aria-labelledby="t-kilter-typography">
-        <img class="project__img" src="img work/blue platform.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="kilter-typography/index.html" aria-labelledby="t-kilter-typography">
+        <span class="project__media"><img class="project__img" src="img work/blue platform.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Typography</p>
           <h2 class="project__title" id="t-kilter-typography">Kilter Typography</h2>
@@ -86,8 +98,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="typographic-analysis/index.html" data-foco="50% 50%" aria-labelledby="t-typographic-analysis">
-        <img class="project__img" src="img work/Sin título-2-01.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="typographic-analysis/index.html" aria-labelledby="t-typographic-analysis">
+        <span class="project__media"><img class="project__img" src="img work/Sin título-2-01.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Typography, Investigation</p>
           <h2 class="project__title" id="t-typographic-analysis">Typographic Analysis</h2>
@@ -95,8 +107,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="mondo-restaurant/index.html" data-foco="50% 50%" aria-labelledby="t-mondo-restaurant">
-        <img class="project__img" src="img work/Realistic Business Cards MockUp 4.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="mondo-restaurant/index.html" aria-labelledby="t-mondo-restaurant">
+        <span class="project__media"><img class="project__img" src="img work/Realistic Business Cards MockUp 4.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Branding, Graphic design</p>
           <h2 class="project__title" id="t-mondo-restaurant">Mondo Restaurant</h2>
@@ -104,8 +116,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="merkamueble-redesign/index.html" data-foco="50% 50%" aria-labelledby="t-merkamueble-redesign">
-        <img class="project__img" src="img work/merkamueble.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="merkamueble-redesign/index.html" aria-labelledby="t-merkamueble-redesign">
+        <span class="project__media"><img class="project__img" src="img work/merkamueble.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Web design, Graphic design</p>
           <h2 class="project__title" id="t-merkamueble-redesign">Merkamueble Redesign</h2>
@@ -113,8 +125,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="students-life-cards/index.html" data-foco="50% 50%" aria-labelledby="t-students-life-cards">
-        <img class="project__img" src="img work/cartas mockup1.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="students-life-cards/index.html" aria-labelledby="t-students-life-cards">
+        <span class="project__media"><img class="project__img" src="img work/cartas mockup1.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Illustration, Graphic design</p>
           <h2 class="project__title" id="t-students-life-cards">Students Life Cards</h2>
@@ -122,8 +134,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="ecological-posters/index.html" data-foco="50% 50%" aria-labelledby="t-ecological-posters">
-        <img class="project__img" src="img work/52_urban_poster_mockup.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="ecological-posters/index.html" aria-labelledby="t-ecological-posters">
+        <span class="project__media"><img class="project__img" src="img work/52_urban_poster_mockup.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Graphic design</p>
           <h2 class="project__title" id="t-ecological-posters">Ecological Posters</h2>
@@ -131,8 +143,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="bullet-train-illustrations/index.html" data-foco="50% 50%" aria-labelledby="t-bullet-train-illustrations">
-        <img class="project__img" src="img work/Mockup jpg.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="bullet-train-illustrations/index.html" aria-labelledby="t-bullet-train-illustrations">
+        <span class="project__media"><img class="project__img" src="img work/Mockup jpg.jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Illustration, Graphic design</p>
           <h2 class="project__title" id="t-bullet-train-illustrations">Bullet Train Illustrations</h2>
@@ -140,8 +152,8 @@
       </a>
     </li>
     <li>
-      <a class="project" href="expo-sevilla-24/index.html" data-foco="50% 50%" aria-labelledby="t-expo-sevilla-24">
-        <img class="project__img" src="img work/Qubus (EU).jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async">
+      <a class="project media-link" data-cursor="view" href="expo-sevilla-24/index.html" aria-labelledby="t-expo-sevilla-24">
+        <span class="project__media"><img class="project__img" src="img work/Qubus (EU).jpg" alt="Antonio franco Web preview" loading="lazy" decoding="async"></span>
         <div class="project__info">
           <p class="project__meta">Branding, Graphic design</p>
           <h2 class="project__title" id="t-expo-sevilla-24">Expo Sevilla '24</h2>
@@ -152,28 +164,26 @@
 </main>
 
 <!-- El círculo que sustituye al cursor al pasar por encima de un proyecto -->
-<div class="orb" aria-hidden="true"><div class="orb__scale"></div></div>
-<span class="orb-probe" aria-hidden="true"></span>
 
 <footer class="site-footer">
   <div class="site-footer__contact">
-    <p><span>(Call me maybe)</span> +34 639 867 532</p>
-    <p><span>(Or just write)</span> <a href="mailto:martafrancomtz@gmail.com" class="u-underline">martafrancomtz@gmail.com</a></p>
+    <p><span>(Call me maybe)</span> <a href="tel:+34639867532" class="btn btn--inline"><span class="btn__label">+34 639 867 532</span></a></p>
+    <p><span>(Or just write)</span> <a href="mailto:martafrancomtz@gmail.com" class="btn btn--inline"><span class="btn__label">martafrancomtz@gmail.com</span></a></p>
     <p class="site-footer__copy">Seville, Spain. © 2026 Marta Franco. Designed and built by me.</p>
   </div>
 
   <img class="site-footer__image" src="../assets/img/footer-image.png" alt="">
 
   <div class="site-footer__links">
-    <a href="#" class="link-reveal link-reveal--diagonal"><span>LinkedIn</span><img src="../assets/img/arrow-diagonal.svg" alt=""></a>
-    <a href="#" class="link-reveal link-reveal--diagonal"><span>Instagram</span><img src="../assets/img/arrow-diagonal.svg" alt=""></a>
-    <a href="#" class="link-reveal link-reveal--diagonal"><span>GitHub</span><img src="../assets/img/arrow-diagonal.svg" alt=""></a>
-    <a href="#" class="link-reveal link-reveal--diagonal"><span>Behance</span><img src="../assets/img/arrow-diagonal.svg" alt=""></a>
-    <a href="#" class="site-footer__cv u-underline">Curriculum Vitae (PDF)</a>
+    <a href="#" class="btn btn--external"><span class="btn__label">LinkedIn</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">Instagram</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">GitHub</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">Behance</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="site-footer__cv btn btn--external"><span class="btn__label">Curriculum Vitae (PDF)</span></a>
   </div>
 </footer>
 
+<script src="../assets/js/rewrite.js"></script>
 <script src="../assets/js/main.js"></script>
-<script src="work.js"></script>
 </body>
 </html>

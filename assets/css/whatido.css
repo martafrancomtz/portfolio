@@ -9,15 +9,17 @@
   --wid-entrada:40vh;
   --wid-paso:80vh;
   position:relative;
-  margin-top:100px;
   height:calc(100vh + var(--wid-entrada) * 2 + var(--wid-paso) * 4);
 }
+/* el bloque se fija arriba, a --space-title del título (como Selected
+   work), no centrado en la pantalla; se resta el padding de cada ítem */
 .whatido-pin__stage{
   position:sticky;
   top:0;
   height:100vh;
   display:flex;
-  align-items:center;
+  align-items:flex-start;
+  padding-top:max(0px, calc(var(--space-title) - 22px));
 }
 .whatido-pin__grid{
   width:100%;

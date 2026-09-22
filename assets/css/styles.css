@@ -8,12 +8,8 @@
   --black:#000;           /* solo la rueda (va por su cuenta); el "negro" de texto es --text */
   --white:#fff;
 
-  /* acentos del frame HERO (Figma "Desktop - 102") */
+  /* hero: el texto va en inversión (sin colores propios) */
   --hero-bg:#0b0714;      /* fondo de reserva mientras carga el degradado */
-  --hero-mint:#88fac5;
-  --hero-yellow:#ffff94;
-  --hero-cyan-1:#30edd3;
-  --hero-cyan-2:#00e4e0;
 
   /* tipografía: Rethink Sans, tal y como está definida en Figma */
   --font:'Rethink Sans','Helvetica Neue',Arial,sans-serif;
@@ -42,9 +38,10 @@
   --space-3xs:10px;       /* texto ↔ flecha de los botones */
   --space-s:38px;         /* ritmo vertical del CTA */
   --space-m:70px;         /* bloques del statement (Figma) */
-  /* entre secciones: todas iguales, tomando como referencia la de
-     All my work → CTA (270px a 1440), proporcional por debajo */
-  --space-section:clamp(120px, calc(100vw * 270 / 1440), 270px);
+  /* entre secciones: todas iguales (135px a 1440), proporcional por debajo */
+  --space-section:clamp(60px, calc(100vw * 135 / 1440), 135px);
+  /* de un título de sección a su bloque (el de Selected work: 118 a 1440) */
+  --space-title:calc(100vw * 118 / 1440);
 
   /* grid (Figma, frame de 1440): 6 columnas, margen 38, gutter 20;
      el bloque estrecho de contenido va a 146 de cada borde.
@@ -58,7 +55,10 @@
   --btn-fs:var(--fs-button);
   --btn-fw:var(--fw-medium);
   --btn-gap:var(--space-3xs);
-  --btn-icon:18px;
+  --btn-icon:.7556em;     /* flecha 18,13 a 24px */
+
+  /* alto de la cabecera fija: margen de arriba + lo más alto (logo o texto) */
+  --header-h:calc(100vw * 31 / 1440 + max(100vw * 42.3 / 1440, var(--btn-fs) * 1.3));
 
   /* motion */
   --ease:cubic-bezier(.65,0,.35,1);
@@ -87,7 +87,8 @@ ul{list-style:none;margin:0;padding:0}
 h1,h2,h3,blockquote,p{margin:0}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 
-@media (pointer:fine){ body,a,button{cursor:none} }
+/* con ratón, nunca el cursor del sistema (ni la manita): solo el círculo */
+@media (pointer:fine){ html, html *{ cursor:none !important } }
 ::selection{background:var(--text);color:var(--bg)}
 
 /* ==========================================================
@@ -124,30 +125,56 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .u-underline:focus-visible::after,
 .u-underline.is-current::after{ transform:scaleX(1); transform-origin:right; }
 
-/* enlaces con icono (flecha) que se revelan y desplazan el texto */
-.link-reveal{
-  position:relative;
+/* botones: texto + flecha diagonal. En hover el texto se reescribe una
+   vez (assets/js/rewrite.js, desde main.js) y la flecha gira a su sitio
+   mientras dura el hover: los internos pasan de ↗ a ↘ y los externos de
+   ↘ a ↗; al salir vuelve. Nada más se mueve. */
+.btn{
   display:inline-flex;
   align-items:center;
   gap:var(--btn-gap);
   font-size:var(--btn-fs);
-  font-weight:var(--fw-medium);
+  font-weight:var(--btn-fw);
+  line-height:var(--lh-normal);
   color:var(--text);
+  white-space:nowrap;
 }
-.link-reveal span{ display:inline-block; transition:transform .5s var(--ease) }
-.link-reveal img{ width:var(--btn-icon); height:var(--btn-icon); transition:transform .5s var(--ease),opacity .35s ease }
-.link-reveal--diagonal img{ opacity:.85 }
-.link-reveal:hover span{ transform:translateX(-6px) }
-.link-reveal--diagonal:hover img{ transform:translate(4px,-4px);opacity:1 }
-.link-reveal--lead{ flex-direction:row-reverse }
-.link-reveal--lead img{ transform:rotate(90deg) }
-.link-reveal--lead:hover span{ transform:translateX(6px) }
-.link-reveal--lead:hover img{ transform:rotate(90deg) translateX(4px) }
+.btn__label{ display:inline-block }
+.btn__icon{
+  flex:none;
+  width:var(--btn-icon);
+  height:var(--btn-icon);
+  overflow:visible;
+  transform:rotate(0deg);                      /* ↗ en reposo */
+  transition:transform .5s var(--ease);
+}
+.btn:hover .btn__icon,
+.btn:focus-visible .btn__icon{ transform:rotate(90deg) }        /* ↘ */
+.btn--external .btn__icon{ transform:rotate(90deg) }            /* ↘ en reposo */
+.btn--external:hover .btn__icon,
+.btn--external:focus-visible .btn__icon{ transform:rotate(0deg) } /* ↗ */
+/* botón dentro de una línea de texto (teléfono y email del footer):
+   toma la letra de su párrafo, sin flecha ni subrayado */
+.btn--inline{ display:inline; font:inherit; color:inherit }
+
+/* imágenes interactivas (enlace, data-cursor="view"): en hover la imagen
+   crece un poco dentro de su marco y el cursor se convierte en "View case ↗"
+   (ver .cursor). Se usa "scale" y no "transform", que puede tenerlo ya la
+   imagen (parallax, zoom) */
+.media-link{ position:relative; display:block; overflow:hidden }
+.media-link img{ transition:scale .9s var(--ease-out) }
+.media-link:hover img,
+.media-link:focus-visible img{ scale:1.04 }
 
 /* ==========================================================
    3. LAYOUT: grid, contenedores, espaciado
    ========================================================== */
-main{ background:var(--bg); }
+/* nada del contenido puede ensanchar la página (en móvil la cortaba).
+   Va en <main> y no en <html>: en <html> el <body> pasaría a ser el
+   contenedor de scroll y dejaría de funcionar todo lo que se fija con el
+   scroll (Selected work, la rueda, What I do). "clip" no crea contenedor
+   de scroll, así que el fijado sigue funcionando */
+main{ background:var(--bg); overflow-x:clip; }
 .statement,
 .what-i-do,
 .all-work,
@@ -176,15 +203,18 @@ main{ background:var(--bg); }
   --u:calc(100vw / 1440);
   position:relative;
   width:100%;
-  height:calc(var(--u) * 900);
-  min-height:560px;
-  max-height:1000px;
+  /* siempre la pantalla entera al abrir, sin scroll, en cualquier
+     dispositivo (svh: la altura visible con las barras del navegador) */
+  height:100vh;
+  height:100svh;
   overflow:hidden;
   background:var(--hero-bg);
   color:var(--white);
   display:flex;
   flex-direction:column;
   justify-content:space-between;
+  /* la cabecera es fija (fuera del flujo): se le deja su hueco arriba */
+  padding-top:var(--header-h);
 }
 .hero__bg{
   position:absolute;
@@ -194,7 +224,18 @@ main{ background:var(--bg); }
   object-fit:cover;
   z-index:0;
 }
-.hero__bar,.hero__mid{ position:relative; z-index:1 }
+/* Todo el texto del hero va en inversión: blanco con mix-blend-mode
+   difference sobre el fondo, igual que el cursor. El modo de fusión va en
+   las dos capas (barras y centro), porque cada una forma su propio grupo
+   y sus hijos solo se fundirían entre sí. */
+.hero__bar,.hero__mid{ position:relative; z-index:1; mix-blend-mode:difference; color:var(--white) }
+
+/* Sombra leve de los textos del hero (menos título y subtítulo): va dentro
+   de la inversión, así que su color sale siempre al revés que el fondo: sobre
+   fondo claro oscurece alrededor del texto y sobre fondo oscuro aclara */
+.site-header .hero__nav,
+.hero__badge,
+.hero__bar--bottom{ text-shadow:0 0 6px rgba(255,255,255,.22) }
 
 .hero__bar{
   display:flex;
@@ -204,18 +245,85 @@ main{ background:var(--bg); }
 }
 .hero__bar--bottom{ padding:0 calc(var(--u) * 38) calc(var(--u) * 60); align-items:flex-end }
 
-.hero__logo img{ width:calc(var(--u) * 60); height:auto }
+.hero__logo img{ width:max(40px, calc(var(--u) * 60)); height:auto; filter:brightness(0) invert(1) }   /* el SVG es amarillo: pasa a blanco */
+
+/* ---- cabecera (logo + nav): fija en toda la página, en inversión. Se
+   esconde al bajar y vuelve en cuanto se sube un poco (main.js). Se
+   esconde con "translate" y no con "transform", que lo ocupa la
+   animación de entrada (.hero-reveal) ---- */
+/* va fuera del hero (si no, deja de pintarse cuando el hero sale de la
+   pantalla), por eso repite su --u */
+.site-header{
+  --u:calc(100vw / 1440);
+  position:fixed;
+  top:0; left:0;
+  /* --sbw: ancho de la barra de scroll mientras el menú está abierto (la
+     página deja de hacer scroll y la barra desaparece); así la X no salta */
+  right:var(--sbw, 0px);
+  z-index:100;
+  pointer-events:none;           /* solo el logo y los enlaces reciben el ratón */
+  transition:translate .5s var(--ease);
+}
+.site-header > *{ pointer-events:auto }
+.site-header.is-hidden{ translate:0 -100% }
 
 .hero__nav{ display:flex; gap:clamp(20px,calc(var(--u) * 32),32px) }
-.hero__nav a{
-  font-size:var(--fs-minititle);
-  font-weight:var(--fw-medium);
-  background:linear-gradient(90deg,var(--hero-cyan-1),var(--hero-cyan-2));
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
+.hero__nav .btn{ font-size:var(--btn-fs); font-weight:var(--btn-fw) }   /* tamaño de botón */
+.hero__nav .btn.is-current{ font-weight:var(--fw-bold) }
+
+/* ---- menú hamburguesa (pantallas pequeñas) ---- */
+.nav-toggle{
+  display:none;
+  position:relative;
+  width:32px; height:32px;
 }
-.hero__nav a.is-current{ font-weight:var(--fw-bold) }
+.nav-toggle__line{
+  position:absolute;
+  left:4px; right:4px;
+  height:2px;
+  background:currentColor;
+  transition:transform .45s var(--ease);
+}
+.nav-toggle__line:first-child{ top:11px }
+.nav-toggle__line:last-child{ top:19px }
+.nav-toggle[aria-expanded="true"] .nav-toggle__line:first-child{ transform:translateY(4px) rotate(45deg) }
+.nav-toggle[aria-expanded="true"] .nav-toggle__line:last-child{ transform:translateY(-4px) rotate(-45deg) }
+
+.nav-panel{
+  position:fixed;
+  inset:0;
+  z-index:99;                    /* debajo de la cabecera: el logo y la X siguen a la vista */
+  display:flex;
+  align-items:center;
+  padding:var(--header-h) var(--grid-margin);
+  /* el mismo fondo que el hero: en la home, hero.js copia aquí su degradado
+     animado (.nav-panel__bg); si no, la imagen de reserva del hero */
+  background:var(--hero-bg) url("../img/hero-grainient.png") center / cover no-repeat;
+  color:var(--white);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .45s var(--ease), visibility 0s linear .45s;
+}
+.nav-panel.is-open{
+  opacity:1;
+  visibility:visible;
+  transition:opacity .45s var(--ease), visibility 0s;
+}
+.nav-panel__bg{ position:absolute; inset:0; width:100%; height:100%; display:block }
+/* los enlaces, en inversión como todo el texto del hero */
+.nav-panel__nav{ position:relative; display:flex; flex-direction:column; gap:var(--space-3xs); mix-blend-mode:difference }
+.nav-panel__nav .btn{ font-size:var(--fs-title); font-weight:var(--fw-regular); line-height:var(--lh-normal) }
+.nav-panel__nav .btn.is-current{ font-weight:var(--fw-bold) }
+.nav-panel__nav .btn{
+  opacity:0;
+  filter:blur(var(--blur-soft));
+  transition:opacity .5s var(--ease-out), filter .5s var(--ease-out);
+}
+.nav-panel.is-open .nav-panel__nav .btn{ opacity:1; filter:none }
+.nav-panel.is-open .nav-panel__nav .btn:nth-child(2){ transition-delay:.06s }
+.nav-panel.is-open .nav-panel__nav .btn:nth-child(3){ transition-delay:.12s }
+.nav-panel.is-open .nav-panel__nav .btn:nth-child(4){ transition-delay:.18s }
+html.is-menu-open{ overflow:hidden }
 
 .hero__mid{
   flex:1;
@@ -226,23 +334,23 @@ main{ background:var(--bg); }
   text-align:center;
   gap:calc(var(--u) * 20);
 }
-/* Tamaño/posición del título: de Figma. El desglose por letra (para el
-   desenfoque que sigue al cursor) y su textura viven en hero.css/hero.js */
+/* Tamaño/posición del título: de Figma. El efecto "melting blur" (WebGL)
+   vive en hero.css/hero.js; el SVG queda para el tamaño, la accesibilidad
+   y como reserva si no hay WebGL */
 .hero__title{
   display:block;
-  width:min(70vw,calc(var(--u) * 679));
+  width:min(70vw, calc(var(--u) * 679), 45vh * 678.9 / 273.701);
+  width:min(70vw, calc(var(--u) * 679), 45svh * 678.9 / 273.701);   /* en pantallas bajas manda el alto */
   aspect-ratio:678.9 / 273.701;
   overflow:visible;
 }
 .hero__subtitle{
   font-size:clamp(20px,calc(var(--u) * 40),40px);
   font-weight:var(--fw-medium);
-  color:var(--hero-mint);
 }
 .hero__badge{
   font-size:var(--fs-small);
   font-weight:var(--fw-medium);
-  color:var(--hero-yellow);
 }
 
 .hero__clock{
@@ -251,14 +359,13 @@ main{ background:var(--bg); }
   gap:var(--btn-gap);
   font-size:var(--fs-small);
   font-weight:var(--fw-medium);
-  color:var(--white);
 }
 .hero__dot{ opacity:.7 }
 .hero__modes{ display:flex; gap:16px }
 .tm{
   font-size:var(--fs-small);
   font-weight:var(--fw-medium);
-  color:var(--white);
+  color:inherit;
   opacity:.6;
   position:relative;
 }
@@ -271,8 +378,8 @@ main{ background:var(--bg); }
 .tm.is-on{ opacity:1; font-weight:var(--fw-bold) }
 .tm.is-on::after{ transform:scaleX(1) }
 
-.hero__scroll{ display:flex; align-items:center; gap:var(--space-3xs); color:var(--hero-yellow); font-size:var(--fs-small); font-weight:var(--fw-medium) }
-.hero__scroll-arrow{ width:15px; height:15px; transform:rotate(90deg) }
+.hero__scroll{ display:flex; align-items:center; gap:var(--space-3xs); font-size:var(--fs-small); font-weight:var(--fw-medium) }
+.hero__scroll-arrow{ width:15px; height:15px; transform:rotate(90deg); filter:brightness(0) invert(1) drop-shadow(0 0 3px rgba(255,255,255,.3)) }   /* el SVG es amarillo: pasa a blanco (+ su sombra) */
 
 /* ---------- SELECTED WORK ---------- */
 /* Medidas, comportamiento y color/tipografía viven enteros en
@@ -299,7 +406,7 @@ main{ background:var(--bg); }
   max-width:650px;
   line-height:var(--lh-normal);
 }
-.statement > .link-reveal{ align-self:start }
+.statement > .btn{ align-self:start }
 
 /* La rueda (pin de scroll + hover) vive en assets/css/rueda.css.
    Aquí solo queda el aspecto visual de la foto, reutilizado allí. 
@@ -349,7 +456,6 @@ main{ background:var(--bg); }
 .cta__lead{ font-size:var(--fs-body); font-weight:var(--fw-medium); max-width:713px; line-height:var(--lh-normal) }
 .cta__lead u{ text-decoration-thickness:12%; text-underline-offset:2px }
 .cta__text{ font-size:var(--fs-body); font-weight:var(--fw-medium); max-width:589px; line-height:var(--lh-normal); color:var(--text) }
-.cta__email{ font-size:var(--btn-fs); font-weight:var(--btn-fw) }
 
 /* ---------- FOOTER ---------- */
 .site-footer{
@@ -365,7 +471,6 @@ main{ background:var(--bg); }
 .site-footer__contact .site-footer__copy{ font-size:var(--fs-small); margin-top:28px; opacity:.7 }
 .site-footer__image{ width:310px; max-width:40vw; aspect-ratio:310/241; object-fit:cover; border-radius:4px }
 .site-footer__links{ display:flex; flex-direction:column; align-items:flex-end; gap:14px }
-.site-footer__links .link-reveal{ font-size:var(--btn-fs); font-weight:var(--btn-fw) }
 .site-footer__cv{ font-size:var(--fs-small); font-weight:var(--fw-medium); margin-top:6px }
 
 /* ==========================================================
@@ -388,10 +493,33 @@ main{ background:var(--bg); }
   z-index:9999;
   opacity:0;
   will-change:transform;
-  transition:width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),opacity .3s ease;
+  transition:width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),opacity .3s ease,background-color .3s ease;
 }
 .cursor.is-ready{ opacity:1 }
-.cursor.is-grow{ width:56px; height:56px; margin:-28px 0 0 -28px }
+.cursor.is-grow{ width:24px; height:24px; margin:-12px 0 0 -12px }   /* solo un poco más grande */
+/* círculo grande (palabras de la rueda) */
+.cursor.is-big{ width:56px; height:56px; margin:-28px 0 0 -28px }
+/* sobre una imagen-enlace, el círculo se convierte en "View case ↗": el
+   cursor ya va en inversión, así que el texto y la flecha también */
+.cursor__label{
+  position:absolute;
+  left:50%; top:50%;
+  translate:-50% -50%;
+  display:inline-flex;
+  align-items:center;
+  gap:var(--btn-gap);
+  font-size:var(--btn-fs);
+  font-weight:var(--btn-fw);
+  line-height:var(--lh-normal);
+  color:var(--white);
+  white-space:nowrap;
+  opacity:0;
+  filter:blur(var(--blur-soft));
+  transition:opacity .35s var(--ease-out), filter .35s var(--ease-out);
+}
+.cursor__label svg{ width:var(--btn-icon); height:var(--btn-icon) }
+.cursor.is-label{ width:14px; height:14px; margin:-7px 0 0 -7px; background:transparent }
+.cursor.is-label .cursor__label{ opacity:1; filter:none }
 @media (pointer:coarse){ .cursor{ display:none } }
 
 .reveal{ opacity:0; transform:translateY(24px); transition:opacity .8s var(--ease),transform .8s var(--ease) }
@@ -405,15 +533,21 @@ main{ background:var(--bg); }
 /* ==========================================================
    7. RESPONSIVE
    ========================================================== */
+/* nav: en pantallas pequeñas, menú hamburguesa */
+@media (max-width:699px){
+  .hero__nav{ display:none }
+  .nav-toggle{ display:block }
+}
+@media (min-width:700px){
+  .nav-panel{ display:none }
+}
+
 @media (max-width:900px){
   .statement__quote{ text-align:left; margin-left:0 }
 }
 
 @media (max-width:640px){
-  .hero{ min-height:680px }
   .hero__bar{ flex-wrap:wrap; row-gap:14px }
-  .hero__nav{ gap:12px; flex-wrap:wrap }
-  .hero__nav a{ font-size:var(--fs-small) }
   .hero__bar--bottom{ flex-direction:column; align-items:flex-start; gap:18px }
   .hero__clock{ flex-wrap:wrap; row-gap:8px }
   .hero__modes{ gap:var(--space-3xs) }
