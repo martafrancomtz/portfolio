@@ -1,5 +1,5 @@
 /* ==================================================================
-   RUEDA: pin de scroll (2 vueltas) + hover con tarjeta flotante.
+   RUEDA: pin de scroll (1 vuelta) + hover (o toque) con tarjeta flotante.
   
    ================================================================== */
 (function () {
@@ -15,7 +15,11 @@
     "Students Life Cards", "ConSentío", "Merkamueble Redesign",
     "Antonio Franco portfolio", "Ecological Posters", "Portfolio v1 → v2", "Expo Sevilla '24", "Bullet Train Illustrations", "Typographic Analysis"
   ];
-  var separador = "   ·   ";
+  /* El SVG junta los espacios seguidos en uno y quita los del final del
+     texto: en la unión del círculo (el último nombre con el primero) el
+     punto quedaba pegado a "3D bottle". Con un espacio duro (\u00A0) al
+     final, ese último espacio no se pierde y el punto queda centrado. */
+  var separador = " \u00B7\u00A0";
 
   /* Qué se ve en la tarjeta de cada proyecto (ruta desde index.html).
      - Una imagen o gif:  "assets/img/proyectos/nombre.jpg"
@@ -137,12 +141,10 @@
   }
 
   /* ============================================================
-     GIRAR SEGÚN SCROLL (2 vueltas repartidas en los 400vh del pin)
+     GIRAR SEGÚN SCROLL (1 vuelta repartida en el recorrido del pin, 220vh)
      ============================================================ */
   var grupoGrande = document.getElementById("wheelBig");
   var grupoPequeno = document.getElementById("wheelSmall");
-  var textoVuelta = document.getElementById("wheelLap");
-  var pistaScroll = document.getElementById("wheelHint");
 
   /* Ajustes del movimiento (juega con ellos) */
   var INERCIA_GRANDE = 0.05;   // 0–1. Más bajo = más pesado, tarda más en alcanzar al scroll
@@ -167,14 +169,6 @@
     var progreso = scrollDisponible > 0 ? scrollActual / scrollDisponible : 0;
 
     anguloObjetivo = progreso * 360;
-
-    if (textoVuelta) {
-      var vuelta = progreso <= 0 ? 1 : Math.min(1, Math.ceil(progreso * 1));
-      textoVuelta.textContent = String(vuelta).padStart(2, "0");
-    }
-    if (pistaScroll) {
-      pistaScroll.style.opacity = progreso > 0.02 ? 0 : 1;
-    }
   }
 
   /* Acerca "actual" a "objetivo" un porcentaje cada frame (interpolación).
@@ -433,7 +427,10 @@
     scrollEnMarcha = setTimeout(function () { scrollEnMarcha = null; }, 250);
   }
 
+  /* Con ratón: hover. En móvil/táctil no hay hover: la tarjeta se abre al
+     tocar una palabra, se cierra al tocarla otra vez o al tocar fuera. */
   function hoverSobre(evento) {
+    if (evento.pointerType !== "mouse") return;
     if (scrollEnMarcha) return;
     var palabra = evento.target.closest(".rueda-item");
     if (palabra) mostrarProyecto(Number(palabra.dataset.idx));
@@ -443,16 +440,49 @@
   svg.addEventListener("pointermove", hoverSobre); // para volver a mostrarla tras el scroll
 
   svg.addEventListener("pointerout", function (evento) {
+    if (evento.pointerType !== "mouse") return;
     var salioDeUnaPalabra = evento.target.closest(".rueda-item");
     if (!salioDeUnaPalabra) return;
     var entraAOtraPalabra = evento.relatedTarget && evento.relatedTarget.closest && evento.relatedTarget.closest(".rueda-item");
     if (!entraAOtraPalabra) ocultarTarjeta();
   });
 
+  var ultimoPuntero = "mouse";
+  document.addEventListener("pointerdown", function (e) { ultimoPuntero = e.pointerType; }, true);
+  document.addEventListener("click", function (evento) {
+    if (ultimoPuntero === "mouse") return;
+    var palabra = evento.target.closest && evento.target.closest(".rueda-item");
+    if (!palabra) { if (proyectoActivo !== null) ocultarTarjeta(); return; }
+    var indice = Number(palabra.dataset.idx);
+    if (proyectoActivo === indice) ocultarTarjeta();
+    else mostrarProyecto(indice);
+  });
+
   /* ============================================================
      ARRANQUE
      ============================================================ */
   function alScrollear() { leerScroll(); }
+
+  /* ============================================================
+     HUECO DE ABAJO: el escenario ocupa una pantalla, pero la rueda solo
+     la parte de arriba. Ese hueco hace falta mientras gira (ahí salen las
+     imágenes), pero al acabar se veía como un espacio enorme. La sección
+     siguiente sube a ocuparlo en el último tramo (margen negativo del
+     pin): mientras la rueda sigue fija, "What I do" entra por debajo, y
+     después todo sube junto, a la separación normal entre secciones.
+     ============================================================ */
+  var escenario = pin.querySelector(".rueda-stage");
+  function ajustarHueco() {
+    var matriz = svg.getScreenCTM();
+    if (!matriz || !escenario) return;
+    // punto más bajo de la rueda: radio grande + su letra, bajo el centro
+    var fondo = new DOMPoint(CENTRO_X, CENTRO_Y + RADIO_GRANDE + LETRA_GRANDE).matrixTransform(matriz).y;
+    var hueco = escenario.offsetHeight - (fondo - escenario.getBoundingClientRect().top);
+    // se deja un poco de aire extra (20% de pantalla): si no, "What I do"
+    // llega a la vez que su cambio a fondo oscuro y se solapa con la rueda
+    hueco -= window.innerHeight * 0.2;
+    pin.style.marginBottom = -Math.max(0, Math.round(hueco)) + "px";
+  }
 
   function preparar() {
     rellenarLosDosCirculos();
@@ -461,10 +491,11 @@
     if (reduce) {
       grupoGrande.setAttribute("transform", "rotate(8 " + CENTRO_X + " " + CENTRO_Y + ")");
       grupoPequeno.setAttribute("transform", "rotate(55 " + CENTRO_X + " " + CENTRO_Y + ")");
-      if (pistaScroll) pistaScroll.style.display = "none";
       return;
     }
 
+    ajustarHueco();
+    window.addEventListener("resize", ajustarHueco);
     alScrollear();
     anguloGrande = anguloPequeno = anguloObjetivo; // empieza ya colocada, sin salto
     requestAnimationFrame(animar);

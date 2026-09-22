@@ -83,8 +83,18 @@
     var lastY = window.scrollY, ticking = false;
     var BAJA = 8, SUBE = 4;   // px que hay que moverse para esconderla / sacarla
 
+    // la sombra del menú solo tiene sentido sobre el hero (fondo animado);
+    // sobre el fondo normal de la página queda rara
+    var heroZona = document.querySelector(".hero");
+    function sobreHero() {
+      var sobre = !!heroZona && window.scrollY < heroZona.offsetHeight - header.offsetHeight / 2;
+      header.classList.toggle("is-over-hero", sobre);
+    }
+    sobreHero();
+
     function onScroll() {
       ticking = false;
+      sobreHero();
       var y = window.scrollY;
       if (menuOpen || y <= header.offsetHeight) {
         header.classList.remove("is-hidden");

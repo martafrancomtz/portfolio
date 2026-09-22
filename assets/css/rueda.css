@@ -25,7 +25,7 @@
   height:95vmax;
 }
 .rueda-wrap svg{ width:100%; height:100%; overflow:visible; display:block }
-.rueda-wrap text{ font-family:var(--font); font-weight:600; fill:var(--black) }
+.rueda-wrap text{ font-family:var(--font); font-weight:var(--fw-semibold); fill:var(--black) }
 
 .rueda-item{ cursor:pointer; transition:filter .4s ease, opacity .4s ease }
 .rueda-item.is-active{ opacity:1 }
@@ -35,38 +35,6 @@
 
 @media (max-width:760px){
   .rueda-wrap{ width:118vmax; height:118vmax }
-}
-
-/* ---- foto dentro del escenario (mismo recorte visual que antes) quitada ---- */
-
-
-/* ---- contador de vueltas + pista de scroll/hover ---- */
-.rueda-ui{
-  position:absolute;
-  left:0; right:0; bottom:0;
-  padding:5.5vh 6vw;
-  display:flex;
-  justify-content:flex-end;
-  font-family:var(--font);
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  color:var(--text-secondary);
-}
-.rueda-ui b{ color:var(--black) }
-
-.rueda-hint{
-  position:absolute;
-  left:50%;
-  bottom:5.5vh;
-  transform:translateX(-50%);
-  font-family:var(--font);
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:.1em;
-  color:var(--text-secondary);
-  transition:opacity .4s ease;
 }
 
 /* ---- tarjeta flotante que aparece al hacer hover sobre un proyecto ---- */
@@ -114,6 +82,9 @@
 @media (prefers-reduced-motion:reduce){
   .rueda-pin{ height:auto }
   .rueda-stage{ position:relative; height:auto; min-height:72vmax; padding:60px 0 }
-  .rueda-hint{ display:none }
   .rueda-card{ transform:none; filter:none; clip-path:none; transition:opacity .2s ease }
 }
+/* ---- con el fondo oscuro de "What I do" la rueda no se ve (su texto es
+   negro fijo): se desvanece al mismo ritmo que el cambio de color ---- */
+.rueda-wrap{ transition:opacity .9s ease }
+html.is-oscuro .rueda-wrap{ opacity:0 }

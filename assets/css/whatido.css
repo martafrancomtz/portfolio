@@ -5,24 +5,37 @@
    prototipo (Poppins/DM Mono, ni la inversión de fondo oscuro).
    ========================================================== */
 
+/* tamaños que se adaptan a la pantalla (ancho y alto), para que el título,
+   la lista y el texto quepan siempre en el escenario fijo */
+.what-i-do{
+  --wid-fs:clamp(24px, min(3.4vw, 5.2svh), 48px);   /* enunciados (48 a 1440×900) */
+  --wid-pad:clamp(6px, 2.2svh, 22px);               /* aire de cada enunciado */
+  --wid-top:calc(var(--header-h) + 4svh);           /* dónde se queda fijo el título */
+}
+
 .whatido-pin{
-  --wid-entrada:40vh;
-  --wid-paso:80vh;
+  --wid-entrada:10vh;             /* antes de empezar los pasos (era 40: tardaba mucho) */
+  --wid-paso:55vh;                /* scroll que dura cada paso (era 80) */
   position:relative;
   height:calc(100vh + var(--wid-entrada) * 2 + var(--wid-paso) * 4);
 }
-/* el bloque se fija arriba, a --space-title del título (como Selected
-   work), no centrado en la pantalla; se resta el padding de cada ítem */
+/* El título va dentro del escenario fijo: se queda en pantalla mientras
+   dura la interacción. Arriba se deja el alto de la cabecera (que vuelve
+   al subir) más un poco de aire (--wid-top) y, entre título y lista, --space-title (como Selected work),
+   menos en pantallas bajas; se resta el padding de cada enunciado. */
 .whatido-pin__stage{
   position:sticky;
   top:0;
   height:100vh;
+  height:100svh;
   display:flex;
-  align-items:flex-start;
-  padding-top:max(0px, calc(var(--space-title) - 22px));
+  flex-direction:column;
+  padding-top:var(--wid-top);
 }
+.whatido-pin__stage > .section-title{ flex:none }
 .whatido-pin__grid{
   width:100%;
+  margin-top:max(0px, calc(min(var(--space-title), 9svh) - var(--wid-pad)));
   display:grid;
   grid-template-columns:minmax(280px,44%) 1fr;
   gap:40px;
@@ -40,8 +53,11 @@
 .whatido-pin__mark-step{ display:block; height:var(--wid-paso) }
 .whatido-pin__mark-out{ display:block; height:var(--wid-entrada) }
 
+/* pantallas pequeñas: una columna, y el texto que cambia va justo debajo de
+   su enunciado (whatido.js lo mueve dentro del activo) */
 @media (max-width:60rem){
-  .whatido-pin__grid{ grid-template-columns:1fr; gap:24px }
+  .whatido-pin__grid{ grid-template-columns:1fr; gap:0 }
+  .what-i-do__item > .what-i-do__desc{ margin-top:var(--space-3xs) }
 }
 
 /* ---------- sin movimiento: nada de pin, lista + descripción en flujo normal ---------- */

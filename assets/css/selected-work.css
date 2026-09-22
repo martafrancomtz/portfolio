@@ -1,13 +1,13 @@
 /* ==========================================================
    SELECTED WORK · v2
    Medidas y comportamiento,
-   ajustados al frame de Figma de 1440 de ancho. Todas las medidas son "px de Figma" × --u,
-   nunca px fijos: --u es 1px de Figma a la anchura real de la sección
-   (100cqw/1440, con container-type:inline-size), así se ve igual a
-   cualquier tamaño, solo más pequeño. Nunca pasa a estática por ancho
-   de pantalla: se abre con el scroll también en móvil.
-   Excepción: el <h2> es un .section-title como los del resto de la web
-   (48px fijos, mismo contenedor y gutter, en styles.css), no escala con --u.
+   ajustados al frame de Figma de 1440 de ancho. Las medidas verticales y la imagen son "px de
+   Figma" × --u: --u es 1px de Figma a la anchura real de la sección
+   (100cqw/1440, con container-type:inline-size). Nunca pasa a estática
+   por ancho de pantalla: se abre con el scroll también en móvil.
+   Lo que NO escala con --u, para ser igual que el resto de la web: el
+   <h2> (.section-title), la tipografía y los botones (--fs-body, --btn-gap)
+   y los márgenes laterales (--grid-margin, --content-margin).
    Color y tipografía: variables globales de :root (styles.css), no las
    del prototipo (que traía su propio negro/blanco puro).
    ========================================================== */
@@ -59,14 +59,15 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 1em;
+  flex-wrap: wrap;            /* si no cabe en una línea (pantallas medianas), */
+  gap: 0 1em;                 /* las etiquetas y el año bajan, a la derecha */
   width: 100%;
   margin: 0;
   padding: 0 var(--row-x);
   border: 0;
   background: none;
   color: var(--text);
-  font: 700 var(--fs) / var(--lh) var(--font);
+  font: var(--fw-bold) var(--fs) / var(--lh) var(--font);
   letter-spacing: 0;
   text-align: left;
   cursor: pointer;
@@ -76,6 +77,7 @@
    son los mismos que en los textos del Figma */
 .sw__left,
 .sw__right{ white-space: pre; }
+.sw__right{ margin-left: auto; }
 
 /* flecha dibujada dentro del HTML (Rethink Sans no trae el carácter →) */
 .arrow{
@@ -113,7 +115,7 @@
   gap: 1em;
   width: var(--text-w);
   min-width: 0;
-  font: 500 var(--fs) / var(--lh) var(--font);
+  font: var(--fw-medium) var(--fs) / var(--lh) var(--font);
   color: var(--text);
 }
 
@@ -200,7 +202,7 @@
   /* 152 bajo la última fila; el texto acaba a 66 del borde y la flecha a 38 */
   margin: calc(152 * var(--u)) var(--margin) 0 auto;
   color: var(--text);
-  font: 500 var(--fs) / var(--lh) var(--font);
+  font: var(--fw-medium) var(--fs) / var(--lh) var(--font);
   text-decoration: none;
 }
 
@@ -254,8 +256,11 @@
     justify-content: space-between;
     gap: 1em;
     padding-left: 2.6em;       /* debajo del título */
-    white-space: nowrap;
+    margin-left: 0;
+    white-space: normal;       /* las etiquetas pueden partirse; el año nunca */
   }
+  .sw__tags{ min-width: 0; }
+  .sw__year{ flex: none; white-space: nowrap; }
 
   .sw__sp{ display: none; }
 
@@ -270,7 +275,7 @@
     margin-left: 0;
   }
 
-  .sw__text{ width: auto; justify-content: flex-start; gap: 12px; line-height: 1.35; }
+  .sw__text{ width: auto; justify-content: flex-start; gap: 12px; }
 
   .selected-work__all{ margin-top: 56px; }
 }

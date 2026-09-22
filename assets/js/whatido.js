@@ -102,11 +102,23 @@
     timers.push(requestAnimationFrame(paso));
   }
 
+  /* ---------- pantallas pequeñas: el texto va debajo de su enunciado ----------
+     En una columna, el párrafo se mueve dentro del enunciado activo (justo
+     debajo de su título) en vez de quedarse al final de la lista. */
+  var grid = desc.parentNode;
+  var pequena = window.matchMedia("(max-width: 60rem)");
+  function colocarDesc(){
+    var destinoDesc = pequena.matches && enfocado >= 0 ? items[enfocado] : grid;
+    if (desc.parentNode !== destinoDesc) destinoDesc.appendChild(desc);
+  }
+  pequena.addEventListener("change", colocarDesc);
+
   /* ---------- pintar ---------- */
   function pintarEnfocado(){
     var i = (hover === null) ? activo : hover;
     if (i === enfocado) return;
     enfocado = i;
+    colocarDesc();
 
     for (var k = 0; k < items.length; k++){
       items[k].classList.toggle("is-active", k === i);
@@ -122,12 +134,28 @@
 
   function irA(i){ activo = i; pintarEnfocado(); }
 
-  /* ---------- hover, foco y clic ---------- */
+  /* ---------- hover, foco y clic ----------
+     Al pasar por un enunciado (o tocarlo) el scroll salta a su tramo: así
+     el scroll y lo que se ve van siempre a la par. Mientras dura el salto,
+     no se pintan los pasos intermedios. */
+  var destino = null, finSalto = 0;
+  function saltarA(i){
+    var r = pista.getBoundingClientRect();
+    var fijado = r.top <= 1 && r.bottom >= window.innerHeight - 1;
+    if (!fijado) return;                       // solo con el bloque fijado en pantalla
+    var y = window.scrollY + r.top + hEntrada + (i + 0.5) * hPaso;
+    if (Math.abs(y - window.scrollY) < hPaso * 0.5) return;   // ya está en su tramo
+    destino = i;
+    clearTimeout(finSalto);
+    finSalto = setTimeout(function(){ destino = null; alScroll(); }, 1500);
+    window.scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
+  }
+
   items.forEach(function(item){
     var i = parseInt(item.getAttribute("data-i"), 10);
-    item.addEventListener("mouseenter", function(){ hover = i; pintarEnfocado(); });
+    item.addEventListener("mouseenter", function(){ hover = i; pintarEnfocado(); saltarA(i); });
     item.addEventListener("focus",      function(){ hover = i; pintarEnfocado(); });
-    item.addEventListener("click",      function(){ hover = null; irA(i); });
+    item.addEventListener("click",      function(){ hover = null; irA(i); saltarA(i); });
   });
   lista.addEventListener("mouseleave", function(){ hover = null; pintarEnfocado(); });
   lista.addEventListener("focusout", function(e){
@@ -152,6 +180,8 @@
     var r = pista.getBoundingClientRect();
     var mitad = window.innerHeight / 2;
     var dentro = (r.top < mitad && r.bottom > mitad);
+    // fondo oscuro mientras el bloque ocupa el centro
+    document.documentElement.classList.toggle("is-oscuro", dentro);
 
     if (dentro && !arrancado){
       arrancado = true;
@@ -162,6 +192,11 @@
     var i = Math.floor((-r.top - hEntrada) / hPaso);
     if (i < 0) i = 0;
     if (i > PASOS.length - 1) i = PASOS.length - 1;
+    if (destino !== null){
+      if (i !== destino) return;               // saltando: aún no ha llegado
+      destino = null; clearTimeout(finSalto);
+      activo = i; return;                      // ya se ve el suyo (el del hover)
+    }
     if (i !== activo){ hover = null; irA(i); }
   }
   function alScroll(){

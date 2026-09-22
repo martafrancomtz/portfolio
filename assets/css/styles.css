@@ -23,7 +23,6 @@
   --fs-title-m:34px;      /* títulos de sección en móvil */
   --fs-quote:40px;        /* cita del statement, subtítulo del hero */
   --fs-quote-m:26px;      /* cita del statement en móvil */
-  --fs-listitem:26px;     /* nombres/roles en "All my work" */
   --fs-button:24px;       /* "button": Medium */
   --fs-minititle:24px;    /* "mini title": Bold, (01)/(02)/(03) */
   --fs-body:24px;         /* textos del CTA y del statement */
@@ -46,8 +45,8 @@
   /* grid (Figma, frame de 1440): 6 columnas, margen 38, gutter 20;
      el bloque estrecho de contenido va a 146 de cada borde.
      Márgenes proporcionales al ancho (como --u del hero), con mínimo */
-  --grid-cols:6;
-  --grid-gutter:20px;
+  --grid-cols:6;          /* columnas y gutter del grid de Figma: referencia para */
+  --grid-gutter:20px;     /* maquetar; los bloques actuales usan los márgenes */
   --grid-margin:max(20px, calc(100vw * 38 / 1440));
   --content-margin:max(var(--grid-margin), calc(100vw * 146 / 1440));
 
@@ -67,6 +66,20 @@
   --blur-soft:8px;
   --blur-title:12px;
 }
+/* Fondo oscuro de "What I do": mientras el bloque
+   ocupa el centro de la pantalla, whatido.js pone .is-oscuro en <html> y
+   solo se invierten los colores. Las variables están registradas con
+   @property para que el cambio se funda (900ms) en todo lo que las usa. */
+@property --bg{ syntax:"<color>"; inherits:true; initial-value:#f4f4f4 }
+@property --text{ syntax:"<color>"; inherits:true; initial-value:#333 }
+@property --text-secondary{ syntax:"<color>"; inherits:true; initial-value:#a29f9f }
+html{ transition:--bg .9s ease, --text .9s ease, --text-secondary .9s ease }
+html.is-oscuro{
+  --bg:#0b0b0a;
+  --text:#f4f3ef;
+  --text-secondary:#8f8f87;
+}
+
 @media (max-width:1023px){ :root{ --grid-cols:4 } }
 @media (max-width:699px){ :root{ --grid-cols:2; --grid-gutter:16px } }
 
@@ -101,29 +114,6 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   color:var(--text);
 }
 
-.u-underline{
-  position:relative;
-  display:inline-block;
-}
-.u-underline::before,
-.u-underline::after{
-  content:"";
-  position:absolute;
-  left:0;
-  width:100%;
-  height:1px;
-  background:currentColor;
-  transform:scaleX(0);
-  transition:transform .45s var(--ease);
-}
-.u-underline::before{ bottom:-2px; transform-origin:right; }
-.u-underline::after{ bottom:-6px; opacity:.45; transform-origin:left; transition-delay:.05s; }
-.u-underline:hover::before,
-.u-underline:focus-visible::before,
-.u-underline.is-current::before{ transform:scaleX(1); transform-origin:left; }
-.u-underline:hover::after,
-.u-underline:focus-visible::after,
-.u-underline.is-current::after{ transform:scaleX(1); transform-origin:right; }
 
 /* botones: texto + flecha diagonal. En hover el texto se reescribe una
    vez (assets/js/rewrite.js, desde main.js) y la flecha gira a su sitio
@@ -233,7 +223,7 @@ main{ background:var(--bg); overflow-x:clip; }
 /* Sombra leve de los textos del hero (menos título y subtítulo): va dentro
    de la inversión, así que su color sale siempre al revés que el fondo: sobre
    fondo claro oscurece alrededor del texto y sobre fondo oscuro aclara */
-.site-header .hero__nav,
+.site-header.is-over-hero .hero__nav,
 .hero__badge,
 .hero__bar--bottom{ text-shadow:0 0 6px rgba(255,255,255,.22) }
 
@@ -395,6 +385,7 @@ html.is-menu-open{ overflow:hidden }
 .statement__quote{
   font-size:var(--fs-quote);
   font-weight:var(--fw-regular);
+  line-height:var(--lh-normal);
   text-align:right;
   max-width:900px;
   margin-left:auto;
@@ -417,11 +408,14 @@ html.is-menu-open{ overflow:hidden }
 /* El scroll fijado (pin) + interacciones viven en assets/css/whatido.css y
    assets/js/whatido.js. Aquí solo la tipografía de título/párrafo, igual
    que antes (blur+opacity de is-active ya eran así). */
-.what-i-do{ padding-top:var(--space-section) }
-.what-i-do__item{ padding:22px 0; cursor:pointer }
+/* el escenario ya deja arriba su propio aire (--wid-top, whatido.css): se
+   descuenta aquí para que la separación con la rueda siga siendo --space-section */
+.what-i-do{ padding-top:max(0px, calc(var(--space-section) - var(--wid-top, var(--header-h)))) }
+.what-i-do__item{ padding:var(--wid-pad, 22px) 0; cursor:pointer }
 .what-i-do__item h3{
-  font-size:var(--fs-title);
+  font-size:var(--wid-fs, var(--fs-title));
   font-weight:var(--fw-regular);
+  line-height:var(--lh-normal);
   filter:blur(8.65px);
   text-shadow:0 0 16px rgba(0,0,0,.16);
   transition:filter .45s var(--ease),opacity .45s var(--ease);
@@ -452,24 +446,39 @@ html.is-menu-open{ overflow:hidden }
   align-items:center;
   gap:var(--space-s);
 }
-.cta__title{ font-size:var(--fs-minititle); font-weight:var(--fw-bold) }
+.cta__title{ font-size:var(--fs-minititle); font-weight:var(--fw-bold); line-height:var(--lh-normal) }
 .cta__lead{ font-size:var(--fs-body); font-weight:var(--fw-medium); max-width:713px; line-height:var(--lh-normal) }
 .cta__lead u{ text-decoration-thickness:12%; text-underline-offset:2px }
 .cta__text{ font-size:var(--fs-body); font-weight:var(--fw-medium); max-width:589px; line-height:var(--lh-normal); color:var(--text) }
 
 /* ---------- FOOTER ---------- */
+/* a la izquierda el contacto (con dónde estoy y mi nombre), a la derecha las
+   redes y el CV, siempre arriba; en medio el logo, como en Figma. Donde no
+   cabe el logo (≤859px) se quita y quedan contacto y redes */
 .site-footer{
   padding:var(--space-section) var(--grid-margin) 80px;
-  display:flex;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns:auto minmax(180px, 310px) auto;
+  grid-template-areas:"contacto marca redes";
   justify-content:space-between;
-  gap:40px;
+  align-items:start;
+  gap:var(--space-s) 40px;
 }
+@media (max-width:859px){
+  .site-footer{ grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"contacto redes" }
+  .marca-efimera{ display:none }
+}
+.site-footer__contact{ grid-area:contacto }
+.site-footer__links{ grid-area:redes }
 /* contacto a 20 (Figma "subtitle"); el copyright y el CV siguen a 16 */
 .site-footer__contact p{ font-size:var(--fs-subtitle); font-weight:var(--fw-medium); line-height:var(--lh-normal); margin:0 0 6px }
 .site-footer__contact p span{ opacity:.7; margin-right:var(--space-3xs) }
 .site-footer__contact .site-footer__copy{ font-size:var(--fs-small); margin-top:28px; opacity:.7 }
-.site-footer__image{ width:310px; max-width:40vw; aspect-ratio:310/241; object-fit:cover; border-radius:4px }
+/* el logo con la animación
+   (assets/js/marca-efimera.js): invisible (sin fondo) hasta que pasa el
+   ratón, que lo descubre en negro */
+.marca-efimera{ grid-area:marca; position:relative; width:100%; aspect-ratio:310/241 }
+.marca-efimera canvas{ position:absolute; inset:0; width:100%; height:100%; display:block }
 .site-footer__links{ display:flex; flex-direction:column; align-items:flex-end; gap:14px }
 .site-footer__cv{ font-size:var(--fs-small); font-weight:var(--fw-medium); margin-top:6px }
 
@@ -553,7 +562,8 @@ html.is-menu-open{ overflow:hidden }
   .hero__modes{ gap:var(--space-3xs) }
   .section-title{ font-size:var(--fs-title-m) }
   .statement__quote{ font-size:var(--fs-quote-m) }
-  .site-footer{ flex-direction:column; align-items:flex-start }
-  .site-footer__links{ align-items:flex-start }
-  .site-footer__image{ order:3; max-width:100% }
+  /* en móvil no caben el contacto y las redes lado a lado: las redes van
+     debajo, pero a la derecha */
+  .site-footer{ grid-template-columns:minmax(0,1fr); grid-template-areas:"contacto" "redes" }
+  .site-footer__links{ justify-self:end }
 }
