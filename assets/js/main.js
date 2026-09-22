@@ -39,11 +39,11 @@
   /* ============================================================
      2) REVEAL AL HACER SCROLL
      ============================================================ */
-  /* .selected-work__row queda fuera: dentro del pin de scroll (3work.js) su
-     opacidad la controla ese script fotograma a fotograma, y el fundido
-     genérico de aquí chocaría con esas animaciones. .work-group__label y
-     .work-item tampoco entran: su entrada escalonada la controla
-     allmywork.js con su propio IntersectionObserver. */
+  /* Las filas de Selected work (.sw) y su enlace "All work" (.selected-reveal)
+     no entran aquí: su entrada escalonada la controla selected-work.js con
+     su propio IntersectionObserver (el <h2> sí es genérico, ese sigue en
+     .section-title). .work-group__label y .work-item tampoco entran: su
+     entrada escalonada la controla all-my-work.js del mismo modo. */
   var revelables = document.querySelectorAll(
     ".section-title, .statement__quote, .statement__now, " +
     ".what-i-do__item, .cta__title, .cta__lead, .cta__text"

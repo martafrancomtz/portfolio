@@ -1,17 +1,22 @@
-/* All my work: entrada escalonada, reescritura letra a letra en hover y
-   el subtítulo acercándose al título. Lógica (se quita la barra de demo y el
-   encabezado propio del prototipo: el <h2> de esta sección ya se revela
-   con el sistema genérico de main.js). */
+/* All my work: entrada de grupo en grupo y de título en título, y
+   reescritura del texto real en hover. Los enlaces navegan a cada proyecto.
+   El <h2> de la sección se revela con el sistema genérico de main.js. */
 (() => {
   'use strict';
 
+  /* ================== AJUSTES ================== */
   const CONFIG = {
-    // 'codigo' = letras al azar que se van ordenando de izquierda a derecha
-    rewrite: 'codigo',
-    titleTime: 520,   // ms que tarda en reescribirse el título
-    tagsTime: 460,    // ms que tarda en reescribirse el subtítulo
-    stagger: 90,      // ms entre un título y el siguiente al entrar
-    groupPause: 140   // ms extra al pasar de un grupo al siguiente
+    // Efecto al pasar el ratón (una sola vez, al entrar en la fila):
+    // 'aino'       = letras al azar que se van colocando de izquierda a derecha
+    // 'locomotive' = las letras de cada palabra se barajan un instante y vuelven
+    style: 'aino',
+    ainoTitle: 600,    // ms (aino) para el título
+    ainoTags: 500,     // ms (aino) para el subtítulo
+    ainoTick: 30,      // ms entre cambios de letra (aino)
+    shuffleSteps: 3,   // veces que se barajan las letras (locomotive)
+    shuffleTick: 55,   // ms entre barajadas (locomotive)
+    stagger: 90,       // ms entre un título y el siguiente al entrar
+    groupPause: 140    // ms extra al pasar de un grupo al siguiente
   };
 
   const root = document.querySelector('.all-work');
@@ -59,109 +64,137 @@
   }
 
   /* ---------- 2. Reescritura del texto ---------- */
+  // Se cambia el texto real (sin capas encima): no hay letras superpuestas
+  // y el texto nunca salta de línea.
+  const IS_LETTER = /[\p{L}\p{N}]/u;
   const LOWER = 'abcdefghijklmnopqrstuvwxyz';
-  const UPPER = LOWER.toUpperCase();
+  const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const DIGITS = '0123456789';
-  const SYMBOLS = '#/*+=_';
-  const pick = (str) => str[(Math.random() * str.length) | 0];
 
-  function randomGlyph(ch) {
-    if (Math.random() < 0.12) return pick(SYMBOLS);
-    if (/\d/.test(ch)) return pick(DIGITS);
-    if (ch !== ch.toLowerCase()) return pick(UPPER);
-    return pick(LOWER);
-  }
+  // Las letras al azar se eligen con un ancho parecido al de la original:
+  // así la palabra mide casi lo mismo y no choca con el subtítulo.
+  const canvas = document.createElement('canvas').getContext('2d');
+  const pools = new Map();
 
-  // parte el texto en letras (una sola vez); espacios y la flecha se quedan igual
-  function letters(el) {
-    if (el._letters) return el._letters;
-    el._html = el.innerHTML;
-    const list = [];
-    [...el.childNodes].forEach((node) => {
-      if (node.nodeType !== Node.TEXT_NODE) return;
-      const frag = document.createDocumentFragment();
-      for (const ch of node.textContent) {
-        if (/[\p{L}\p{N}]/u.test(ch)) {
-          const span = document.createElement('span');
-          span.className = 'ch';
-          span.textContent = ch;
-          frag.appendChild(span);
-          list.push(span);
-        } else {
-          frag.appendChild(document.createTextNode(ch));
-        }
-      }
-      node.replaceWith(frag);
-    });
-    el._letters = list;
-    return list;
-  }
-
-  // vuelve a dejar el texto tal cual (con su interletraje original)
-  function restore(el) {
-    if (el._raf) cancelAnimationFrame(el._raf);
-    el._raf = 0;
-    if (el._letters) {
-      el.innerHTML = el._html;
-      el._letters = null;
+  function poolFor(ch, el) {
+    const cs = getComputedStyle(el);
+    const font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    const key = font + '|' + ch;
+    if (pools.has(key)) return pools.get(key);
+    canvas.font = font;
+    const set = /\d/.test(ch) ? DIGITS : ch !== ch.toLowerCase() ? UPPER : LOWER;
+    const w0 = canvas.measureText(ch).width;
+    const widths = [...set].map((c) => [c, canvas.measureText(c).width]);
+    let pool = [];
+    for (let tol = 0.08; pool.length < 3 && tol <= 0.6; tol += 0.08) {
+      pool = widths.filter(([c, w]) => c !== ch && Math.abs(w - w0) <= w0 * tol).map(([c]) => c);
     }
+    if (!pool.length) pool = [...set].filter((c) => c !== ch);
+    pools.set(key, pool);
+    return pool;
   }
 
-  function stopRewrite(owner, chars) {
-    if (owner._raf) cancelAnimationFrame(owner._raf);
-    owner._raf = 0;
-    chars.forEach((span) => span.classList.remove('is-scr', 'is-hid'));
+  function randomLike(ch, el) {
+    const pool = poolFor(ch, el);
+    return pool[(Math.random() * pool.length) | 0];
   }
 
-  // una vuelta de reescritura del texto entero
+  // los trozos de texto del elemento
+  function pieces(el) {
+    if (!el._pieces) {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const list = [];
+      while (walker.nextNode()) list.push({ node: walker.currentNode, text: walker.currentNode.nodeValue });
+      el._pieces = list;
+    }
+    return el._pieces;
+  }
+
+  function reset(el) {
+    if (el._timer) cancelAnimationFrame(el._timer);
+    el._timer = 0;
+    (el._pieces || []).forEach((p) => { p.node.nodeValue = p.text; });
+  }
+
+  // Aino: letras al azar que se van resolviendo de izquierda a derecha
+  function decode(el, duration, onDone) {
+    const list = pieces(el);
+    const total = list.reduce((n, p) => n + [...p.text].filter((c) => IS_LETTER.test(c)).length, 0);
+    const t0 = performance.now();
+    let last = -Infinity;
+    const tick = (now) => {
+      const t = now - t0;
+      if (t >= duration) {
+        reset(el);
+        if (onDone) onDone();
+        return;
+      }
+      if (now - last >= CONFIG.ainoTick) {
+        last = now;
+        const solved = Math.floor((t / duration) * (total + 1));
+        let k = 0;
+        list.forEach((p) => {
+          let out = '';
+          for (const c of p.text) {
+            if (IS_LETTER.test(c)) {
+              out += k < solved ? c : randomLike(c, el);
+              k += 1;
+            } else {
+              out += c;
+            }
+          }
+          p.node.nodeValue = out;
+        });
+      }
+      el._timer = requestAnimationFrame(tick);
+    };
+    el._timer = requestAnimationFrame(tick);
+  }
+
+  // Locomotive: las letras de cada palabra se barajan unas veces y vuelven
+  function shuffleWord(word) {
+    const a = [...word];
+    if (a.length < 2) return word;
+    for (let tries = 0; tries < 6; tries++) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = (Math.random() * (i + 1)) | 0;
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      if (a.join('') !== word) break;
+    }
+    return a.join('');
+  }
+
+  function shuffle(el, onDone) {
+    const list = pieces(el);
+    const t0 = performance.now();
+    let step = 0;
+    const tick = (now) => {
+      const due = Math.floor((now - t0) / CONFIG.shuffleTick);
+      if (due >= CONFIG.shuffleSteps) {
+        reset(el);
+        if (onDone) onDone();
+        return;
+      }
+      if (due >= step) {
+        step = due + 1;
+        list.forEach((p) => {
+          p.node.nodeValue = p.text.replace(/[\p{L}\p{N}]+/gu, shuffleWord);
+        });
+      }
+      el._timer = requestAnimationFrame(tick);
+    };
+    el._timer = requestAnimationFrame(tick);
+  }
+
   function rewrite(el, duration, onDone) {
-    runRewrite(el, letters(el), duration, onDone);
-  }
-
-  // una vuelta de reescritura sobre unas letras concretas; onDone se llama al terminar
-  function runRewrite(owner, chars, duration, onDone) {
-    const el = owner;
-    stopRewrite(owner, chars);
-    const n = chars.length;
-    if (!n || reduceMotion.matches) {
+    reset(el);
+    if (reduceMotion.matches) {
       if (onDone) onDone();
       return;
     }
-
-    const mode = CONFIG.rewrite;
-    const t0 = performance.now();
-    const plan = chars.map((span, i) => {
-      const k = n > 1 ? i / (n - 1) : 1;
-      return mode === 'tecleo'
-        ? { span, start: 0, end: 60 + k * (duration - 60), last: -1 }
-        : { span, start: k * duration * 0.3, end: duration * 0.35 + k * duration * 0.65, last: -1 };
-    });
-
-    if (mode === 'tecleo') chars.forEach((span) => span.classList.add('is-hid'));
-
-    const tick = (now) => {
-      const t = now - t0;
-      let running = false;
-      for (const p of plan) {
-        if (t >= p.end) {
-          p.span.classList.remove('is-scr', 'is-hid');
-          continue;
-        }
-        running = true;
-        if (mode === 'codigo' && t >= p.start && t - p.last > 50) {
-          p.span.dataset.g = randomGlyph(p.span.textContent);
-          p.span.classList.add('is-scr');
-          p.last = t;
-        }
-      }
-      if (running) {
-        el._raf = requestAnimationFrame(tick);
-      } else {
-        el._raf = 0;
-        if (onDone) onDone();
-      }
-    };
-    el._raf = requestAnimationFrame(tick);
+    if (CONFIG.style === 'locomotive') shuffle(el, onDone);
+    else decode(el, duration, onDone);
   }
 
   /* ---------- 3. Hover ---------- */
@@ -175,40 +208,23 @@
     item.style.setProperty('--shift', shift.toFixed(2) + 'px');
   }
 
-  // hover: el título y el subtítulo se reescriben una sola vez
+  // al entrar: el título y el subtítulo se reescriben una vez y el subtítulo se acerca
   function enter(item) {
     if (item.classList.contains('is-hover')) return;
-    measure(item);
-    item.classList.add('is-hover');
-    item._phase = 'intro';
     const title = item.querySelector('.work-item__title');
     const tags = item.querySelector('.work-item__move');
-    let pending = 2;
-    const done = () => {
-      pending -= 1;
-      if (pending > 0) return;
-      if (item._phase !== 'intro') {
-        // el ratón se fue durante la reescritura: dejar el texto limpio
-        restore(title);
-        restore(tags);
-      } else {
-        item._phase = 'rest';
-      }
-    };
-    rewrite(title, CONFIG.titleTime, done);
-    rewrite(tags, CONFIG.tagsTime, done);
+    reset(title);    // se mide con el texto normal, antes de reescribir
+    reset(tags);
+    measure(item);
+    item.classList.add('is-hover');
+    rewrite(title, CONFIG.ainoTitle);
+    rewrite(tags, CONFIG.ainoTags);
   }
 
-  // al salir: el subtítulo vuelve a su sitio y el texto queda normal
+  // al salir: el subtítulo vuelve (si la reescritura no ha acabado, termina sola)
   function leave(item) {
     clearTimeout(item._wait);
     item.classList.remove('is-hover');
-    const wasIntro = item._phase === 'intro';
-    item._phase = null;
-    if (!wasIntro) {
-      restore(item.querySelector('.work-item__title'));
-      restore(item.querySelector('.work-item__move'));
-    }
   }
 
   // mientras se hace scroll no se activa nada (evita el parpadeo de filas
@@ -222,7 +238,7 @@
     if (!item.classList.contains('is-in')) show(item);   // si aún no había entrado, que entre ya
     const wait = (item._readyAt || 0) - performance.now();
     if (wait > 0) {
-      // todavía se está colocando: reescribir cuando termine
+      // todavía se está colocando: empezar cuando termine
       item._wait = setTimeout(() => { if (item.matches(':hover')) tryEnter(item); }, wait);
       return;
     }

@@ -6,7 +6,7 @@
 .all-work{
   --aw-label-col: minmax(140px, 22%);
   --aw-fs-title: clamp(26px, 3.333vw, 56px);
-  --aw-fs-small: clamp(14px, 1.4vw, 25px);
+  --aw-fs-small: clamp(14px, 1.736vw, 34px);
   --aw-row: calc(var(--aw-fs-title) * 1.6667);
   --aw-group-gap: clamp(20px, 2.431vw, 48px);
   --aw-tag-gap: 26px;
@@ -75,20 +75,6 @@
 }
 .work-item.is-hover .work-item__move{ transform:translateX(var(--shift, 0px)) }
 
-/* ---------- Reescritura letra a letra ---------- */
-.work-item .ch{ position:relative }
-.work-item .ch.is-scr{ color:transparent }
-.work-item .ch.is-scr::after{
-  content:attr(data-g);
-  position:absolute;
-  top:0; left:50%;
-  transform:translateX(-50%);
-  color:var(--text);
-  line-height:normal;
-  white-space:pre;
-  pointer-events:none;
-}
-.work-item .ch.is-hid{ opacity:0 }
 
 /* ---------- Entrada al hacer scroll ---------- */
 .js .work-group__label,
@@ -119,7 +105,7 @@
   .work-group + .work-group{ margin-top:40px }
   .work-group__label{ margin-bottom:8px; line-height:1.4 }
   .work-item{ flex-direction:column; align-items:flex-start; gap:2px; padding:6px 0 }
-  .work-item__title{ line-height:1.15; white-space:normal }
+  .work-item__title{ font-size:clamp(20px, 6.6vw, 30px); line-height:1.15 }
   .work-item__tags{ margin-left:0 }
 }
 

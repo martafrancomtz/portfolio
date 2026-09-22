@@ -1,0 +1,316 @@
+/* ==========================================================
+   SELECTED WORK · v2
+   Medidas y comportamiento,
+   ajustados al frame de Figma de 1440 de ancho. Todas las medidas son "px de Figma" × --u,
+   nunca px fijos: --u es 1px de Figma a la anchura real de la sección
+   (100cqw/1440, con container-type:inline-size), así se ve igual a
+   cualquier tamaño, solo más pequeño. Nunca pasa a estática por ancho
+   de pantalla: se abre con el scroll también en móvil.
+   Excepción: el <h2> es un .section-title como los del resto de la web
+   (48px fijos, mismo contenedor y gutter, en styles.css), no escala con --u.
+   Color y tipografía: variables globales de :root (styles.css), no las
+   del prototipo (que traía su propio negro/blanco puro).
+   ========================================================== */
+
+.selected-work{
+  container-type: inline-size;      /* --u mide el ancho real, sin la barra de scroll */
+  --u: calc(100vw / 1440);          /* alternativa si el navegador no entiende cqw */
+  --ease-io: cubic-bezier(.76, 0, .24, 1);     /* abrir/cerrar */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --blur-soft: 8px;
+}
+@supports (width: 1cqw){
+  .selected-work__in{ --u: calc(100cqw / 1440); }
+}
+
+.selected-work__in{
+  /* ---- Medidas del Figma (px de un frame de 1440), pasadas por --u ---- */
+  --margin: calc(38 * var(--u));          /* texto a la izquierda e imagen a la derecha */
+  --row-x: calc(146 * var(--u));          /* filas: empiezan en x=146 y acaban en x=1294 */
+  /* --sv = 1 salvo en ventanas bajas, donde el JS lo baja para que el proyecto abierto quepa */
+  --row-gap: calc(74 * var(--u) * var(--sv, 1));    /* 105 entre filas = 31 de texto + 74 */
+  --pin-top: calc(118 * var(--u) * var(--sv, 1));   /* donde se queda fija la primera fila */
+  --panel-top: calc(74 * var(--u) * var(--sv, 1));  /* de la fila a la imagen */
+  --media-w: 674;                         /* imagen 674 × 474 */
+  --media-h: 474;
+  --text-w: calc(441 * var(--u));         /* ancho del párrafo */
+
+  /* tipografía: 24/31 del Figma; nunca menos de 15px para que se lea */
+  --fs: max(calc(24 * var(--u)), 15px);
+  --lh: 1.2917;                           /* 31/24 */
+
+  padding-top: calc(189 * var(--u));      /* "Selected work" en y=189 */
+}
+
+/* la pista da el recorrido de scroll; el escenario se queda fijo */
+.selected-work__track{ position: relative; }
+
+.selected-work__stage{ padding-top: var(--pin-top); }
+
+.selected-work__list{
+  display: flex;
+  flex-direction: column;
+  gap: var(--row-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Fila ---------- */
+.sw__head{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1em;
+  width: 100%;
+  margin: 0;
+  padding: 0 var(--row-x);
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: 700 var(--fs) / var(--lh) var(--font);
+  letter-spacing: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* los espacios entre número y título, y entre etiquetas y año,
+   son los mismos que en los textos del Figma */
+.sw__left,
+.sw__right{ white-space: pre; }
+
+/* flecha dibujada dentro del HTML (Rethink Sans no trae el carácter →) */
+.arrow{
+  display: inline-block;
+  width: .708em;
+  height: .4375em;
+  vertical-align: .135em;
+  overflow: visible;
+}
+
+/* ---------- Panel que se abre ---------- */
+.sw__panel{
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .75s var(--ease-io);
+}
+
+.sw.is-open .sw__panel{
+  grid-template-rows: 1fr;
+  transition-duration: .95s;
+}
+
+.sw__clip{ min-height: 0; overflow: hidden; }
+
+.sw__body{
+  display: flex;
+  gap: var(--margin);
+  padding: var(--panel-top) var(--margin) 0;
+}
+
+.sw__text{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;   /* View case abajo, alineado con el pie de la imagen */
+  gap: 1em;
+  width: var(--text-w);
+  min-width: 0;
+  font: 500 var(--fs) / var(--lh) var(--font);
+  color: var(--text);
+}
+
+.sw__text p{ margin: 0; }
+
+.sw__text u{
+  text-decoration-thickness: .12em;   /* 12% en el Figma */
+  text-decoration-skip-ink: none;
+}
+
+.sw__cta{
+  display: inline-flex;
+  align-items: center;
+  gap: .4367em;                     /* 10,5px */
+  align-self: flex-start;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sw__cta svg{
+  width: .6653em;                   /* 15,97 × 15,68 */
+  height: .6533em;
+  overflow: visible;
+  transform: translate(var(--hx, 0), .08em);
+  transition: transform .5s var(--ease-out);
+}
+
+.sw__cta:hover svg{ --hx: .2em; }
+
+.sw__media{
+  /* 674 × 474; en ventanas bajas se reduce con --sv, sin deformarse */
+  --mh: calc(var(--media-h) * var(--u) * var(--sv, 1));
+  flex: none;
+  width: calc(var(--mh) * 674 / 474);
+  height: var(--mh);
+  margin-left: auto;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.sw__media img{
+  width: 100%;
+  height: 108%;               /* un poco más alta para el desplazamiento suave al hacer scroll */
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+  transform: translate3d(0, calc(var(--l, .5) * -7.4%), 0) scale(var(--zoom, 1));
+  will-change: transform;
+}
+
+/* entrada del contenido al abrirse */
+.js .sw__media{
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path .6s var(--ease-io);
+}
+
+.js .sw__media img{
+  --zoom: 1.12;
+  transition: transform .9s var(--ease-out);
+}
+
+.js .sw__text > *{
+  opacity: 0;
+  filter: blur(var(--blur-soft));
+  transform: translate3d(0, 14px, 0);
+  transition: opacity .3s ease, filter .3s ease, transform .3s ease;
+}
+
+.js .sw.is-open .sw__media{
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.05s var(--ease-io) .12s;
+}
+
+.js .sw.is-open .sw__media img{
+  --zoom: 1;
+  transition: transform 1.4s var(--ease-out) .12s;
+}
+
+.js .sw.is-open .sw__text > *{
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition:
+    opacity .8s var(--ease-out) .35s,
+    filter .9s var(--ease-out) .35s,
+    transform .9s var(--ease-out) .35s;
+}
+
+.js .sw.is-open .sw__text > .sw__cta{ transition-delay: .5s; }
+
+/* ---------- Enlace final ---------- */
+.selected-work__all{
+  display: flex;
+  align-items: center;
+  gap: .4167em;                                /* 10px */
+  width: max-content;
+  /* 152 bajo la última fila; el texto acaba a 66 del borde y la flecha a 38 */
+  margin: calc(152 * var(--u)) var(--margin) 0 auto;
+  color: var(--text);
+  font: 500 var(--fs) / var(--lh) var(--font);
+  text-decoration: none;
+}
+
+.selected-work__all svg{
+  width: .7554em;                              /* 18,13 × 18,13 */
+  height: .7554em;
+  overflow: visible;
+  transition: transform .5s var(--ease-out);
+}
+
+.selected-work__all:hover svg{ transform: translate(.12em, -.12em); }
+
+/* ---------- Aparición al llegar a la sección (solo el enlace "All work":
+   el <h2> ya se revela con el sistema genérico de main.js) ---------- */
+.js .selected-work .selected-reveal{
+  opacity: 0;
+  filter: blur(var(--blur-soft));
+  transition: opacity .9s var(--ease-out), filter .9s var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+
+.js .selected-work .selected-reveal.is-in{ opacity: 1; filter: none; }
+
+/* las filas llegan de derecha a izquierda, como en All my work */
+.js .sw__head > *{
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate3d(1em, 0, 0);
+  transition:
+    opacity 1s var(--ease-out),
+    filter 1.1s var(--ease-out),
+    transform 1.3s var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+
+.js .sw.is-in .sw__head > *{ opacity: 1; filter: none; transform: none; }
+
+.js .sw.is-in .sw__head > .sw__right{ transition-delay: calc(var(--d, 0ms) + 120ms); }
+
+/* ---------- Móvil: misma interacción, filas en dos líneas e imagen a todo el ancho ---------- */
+@media (max-width: 699px){
+  .selected-work__in{
+    --margin: 20px;
+    --row-x: 20px;
+    --row-gap: 26px;
+    --pin-top: 76px;
+    --panel-top: 20px;
+    --fs: 15px;
+    padding-top: 96px;
+  }
+
+  .sw__head{ flex-direction: column; align-items: stretch; gap: 2px; }
+
+  .sw__left{ display: flex; white-space: normal; }
+  .sw__num{ flex: none; width: 2.6em; white-space: nowrap; }
+  .sw__title{ min-width: 0; }
+
+  .sw__right{
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+    padding-left: 2.6em;       /* debajo del título */
+    white-space: nowrap;
+  }
+
+  .sw__sp{ display: none; }
+
+  .sw__body{ flex-direction: column; gap: 16px; }
+
+  .sw__media{
+    order: -1;
+    width: 100%;
+    height: auto;
+    max-height: var(--media-max, none);
+    aspect-ratio: 674 / 474;
+    margin-left: 0;
+  }
+
+  .sw__text{ width: auto; justify-content: flex-start; gap: 12px; line-height: 1.35; }
+
+  .selected-work__all{ margin-top: 56px; }
+}
+
+/* ---------- Movimiento reducido: se ven todos abiertos, sin fijar ---------- */
+.selected-work.is-static .sw__panel{ grid-template-rows: 1fr; }
+.selected-work.is-static .sw__media{ clip-path: none !important; }
+.selected-work.is-static .sw__media img{ --zoom: 1 !important; transform: none !important; height: 100%; }
+.selected-work.is-static .sw__text > *{ opacity: 1 !important; filter: none !important; transform: none !important; }
+.selected-work.is-static .sw__head{ cursor: default; }
+
+@media (prefers-reduced-motion: reduce){
+  .js .selected-work .selected-reveal,
+  .js .sw__head > *{
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

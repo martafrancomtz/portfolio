@@ -12,9 +12,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/hero.css">
-<link rel="stylesheet" href="assets/css/3work.css">
+<link rel="stylesheet" href="assets/css/selected-work.css">
 <link rel="stylesheet" href="assets/css/whatido.css">
-<link rel="stylesheet" href="assets/css/allmywork.css">
+<link rel="stylesheet" href="assets/css/all-my-work.css">
 <link rel="stylesheet" href="assets/css/rueda.css">
 </head>
 <body>
@@ -91,73 +91,81 @@
 
 <main>
 
-  <section class="selected-work" id="work">
-    <h2 class="section-title">Selected work</h2>
+  <section class="selected-work" id="work" aria-labelledby="work-title">
+    <div class="selected-work__in">
+      <h2 class="section-title" id="work-title">Selected work</h2>
 
-    <div class="work-pin" id="workPin">
-      <div class="work-pin__stage">
+      <div class="selected-work__track">
+        <div class="selected-work__stage">
+          <ol class="selected-work__list">
 
-        <div class="work-pin__list" id="workList">
-          <a href="work/antonio-franco/index.html" class="selected-work__row">
-            <span class="selected-work__name"><span class="cel c-n">(01)</span>&emsp;<span class="cel c-t">Antonio Franco — Fashion portfolio</span></span>
-            <span class="selected-work__meta"><span class="cel c-r">Web design, Front end</span>&emsp;&emsp;<span class="cel c-a">2026</span></span>
-          </a>
-          <a href="work/consentio/index.html" class="selected-work__row">
-            <span class="selected-work__name"><span class="cel c-n">(02)</span>&emsp;<span class="cel c-t">ConSentío</span></span>
-            <span class="selected-work__meta"><span class="cel c-r">UX Research, UI Design</span>&emsp;&emsp;<span class="cel c-a">2025</span></span>
-          </a>
-          <a href="work/portfolio-v1-v2/index.html" class="selected-work__row">
-            <span class="selected-work__name"><span class="cel c-n">(03)</span>&emsp;<span class="cel c-t">Portfolio v1 → v2</span></span>
-            <span class="selected-work__meta"><span class="cel c-r">Web design, Front-end</span>&emsp;&emsp;<span class="cel c-a">2025–26</span></span>
+            <li class="sw">
+              <button type="button" class="sw__head" aria-expanded="false" aria-controls="sw-panel-01">
+                <span class="sw__left"><span class="sw__num">(01)<span class="sw__sp">   </span></span><span class="sw__title">Antonio Franco — Fashion portfolio</span></span>
+                <span class="sw__right"><span class="sw__tags">Web design, Front end</span><span class="sw__sp">    </span><span class="sw__year">2026</span></span>
+              </button>
+              <div class="sw__panel" id="sw-panel-01">
+                <div class="sw__clip">
+                  <div class="sw__body">
+                    <div class="sw__text">
+                      <p>I’m looking for my first full-time role in <u>web design and UI/UX</u>. Junior, curious, and much more interested in learning how you work than in showing you I already know.</p>
+                      <a class="sw__cta" href="work/antonio-franco/index.html">View case <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M0 8h14.8M8.6 1.8 14.8 8l-6.2 6.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+                    </div>
+                    <div class="sw__media" style="--pos: 50% 50%">
+                      <img src="assets/img/work/antonio/sw-01.jpg" alt="Antonio Franco — Fashion portfolio" width="1006" height="1216" loading="lazy" decoding="async">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="sw">
+              <button type="button" class="sw__head" aria-expanded="false" aria-controls="sw-panel-02">
+                <span class="sw__left"><span class="sw__num">(02)<span class="sw__sp">   </span></span><span class="sw__title">ConSentío</span></span>
+                <span class="sw__right"><span class="sw__tags">UX Research, UI Design</span><span class="sw__sp">       </span><span class="sw__year">2025</span></span>
+              </button>
+              <div class="sw__panel" id="sw-panel-02">
+                <div class="sw__clip">
+                  <div class="sw__body">
+                    <div class="sw__text">
+                      <p>I’m looking for my first full-time role in <u>web design and UI/UX</u>. Junior, curious, and much more interested in learning how you work than in showing you I already know.</p>
+                      <a class="sw__cta" href="work/consentio/index.html">View case <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M0 8h14.8M8.6 1.8 14.8 8l-6.2 6.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+                    </div>
+                    <div class="sw__media" style="--pos: 50% 50%">
+                      <img src="assets/img/work/consentio/sw-02.jpg" alt="ConSentío" width="672" height="473" loading="lazy" decoding="async">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="sw">
+              <button type="button" class="sw__head" aria-expanded="false" aria-controls="sw-panel-03">
+                <span class="sw__left"><span class="sw__num">(03)<span class="sw__sp">   </span></span><span class="sw__title">Portfolio v1 <svg class="arrow" viewBox="0 0 34 21" aria-hidden="true" focusable="false"><path d="M0 10.5h31M22 1.5l9 9-9 9" fill="none" stroke="currentColor" stroke-width="5"/></svg> v2</span></span>
+                <span class="sw__right"><span class="sw__tags">Web design, Front-end</span><span class="sw__sp">     </span><span class="sw__year">2025–26</span></span>
+              </button>
+              <div class="sw__panel" id="sw-panel-03">
+                <div class="sw__clip">
+                  <div class="sw__body">
+                    <div class="sw__text">
+                      <p>I’m looking for my first full-time role in <u>web design and UI/UX</u>. Junior, curious, and much more interested in learning how you work than in showing you I already know.</p>
+                      <a class="sw__cta" href="work/portfolio-v1-v2/index.html">View case <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M0 8h14.8M8.6 1.8 14.8 8l-6.2 6.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+                    </div>
+                    <div class="sw__media" style="--pos: 50% 50%">
+                      <img src="assets/img/work/portfolio/sw-03.jpg" alt="Portfolio v1 to v2" width="1824" height="1216" loading="lazy" decoding="async">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+          </ol>
+
+          <a class="selected-work__all selected-reveal" href="work/index.html">
+            All work
+            <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M1 17 17 1M4.5 1H17v12.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
           </a>
         </div>
-
-        <a href="work/index.html" class="link-reveal link-reveal--diagonal work-pin__all" id="workAll">
-          <span>All work</span>
-          <img src="assets/img/icon-arrow-allwork.svg" alt="">
-        </a>
-
-        <!-- data-a = celda de origen (fila+columna) · data-c = celda de llegada ·
-             data-b = ancla en la ficha. Las que llevan data-campo se quedan con el texto. -->
-        <div class="work-pin__viajeros" id="workViajeros" aria-hidden="true">
-          <span class="vj" data-a="1n" data-c="2n" data-b="workAnchorTitulo" data-lado="izq"></span>
-          <span class="vj" data-a="1t" data-c="2t" data-b="workAnchorTitulo" data-lado="izq" data-campo="titulo"></span>
-          <span class="vj" data-a="1r" data-c="2r" data-b="workAnchorIndice" data-lado="der"></span>
-          <span class="vj" data-a="1a" data-c="2a" data-b="workAnchorIndice" data-lado="der" data-campo="indice"></span>
-          <span class="vj" data-a="2n" data-c="3n" data-b="workAnchorRoles"  data-lado="izq"></span>
-          <span class="vj" data-a="2t" data-c="3t" data-b="workAnchorRoles"  data-lado="izq" data-campo="roles"></span>
-          <span class="vj" data-a="2r" data-c="3r" data-b="workAnchorAno"    data-lado="der"></span>
-          <span class="vj" data-a="2a" data-c="3a" data-b="workAnchorAno"    data-lado="der" data-campo="ano"></span>
-        </div>
-
-        <div class="work-pin__anchor work-pin__anchor--top" aria-hidden="true">
-          <span id="workAnchorTitulo">A</span><span id="workAnchorIndice">A</span>
-        </div>
-        <div class="work-pin__anchor work-pin__anchor--bottom" aria-hidden="true">
-          <span id="workAnchorRoles">A</span><span id="workAnchorAno">A</span>
-        </div>
-
-        <div class="work-pin__scene" id="workScene">
-          <a class="work-pin__photo" data-i="0" href="work/antonio-franco/index.html">
-            <span class="work-pin__view">View <span>↗</span></span>
-          </a>
-          <a class="work-pin__photo" data-i="1" href="work/consentio/index.html">
-            <span class="work-pin__view">View <span>↗</span></span>
-          </a>
-          <a class="work-pin__photo" data-i="2" href="work/portfolio-v1-v2/index.html">
-            <span class="work-pin__view">View <span>↗</span></span>
-          </a>
-        </div>
-
-      </div>
-
-      <div class="work-pin__marks" aria-hidden="true">
-        <span class="work-pin__mark-in"></span>
-        <span class="work-pin__mark-fase"></span>
-        <span class="work-pin__mark-fase"></span>
-        <span class="work-pin__mark-fase"></span>
-        <span class="work-pin__mark-fase work-pin__mark-fase--short"></span>
-        <span class="work-pin__mark-out"></span>
       </div>
     </div>
   </section>
@@ -313,7 +321,13 @@
           <li>
             <a class="work-item" href="work/merkamueble-redesign/index.html" aria-label="Merkamueble Redesign — Web design, Graphic design">
               <span class="work-item__title" aria-hidden="true">Merkamueble Redesign</span>
-          <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Illustration, Graphic design</span></span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Web design, Graphic design</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="work-item" href="work/students-life-cards/index.html" aria-label="Students Life Cards — Illustration, Graphic design">
+              <span class="work-item__title" aria-hidden="true">Students Life Cards</span>
+              <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Illustration, Graphic design</span></span>
             </a>
           </li>
           <li>
@@ -373,17 +387,10 @@
 
 <script src="assets/js/clock.js"></script>
 <script src="assets/js/hero.js"></script>
-<script src="assets/js/3work.js"></script>
+<script src="assets/js/selected-work.js"></script>
 <script src="assets/js/whatido.js"></script>
-<script src="assets/js/allmywork.js"></script>
+<script src="assets/js/all-my-work.js"></script>
 <script src="assets/js/rueda.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
-     <span class="work-item__tags" aria-hidden="true"><span class="work-item__move">Web design, Graphic design</span></span>
-            </a>
-          </li>
-          <li>
-            <a class="work-item" href="work/students-life-cards/index.html" aria-label="Students Life Cards — Illustration, Graphic design">
-              <span class="work-item__title" aria-hidden="true">Students Life Cards</span>
-             
