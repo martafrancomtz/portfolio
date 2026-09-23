@@ -220,7 +220,7 @@
      para lo que el prototipo llama "dusk". */
   var PALETAS = {
     day: { c1: "#9BE4CC", c2: "#0057FF", c3: "#6FBCD4", balance: 0.00, contrast: 1.50, grain: 0.10, noche: 0.0 },
-    twilight: { c1: "#FFE0CB", c2: "#F5430A", c3: "#FF8FA8", balance: 0.05, contrast: 1.55, grain: 0.10, noche: 0.0 },
+    twilight: { c1: "#F8474B", c2: "#FF7743", c3: "#FEC366", balance: 0.05, contrast: 1.55, grain: 0.10, noche: 0.0 },
     night: { c1: "#3E63AE", c2: "#111A34", c3: "#080C18", balance: 0.00, contrast: 1.05, grain: 0.07, noche: 1.0 }
   };
 

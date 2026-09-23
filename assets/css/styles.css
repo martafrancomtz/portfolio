@@ -75,7 +75,7 @@
 @property --text-secondary{ syntax:"<color>"; inherits:true; initial-value:#a29f9f }
 html{ transition:--bg .9s ease, --text .9s ease, --text-secondary .9s ease }
 html.is-oscuro{
-  --bg:#0b0b0a;
+  --bg:#8cbea4;
   --text:#f4f3ef;
   --text-secondary:#8f8f87;
 }
