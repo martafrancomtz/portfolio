@@ -66,7 +66,7 @@
   --blur-soft:8px;
   --blur-title:12px;
 }
-/* Fondo oscuro de "What I do": mientras el bloque
+/* Fondo oscuro de "What I do" 8cbea4: mientras el bloque
    ocupa el centro de la pantalla, whatido.js pone .is-oscuro en <html> y
    solo se invierten los colores. Las variables están registradas con
    @property para que el cambio se funda (900ms) en todo lo que las usa. */
@@ -75,7 +75,7 @@
 @property --text-secondary{ syntax:"<color>"; inherits:true; initial-value:#a29f9f }
 html{ transition:--bg .9s ease, --text .9s ease, --text-secondary .9s ease }
 html.is-oscuro{
-  --bg:#8cbea4;
+  --bg:#567668;
   --text:#f4f3ef;
   --text-secondary:#8f8f87;
 }
@@ -271,7 +271,7 @@ main{ background:var(--bg); overflow-x:clip; }
 .site-header.is-hidden{ translate:0 -100% }
 
 .hero__nav{ display:flex; gap:clamp(20px,calc(var(--u) * 32),32px) }
-.hero__nav .btn{ font-size:var(--btn-fs); font-weight:var(--btn-fw) }   /* tamaño de botón */
+.hero__nav .btn{ font-size:var(--btn-fs); font-weight:var(--fw-regular) }   /* tamaño de botón */
 .hero__nav .btn.is-current{ font-weight:var(--fw-bold) }
 
 /* ---- menú hamburguesa (pantallas pequeñas) ---- */

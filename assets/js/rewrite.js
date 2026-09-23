@@ -50,8 +50,10 @@
     return pool[(Math.random() * pool.length) | 0];
   }
 
-  // los trozos de texto del elemento
+  // los trozos de texto del elemento (se vuelven a leer si su contenido se
+  // ha cambiado desde fuera, p. ej. el párrafo de What I do)
   function pieces(el) {
+    if (el._pieces && el._pieces.some((p) => !el.contains(p.node))) el._pieces = null;
     if (!el._pieces) {
       const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
       const list = [];

@@ -1,0 +1,126 @@
+/* ==========================================================
+   CASO DE PROYECTO: plantilla común de work/<proyecto>/index.html
+   (frame "Desktop - 122" de Figma). Tipografía, color,
+   márgenes y grid: variables del sitio (:root en assets/css/styles.css).
+
+   Estructura:
+     .case__head   título + subtítulo (48/400) y, debajo a la derecha,
+                   nombre, año y etiquetas (24/500) en las 3 últimas columnas
+     .case__body   los bloques, uno debajo de otro, en el orden que se quiera:
+       .case__media                 imagen a todo el ancho (1364×850)
+       .case__media.case__media--tall   imagen a todo el ancho más alta (1364×976)
+       .case__pair                  dos imágenes en paralelo (672×910 cada una)
+       .case__text                  texto a todo el ancho
+       .case__text.case__text--half texto en la mitad derecha
+
+   Espaciado: entre imágenes, 20px. Un texto lleva 100px arriba y abajo,
+   así que entre un texto y lo que tenga al lado hay 120 (100 + los 20).
+   Dos textos seguidos: también 120 (el segundo pierde su padding de arriba).
+   ========================================================== */
+:root{
+  /* medidas de Figma a 1440, proporcionales al ancho como en work.css */
+  --case-top:calc(100vw * 88 / 1440);          /* del borde al título */
+  --case-meta-top:calc(100vw * 238 / 1440);    /* del subtítulo a nombre/año/etiquetas */
+  --case-gap:20px;                             /* entre bloques (imágenes) */
+  --case-text-pad:100px;                       /* arriba y abajo de cada texto: 100 + 20 = 120 */
+  --case-shadow:0 0 16px rgba(0,0,0,.16);      /* sombra de los textos (Figma) */
+  --case-placeholder:#a9a9a9;                  /* hueco gris mientras no hay imagen (Figma) */
+  --case-ratio:1364 / 850;
+  --case-ratio-tall:1364 / 976;
+  --case-ratio-half:672 / 910;
+}
+
+/* ---------- Cabecera: la común (.site-header, en assets/css/styles.css) ---------- */
+
+.case{
+  /* la cabecera es fija: el título nunca queda debajo de ella */
+  padding:max(var(--case-top), calc(var(--header-h) + var(--space-3xs))) var(--grid-margin) 0;
+}
+
+/* ---------- Título + subtítulo ---------- */
+.case__title{
+  line-height:var(--lh-normal);        /* 48 → 62 entre título y subtítulo, como en Figma */
+  text-shadow:var(--case-shadow);
+}
+.case__title span{ display:block }
+
+/* ---------- Nombre, año y etiquetas ----------
+   En las 3 últimas columnas del grid, apoyados abajo (el año queda a la
+   altura de la última línea, como en Figma). */
+.case__meta{
+  margin-top:var(--case-meta-top);
+  margin-bottom:var(--case-gap);
+  display:grid;
+  grid-template-columns:repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap:var(--grid-gutter);
+  align-items:end;
+  font-size:var(--fs-button);
+  font-weight:var(--fw-medium);
+  line-height:var(--lh-normal);
+  text-shadow:var(--case-shadow);
+}
+.case__meta > *{ margin:0 }
+.case__meta > :nth-child(1){ grid-column:calc(var(--grid-cols) - 2) }
+.case__meta > :nth-child(2){ grid-column:calc(var(--grid-cols) - 1) }
+.case__meta > :nth-child(3){ grid-column:var(--grid-cols) }
+
+/* ---------- Bloques ---------- */
+.case__body{
+  display:flex;
+  flex-direction:column;
+  gap:var(--case-gap);
+}
+
+/* imagen: el hueco tiene el tamaño de Figma y la foto lo llena (cover).
+   Sin <img> dentro se ve el gris de marcador. */
+.case__media{
+  position:relative;
+  margin:0;
+  aspect-ratio:var(--case-ratio);
+  overflow:hidden;
+  background:var(--case-placeholder);
+}
+.case__media--tall{ aspect-ratio:var(--case-ratio-tall) }
+.case__media:has(img){ background:none }
+.case__media img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.case__pair{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:var(--case-gap);
+}
+.case__pair .case__media{ aspect-ratio:var(--case-ratio-half) }
+
+/* texto: la tipografía de los demás textos de la web (24/400/1.3) */
+.case__text{
+  padding-block:var(--case-text-pad);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-3xs);
+}
+.case__text + .case__text{ padding-top:0 }
+.case__text p{
+  font-size:var(--fs-body);
+  font-weight:var(--fw-regular);
+  line-height:var(--lh-normal);
+}
+/* en la mitad derecha: empieza donde la segunda imagen de un .case__pair */
+.case__text--half{ padding-left:calc(50% + var(--case-gap) / 2) }
+
+/* ---------- Móvil ---------- */
+@media (max-width:699px){
+  .case__text--half{ padding-left:0 }
+  :root{
+    --case-meta-top:var(--space-m);
+    --case-text-pad:60px;
+  }
+  /* nombre, año y etiquetas: uno debajo de otro */
+  .case__meta{ display:flex; flex-direction:column; align-items:flex-start }
+  .case__pair{ grid-template-columns:minmax(0, 1fr) }
+}

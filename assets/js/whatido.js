@@ -25,82 +25,34 @@
   var reduce = !!(window.matchMedia &&
                   window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-  /* ---------- scramble ----------
-     Cada posición recibe un umbral aleatorio entre 0 y 1 y se queda fija
-     cuando el progreso lo supera: el texto se resuelve en desorden, no de
-     izquierda a derecha. Los espacios no se tocan; si no, el párrafo se
-     recompone entero en cada frame. */
-  var GLIFOS = "abcdeghknopqrsuvxyzABCDEGHKNOPQRSUVXYZ0234568";
-  var timers = [];
-  function pararTimers(){ timers.forEach(function(t){ cancelAnimationFrame(t); }); timers = []; }
-  function azar(){ return GLIFOS[(Math.random() * GLIFOS.length) | 0]; }
+  /* ---------- reescritura ----------
+     La misma que los botones (assets/js/rewrite.js, estilo "Aino": letras
+     al azar de ancho parecido que se resuelven de izquierda a derecha).
+     Mientras dura, cada palabra va en una caja con su ancho fijado: las
+     letras al azar no miden exactamente lo mismo y, sin esto, el párrafo
+     cambiaría de corte de línea y el texto saltaría. Al acabar vuelve a
+     ser texto normal. */
+  var DURACION = 500;          // la de los botones (main.js)
 
-  function prepararCajas(el, texto){
+  function reescribir(el, texto){
+    if (window.Rewrite) window.Rewrite.reset(el);
     el.textContent = "";
     var frag = document.createDocumentFragment();
-    var cajas = new Array(texto.length);
-    var palabra = null;
-
-    for (var i = 0; i < texto.length; i++){
-      var c = texto[i];
-      if (c === " "){
-        palabra = null;
-        frag.appendChild(document.createTextNode(" "));
-        cajas[i] = null;
-        continue;
-      }
-      if (!palabra){
-        palabra = document.createElement("span");
-        palabra.className = "w";
-        frag.appendChild(palabra);
-      }
-      var s = document.createElement("span");
-      s.className = "g";
-      s.textContent = c;
-      palabra.appendChild(s);
-      cajas[i] = s;
-    }
+    var palabras = texto.split(" ");
+    var cajas = palabras.map(function(p, i){
+      if (i) frag.appendChild(document.createTextNode(" "));
+      var w = document.createElement("span");
+      w.className = "w";
+      w.textContent = p;
+      frag.appendChild(w);
+      return w;
+    });
     el.appendChild(frag);
-
-    for (var j = 0; j < cajas.length; j++){
-      if (cajas[j]) cajas[j].style.width = cajas[j].getBoundingClientRect().width + "px";
-    }
-    return cajas;
+    if (!window.Rewrite){ el.textContent = texto; return; }
+    cajas.forEach(function(w){ w.style.width = w.getBoundingClientRect().width + "px"; });
+    window.Rewrite.run(el, DURACION, function(){ el.textContent = texto; });
   }
-
-  function scramble(el, texto, dur, retraso){
-    var cajas = prepararCajas(el, texto);
-    var largo = texto.length;
-    var umbral = new Array(largo), glifo = new Array(largo);
-
-    for (var i = 0; i < largo; i++){
-      umbral[i] = Math.random();
-      glifo[i]  = azar();
-      if (cajas[i]) cajas[i].textContent = glifo[i];
-    }
-
-    var inicio = null;
-    function paso(t){
-      if (inicio === null) inicio = t;
-      var p = (t - inicio - (retraso || 0)) / dur;
-      if (p < 0) p = 0;
-      if (p > 1) p = 1;
-
-      for (var i = 0; i < largo; i++){
-        var s = cajas[i];
-        if (!s) continue;
-        if (umbral[i] <= p){
-          if (s.textContent !== texto[i]) s.textContent = texto[i];
-          continue;
-        }
-        if (Math.random() < 0.32){ glifo[i] = azar(); s.textContent = glifo[i]; }
-      }
-
-      if (p < 1) timers.push(requestAnimationFrame(paso));
-      else el.textContent = texto;
-    }
-    timers.push(requestAnimationFrame(paso));
-  }
+  function pararTimers(){ if (window.Rewrite) window.Rewrite.reset(desc); }
 
   /* ---------- pantallas pequeñas: el texto va debajo de su enunciado ----------
      En una columna, el párrafo se mueve dentro del enunciado activo (justo
@@ -129,7 +81,7 @@
 
     if (reduce || !arrancado){ desc.textContent = texto; return; }
 
-    scramble(desc, texto, 440);
+    reescribir(desc, texto);
   }
 
   function irA(i){ activo = i; pintarEnfocado(); }

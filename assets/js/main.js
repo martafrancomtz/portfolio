@@ -182,7 +182,7 @@
      entrada escalonada la controla all-my-work.js del mismo modo. */
   var revelables = document.querySelectorAll(
     ".section-title, .statement__quote, .statement__now, " +
-    ".what-i-do__item, .cta__title, .cta__lead, .cta__text, .work__lead p"
+    ".what-i-do__item, .cta__title, .cta__lead, .cta__text, .work__lead p, .case__text p"
   );
   revelables.forEach(function (el) { el.classList.add("reveal"); });
 

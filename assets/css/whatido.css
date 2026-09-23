@@ -45,8 +45,8 @@
 .what-i-do__list{ display:flex; flex-direction:column }
 
 /* letras del scramble: caja de ancho fijo para no recomponer la línea */
+/* cajas de palabra mientras se reescribe el párrafo (whatido.js) */
 .what-i-do__desc .w{ display:inline-block; white-space:nowrap }
-.what-i-do__desc .g{ display:inline-block; text-align:center }
 
 .whatido-pin__marks{ position:absolute; inset:0; pointer-events:none }
 .whatido-pin__mark-in{ display:block; height:var(--wid-entrada) }
