@@ -74,6 +74,34 @@
   }
 
   /* ============================================================
+     1c) WORK: al entrar con el ratón en la imagen de un proyecto,
+         se reescriben su nombre y sus etiquetas (rewrite.js)
+     ============================================================ */
+  if (window.Rewrite) {
+    document.querySelectorAll(".project").forEach(function (project) {
+      var media = project.querySelector(".project__media");
+      var textos = project.querySelectorAll(".project__title, .project__meta");
+      if (!media || !textos.length) return;
+
+      function run() {
+        textos.forEach(function (el) {
+          window.Rewrite.reset(el);
+          // el ancho se fija mientras dura: así el pie no baila
+          el.style.width = el.getBoundingClientRect().width + "px";
+          window.Rewrite.run(el, 600, function () { el.style.width = ""; });
+        });
+      }
+
+      media.addEventListener("pointerenter", function (e) {
+        if (e.pointerType === "mouse") run();
+      });
+      project.addEventListener("focus", function () {
+        if (project.matches(":focus-visible")) run();
+      });
+    });
+  }
+
+  /* ============================================================
      1c) CABECERA: se esconde al bajar y vuelve en cuanto se sube
          un poco (como studio-move); arriba del todo, siempre visible
      ============================================================ */
@@ -154,7 +182,7 @@
      entrada escalonada la controla all-my-work.js del mismo modo. */
   var revelables = document.querySelectorAll(
     ".section-title, .statement__quote, .statement__now, " +
-    ".what-i-do__item, .cta__title, .cta__lead, .cta__text"
+    ".what-i-do__item, .cta__title, .cta__lead, .cta__text, .work__lead p"
   );
   revelables.forEach(function (el) { el.classList.add("reveal"); });
 

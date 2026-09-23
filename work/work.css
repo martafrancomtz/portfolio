@@ -1,37 +1,65 @@
 /* ==========================================================
-   WORK: rejilla de proyectos (imagen + nombre), con el mismo
-   hover que las imágenes de la home. Tipografía, color y contenedor: variables del
-   sitio (:root en assets/css/styles.css), no las de un
-   prototipo aparte.
+   WORK: frame "Desktop - 118" de Figma.
+   Título + entradilla y una rejilla de 2 columnas (1 en móvil): cada
+   proyecto = imagen + nombre y etiquetas debajo, con el mismo hover que
+   las imágenes de la home (.media-link). Tipografía, color, márgenes y
+   grid: variables del sitio (:root en assets/css/styles.css).
    ========================================================== */
 :root{
-  --work-gap:clamp(10px, 1.389vw, 28px);
-  --ratio:672 / 813;
+  /* medidas de Figma a 1440, proporcionales al ancho como --space-title */
+  --work-top:calc(100vw * 125 / 1440);        /* del borde al título "Work" */
+  --work-lead-gap:calc(100vw * 46 / 1440);    /* entre los dos párrafos */
+  --work-grid-top:calc(100vw * 195 / 1440);   /* de la entradilla a la rejilla */
+  --work-row-gap:calc(100vw * 46 / 1440);     /* de un pie de foto a la imagen siguiente */
+  --work-caption-gap:4px;                     /* de la imagen a su pie */
+  /* el pie va del --content-margin de la página a la imagen: se mete
+     por el lado exterior lo que le falta al --grid-margin */
+  --work-caption-inset:calc(var(--content-margin) - var(--grid-margin));
+  --work-lead-w:955px;
+  --ratio:672 / 476;
+  --work-shadow:0 0 16px rgba(0,0,0,.16);     /* sombra de los textos (Figma) */
 }
 
 /* ---------- Cabecera: la común (.site-header, en assets/css/styles.css) ---------- */
 
-/* ---------- Rejilla ---------- */
 .work{
-  /* la cabecera es fija: se deja su hueco arriba */
-  padding:calc(var(--header-h) + 64px) var(--grid-margin) 35vh;
+  /* la cabecera es fija: el título nunca queda debajo de ella */
+  padding:max(var(--work-top), calc(var(--header-h) + var(--space-3xs))) var(--grid-margin) 0;
 }
 
+/* ---------- Título + entradilla ---------- */
+.work .section-title{ text-shadow:var(--work-shadow) }
+
+.work__lead{
+  margin-top:var(--space-title);
+  max-width:var(--work-lead-w);
+  display:flex;
+  flex-direction:column;
+  gap:var(--work-lead-gap);
+}
+.work__lead p{
+  font-size:var(--fs-body);
+  font-weight:var(--fw-regular);
+  line-height:var(--lh-normal);
+}
+
+/* ---------- Rejilla ---------- */
 .work__grid{
+  margin-top:var(--work-grid-top);
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:var(--work-gap);
-  row-gap:var(--space-s);        /* debajo de cada imagen va su nombre */
+  column-gap:var(--grid-gutter);
+  row-gap:var(--work-row-gap);
 }
 
 /* ---------- Proyecto ----------
    Mismo efecto que las imágenes de la home (.media-link en styles.css):
    en hover la imagen crece un poco dentro de su marco y el cursor pasa a
-   ser "View case ↗". Debajo, el nombre y las etiquetas. */
+   ser "View case ↗". Debajo, en una línea, el nombre y las etiquetas. */
 .project{
   display:flex;
   flex-direction:column;
-  gap:var(--space-3xs);
+  gap:var(--work-caption-gap);
   overflow:visible;              /* el recorte lo hace el marco de la imagen */
   outline-offset:4px;
 }
@@ -52,17 +80,41 @@
   object-fit:cover;
 }
 
+/* Nombre a la izquierda y etiquetas a la derecha, en una línea. Ninguno
+   de los dos parte nunca por dentro (si no, al reescribirse en hover las
+   letras al azar, que no miden igual, cambiarían el corte y el texto
+   saltaría de línea): si no caben juntos, las etiquetas bajan enteras a la
+   línea de abajo, pegadas a la derecha, y nunca pisan la otra columna. */
 .project__info{
   display:flex;
-  flex-direction:column-reverse;   /* título arriba, etiquetas debajo */
+  flex-wrap:wrap;
+  align-items:baseline;
+  column-gap:var(--space-3xs);
+  font-size:var(--fs-small);
+  line-height:var(--lh-normal);
+  text-shadow:var(--work-shadow);
 }
-.project__meta{ margin:0; font-size:var(--fs-small); font-weight:var(--fw-medium); line-height:var(--lh-normal) }
-.project__title{ margin:0; font-size:var(--fs-body); font-weight:var(--fw-bold); line-height:var(--lh-normal) }
+.project__title,
+.project__meta{ flex:none; max-width:100%; white-space:nowrap }
+.project__meta{ margin-left:auto }
+/* columna izquierda: el nombre empieza en --content-margin;
+   columna derecha: las etiquetas acaban en --content-margin */
+.work__grid > li:nth-child(odd) .project__info{ padding-left:var(--work-caption-inset) }
+.work__grid > li:nth-child(even) .project__info{ padding-right:var(--work-caption-inset) }
+
+.project__meta{ font-weight:var(--fw-regular); text-align:right }
+.project__title{ margin:0; font-size:inherit; font-weight:var(--fw-semibold) }
 
 /* ---------- Móvil ---------- */
 @media (max-width:700px){
+  :root{
+    --work-grid-top:var(--space-m);
+    --work-row-gap:var(--space-s);
+    --work-lead-gap:var(--space-3xs);
+  }
+  .work__lead{ margin-top:var(--space-s) }
   .work__grid{ grid-template-columns:minmax(0, 1fr) }
-  .project__media{ aspect-ratio:4 / 5 }
+  .work__grid > li .project__info{ padding:0 }
 }
 
 @media (prefers-reduced-motion:reduce){

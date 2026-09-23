@@ -155,6 +155,19 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .media-link img{ transition:scale .9s var(--ease-out) }
 .media-link:hover img,
 .media-link:focus-visible img{ scale:1.04 }
+/* con ratón, en vez del zoom, la "superficie de agua" (assets/js/olas.js,
+  ): un lienzo WebGL encima de la foto, dentro de
+   su marco, solo mientras hay ondas. Si no se puede montar (sin WebGL,
+   táctil, movimiento reducido) no hay .has-olas y queda el zoom */
+.has-olas .media-link:hover img{ scale:none }
+.olas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  pointer-events:none;
+}
 
 /* ==========================================================
    3. LAYOUT: grid, contenedores, espaciado
