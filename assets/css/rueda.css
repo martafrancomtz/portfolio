@@ -88,3 +88,9 @@
    negro fijo): se desvanece al mismo ritmo que el cambio de color ---- */
 .rueda-wrap{ transition:opacity .9s ease }
 html.is-oscuro .rueda-wrap{ opacity:0 }
+
+/* ---- "All work" justo debajo de la rueda, a la derecha (rueda.js pone su
+   "top" según dónde acaba la rueda). Superpuesto: no cambia ningún espacio.
+   Con el fondo oscuro se desvanece con la rueda ---- */
+.rueda-all{ position:absolute; left:0; bottom:var(--space-s); z-index:1; transition:opacity .9s ease }
+html.is-oscuro .rueda-all{ opacity:0; pointer-events:none }

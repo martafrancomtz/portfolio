@@ -10,7 +10,7 @@
 .what-i-do{
   --wid-fs:clamp(24px, min(3.4vw, 5.2svh), 48px);   /* enunciados (48 a 1440×900) */
   --wid-pad:clamp(6px, 2.2svh, 22px);               /* aire de cada enunciado */
-  --wid-top:calc(var(--header-h) + 4svh);           /* dónde se queda fijo el título */
+  --wid-top:calc(var(--header-h) + 8svh);           /* dónde se queda fijo el título */
 }
 
 .whatido-pin{
@@ -53,11 +53,15 @@
 .whatido-pin__mark-step{ display:block; height:var(--wid-paso) }
 .whatido-pin__mark-out{ display:block; height:var(--wid-entrada) }
 
+/* "Contact" abajo a la derecha del escenario fijo: va superpuesto (no ocupa
+   sitio), así no cambia ningún espacio del bloque */
+.whatido-cta{ position:absolute; right:0; bottom:var(--space-s) }
+
 /* pantallas pequeñas: una columna, y el texto que cambia va justo debajo de
    su enunciado (whatido.js lo mueve dentro del activo) */
 @media (max-width:60rem){
   .whatido-pin__grid{ grid-template-columns:1fr; gap:0 }
-  .what-i-do__item > .what-i-do__desc{ margin-top:var(--space-3xs) }
+  .what-i-do__item > .what-i-do__desc{ margin-top: 30px }
 }
 
 /* ---------- sin movimiento: nada de pin, lista + descripción en flujo normal ---------- */
@@ -66,6 +70,7 @@
   .whatido-pin__stage{ position:static; height:auto }
   .whatido-pin__grid{ display:block }
   .whatido-pin__marks{ display:none }
+  .whatido-cta{ position:static; align-self:flex-end; margin-top:var(--space-s) }
   .what-i-do__item h3{ filter:none }
   .what-i-do__desc{ margin-top:24px }
 }

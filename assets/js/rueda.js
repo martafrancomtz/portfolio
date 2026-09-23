@@ -477,7 +477,9 @@
     if (!matriz || !escenario) return;
     // punto más bajo de la rueda: radio grande + su letra, bajo el centro
     var fondo = new DOMPoint(CENTRO_X, CENTRO_Y + RADIO_GRANDE + LETRA_GRANDE).matrixTransform(matriz).y;
-    var hueco = escenario.offsetHeight - (fondo - escenario.getBoundingClientRect().top);
+    var fondoEnEscenario = fondo - escenario.getBoundingClientRect().top;
+    
+    var hueco = escenario.offsetHeight - fondoEnEscenario;
     // se deja un poco de aire extra (20% de pantalla): si no, "What I do"
     // llega a la vez que su cambio a fondo oscuro y se solapa con la rueda
     hueco -= window.innerHeight * 0.2;

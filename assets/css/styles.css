@@ -38,7 +38,7 @@
   --space-s:38px;         /* ritmo vertical del CTA */
   --space-m:70px;         /* bloques del statement (Figma) */
   /* entre secciones: todas iguales (135px a 1440), proporcional por debajo */
-  --space-section:clamp(60px, calc(100vw * 135 / 1440), 135px);
+  --space-section:clamp(260px, calc(100vw * 135 / 1440), 135px);
   /* de un título de sección a su bloque (el de Selected work: 118 a 1440) */
   --space-title:calc(100vw * 118 / 1440);
 
