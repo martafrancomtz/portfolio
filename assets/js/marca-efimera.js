@@ -10,293 +10,387 @@
 (function () {
   "use strict";
 
-  var stage = document.getElementById("marcaEfimera");
-  if (!stage) return;
-  var cv = stage.querySelector("canvas");
-  var gl = null;
-  try { gl = cv.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: true }); } catch (e) { gl = null; }
-  if (!gl) { stage.classList.add("is-no-webgl"); return; }
+  /* el del footer (#marcaEfimera) y cualquier otro escenario con
+     data-marca-efimera (el de Contact) */
+  var escenarios = document.querySelectorAll("#marcaEfimera, [data-marca-efimera]");
+  Array.prototype.forEach.call(escenarios, iniciar);
 
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function iniciar(stage) {
+    /* opciones (data-*): data-base = cuánto se ve el logo sin pasar el ratón
+       (0 = invisible, como en el footer; 1 = entero); data-fill = tamaño del
+       logo respecto al hueco; data-haze y data-radius/spread/drag/melt, abajo.
+       Tinta: --marca-ink del escenario o, si no, --text */
+    var BASE = Math.min(1, Math.max(0, parseFloat(stage.getAttribute("data-base")) || 0));
+    var FILL = parseFloat(stage.getAttribute("data-fill")) || 0.86;
+    var cv = stage.querySelector("canvas");
+    var gl = null;
+    try { gl = cv.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: true }); } catch (e) { gl = null; }
+    if (!gl) { stage.classList.add("is-no-webgl"); return; }
 
-  /* ajustes de la referencia (px sobre un escenario de 760 de ancho) */
-  var CFG = { radius: 150, spread: 60, drag: 1.8, melt: 0.55, inertia: 0.13, quality: 20,
-              hold: 10, tin: 0.35, tout: 2.5 };
-  var REF_W = 760;
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  /* el logo (el mismo que en la referencia) */
-  var VB = { x: 0, y: 0, w: 176.98, h: 153.21 };
-  var shape = new Path2D(
-    "M176.98,71.5v10.21c0,4.07-3.3,7.37-7.37,7.37h-33.9c-4.54,0-8.49,3.11-9.55,7.53l-11.8,49.08c-1.06,4.41-5.01,7.53-9.55,7.53h-34.41c-4.54,0-8.49-3.11-9.55-7.53L32.35,27.13c-.31-1.28-1.46-2.19-2.78-2.19h0c-1.58,0-2.86,1.28-2.86,2.86v118.04c0,4.07-3.3,7.37-7.37,7.37H7.37c-4.07,0-7.37-3.3-7.37-7.37V7.37C0,3.3,3.3,0,7.37,0h40.47c3.4,0,6.35,2.32,7.16,5.63l29.29,120.47c.45,1.85,2.11,3.15,4.01,3.15h0c1.9,0,3.56-1.3,4.01-3.14l9.12-37.03,4.76-19.34c.81-3.29,3.76-5.61,7.15-5.61h56.27c4.07,0,7.37,3.3,7.37,7.37Z " +
-    "M176.98,7.37v10.21c0,4.07-3.3,7.37-7.37,7.37h-43c-4.78,0-8.29-4.48-7.15-9.13l2.51-10.21c.81-3.29,3.76-5.61,7.15-5.61h40.49c4.07,0,7.37,3.3,7.37,7.37Z " +
-    "M155.87 128.27H169.61A7.37 7.37 0 0 1 176.98 135.64V145.84A7.37 7.37 0 0 1 169.61 153.21H155.87A7.37 7.37 0 0 1 148.5 145.84V135.64A7.37 7.37 0 0 1 155.87 128.27Z"
-  );
+    /* ajustes de la referencia (px sobre un escenario de 760 de ancho) */
+    var CFG = { radius: 150, spread: 60, drag: 1.8, melt: 0.55, inertia: 0.13, quality: 20,
+                hold: 10, tin: 0.35, tout: 2.5 };
+    // el escenario puede pedir más efecto: data-radius, data-spread, data-drag, data-melt
+    ["radius", "spread", "drag", "melt"].forEach(function (k) {
+      var v = parseFloat(stage.getAttribute("data-" + k));
+      if (!isNaN(v)) CFG[k] = v;
+    });
+    // bruma de la tinta en reposo: 1 = como la referencia (nunca nítida);
+    // 0 = el logo se ve nítido y solo se deshace donde pasa el ratón
+    var HAZE = parseFloat(stage.getAttribute("data-haze"));
+    if (isNaN(HAZE)) HAZE = 1;
+    var REF_W = 760;
 
-  var root = document.documentElement;
-  var W = 0, H = 0, dpr = 1, sc = 1;
-  var tinta = [0.2, 0.2, 0.2];
+    /* el logo (el mismo que en la referencia) */
+    var VB = { x: 0, y: 0, w: 176.98, h: 153.21 };
+    var shape = new Path2D(
+      "M176.98,71.5v10.21c0,4.07-3.3,7.37-7.37,7.37h-33.9c-4.54,0-8.49,3.11-9.55,7.53l-11.8,49.08c-1.06,4.41-5.01,7.53-9.55,7.53h-34.41c-4.54,0-8.49-3.11-9.55-7.53L32.35,27.13c-.31-1.28-1.46-2.19-2.78-2.19h0c-1.58,0-2.86,1.28-2.86,2.86v118.04c0,4.07-3.3,7.37-7.37,7.37H7.37c-4.07,0-7.37-3.3-7.37-7.37V7.37C0,3.3,3.3,0,7.37,0h40.47c3.4,0,6.35,2.32,7.16,5.63l29.29,120.47c.45,1.85,2.11,3.15,4.01,3.15h0c1.9,0,3.56-1.3,4.01-3.14l9.12-37.03,4.76-19.34c.81-3.29,3.76-5.61,7.15-5.61h56.27c4.07,0,7.37,3.3,7.37,7.37Z " +
+      "M176.98,7.37v10.21c0,4.07-3.3,7.37-7.37,7.37h-43c-4.78,0-8.29-4.48-7.15-9.13l2.51-10.21c.81-3.29,3.76-5.61,7.15-5.61h40.49c4.07,0,7.37,3.3,7.37,7.37Z " +
+      "M155.87 128.27H169.61A7.37 7.37 0 0 1 176.98 135.64V145.84A7.37 7.37 0 0 1 169.61 153.21H155.87A7.37 7.37 0 0 1 148.5 145.84V135.64A7.37 7.37 0 0 1 155.87 128.27Z"
+    );
 
-  function leerColores() {
-    var c = document.createElement("canvas").getContext("2d");
-    c.fillStyle = getComputedStyle(root).getPropertyValue("--text").trim() || "#333";
-    var m = /^#([0-9a-f]{6})$/i.exec(c.fillStyle);
-    if (m) {
+    var root = document.documentElement;
+    var W = 0, H = 0, dpr = 1, sc = 1;
+    var tinta = [0.2, 0.2, 0.2];
+    var inversa = [0.96, 0.96, 0.96];   // el texto invertido sobre el logo (data-invert)
+
+    function aRgb(color, reserva) {
+      var c = document.createElement("canvas").getContext("2d");
+      c.fillStyle = color || "#000";
+      var m = /^#([0-9a-f]{6})$/i.exec(c.fillStyle);
+      if (!m) return reserva;
       var n = parseInt(m[1], 16);
-      tinta = [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+      return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
     }
-  }
+    function leerColores() {
+      var cs = getComputedStyle(stage);
+      tinta = aRgb(cs.getPropertyValue("--marca-ink").trim() ||
+        getComputedStyle(root).getPropertyValue("--text").trim() || "#333", tinta);
+      inversa = aRgb(cs.getPropertyValue("--marca-invert").trim() ||
+        getComputedStyle(root).getPropertyValue("--bg").trim(), inversa);
+    }
 
-  /* ---------- la marca nítida que el shader difumina (solo su forma:
-     transparente fuera, opaca dentro; el color lo pone el shader) ---------- */
-  var plate = document.createElement("canvas");
-  var pctx = plate.getContext("2d");
-  function paintPlate() {
-    pctx.setTransform(1, 0, 0, 1, 0, 0);
-    pctx.clearRect(0, 0, plate.width, plate.height);
-    var s = Math.min(W / VB.w, H / VB.h) * 0.86 * dpr;
-    pctx.setTransform(s, 0, 0, s,
-      (plate.width - VB.w * s) / 2 - VB.x * s,
-      (plate.height - VB.h * s) / 2 - VB.y * s);
-    pctx.fillStyle = "#fff";
-    pctx.fill(shape);
-    pctx.setTransform(1, 0, 0, 1, 0, 0);
-  }
+    /* ---------- la marca nítida que el shader difumina (solo su forma:
+       transparente fuera, opaca dentro; el color lo pone el shader) ---------- */
+    var plate = document.createElement("canvas");
+    var pctx = plate.getContext("2d");
+    function paintPlate() {
+      pctx.setTransform(1, 0, 0, 1, 0, 0);
+      pctx.clearRect(0, 0, plate.width, plate.height);
+      var s = Math.min(W / VB.w, H / VB.h) * FILL * dpr;
+      pctx.setTransform(s, 0, 0, s,
+        (plate.width - VB.w * s) / 2 - VB.x * s,
+        (plate.height - VB.h * s) / 2 - VB.y * s);
+      pctx.fillStyle = "#fff";
+      pctx.fill(shape);
+      pctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
 
-  /* ---------- el rastro: por dónde ha aflorado la tinta ---------- */
-  var MS = 0.34;
-  var inkc = document.createElement("canvas"), ictx = inkc.getContext("2d");
-  var softc = document.createElement("canvas"), sctx = softc.getContext("2d");
-  var trail = [];
+    /* ---------- el rastro: por dónde ha aflorado la tinta ---------- */
+    var MS = 0.34;
+    var inkc = document.createElement("canvas"), ictx = inkc.getContext("2d");
+    var softc = document.createElement("canvas"), sctx = softc.getContext("2d");
+    var trail = [];
 
-  function radius() { return CFG.radius * sc; }
+    function radius() { return CFG.radius * sc; }
 
-  function addTrail(x, y, now) {
-    var last = trail[trail.length - 1];
-    var step = Math.max(4, radius() * 0.22);
-    if (!last) { trail.push({ x: x, y: y, t: now }); return; }
-    var dx = x - last.x, dy = y - last.y, L = Math.hypot(dx, dy);
-    if (L < step) return;
-    var n = Math.min(26, Math.max(1, Math.round(L / step)));
-    for (var k = 1; k <= n; k++) trail.push({ x: last.x + dx * k / n, y: last.y + dy * k / n, t: now });
-    if (trail.length > 1100) trail.splice(0, trail.length - 1100);
-  }
+    function addTrail(x, y, now) {
+      var last = trail[trail.length - 1];
+      var step = Math.max(4, radius() * 0.22);
+      if (!last) { trail.push({ x: x, y: y, t: now }); return; }
+      var dx = x - last.x, dy = y - last.y, L = Math.hypot(dx, dy);
+      if (L < step) return;
+      var n = Math.min(26, Math.max(1, Math.round(L / step)));
+      for (var k = 1; k <= n; k++) trail.push({ x: last.x + dx * k / n, y: last.y + dy * k / n, t: now });
+      if (trail.length > 1100) trail.splice(0, trail.length - 1100);
+    }
 
-  // lo presente que está una marca: aflora, aguanta y se deshace
-  function strength(p, now) {
-    var age = (now - p.t) / 1000;
-    var a = age < CFG.tin ? age / CFG.tin : 1;
-    if (age > CFG.hold) a *= Math.max(0, 1 - (age - CFG.hold) / CFG.tout);
-    return a;
-  }
+    // lo presente que está una marca: aflora, aguanta y se deshace
+    function strength(p, now) {
+      var age = (now - p.t) / 1000;
+      var a = age < CFG.tin ? age / CFG.tin : 1;
+      if (age > CFG.hold) a *= Math.max(0, 1 - (age - CFG.hold) / CFG.tout);
+      return a;
+    }
 
-  function paintMask(now) {
-    var w = inkc.width, h = inkc.height;
-    var life = CFG.hold + CFG.tout;
-    while (trail.length && (now - trail[0].t) / 1000 > life) trail.shift();
+    function paintMask(now) {
+      var w = inkc.width, h = inkc.height;
+      var life = CFG.hold + CFG.tout;
+      while (trail.length && (now - trail[0].t) / 1000 > life) trail.shift();
 
-    ictx.setTransform(1, 0, 0, 1, 0, 0);
-    ictx.fillStyle = "#000";
-    ictx.fillRect(0, 0, w, h);
-    ictx.strokeStyle = "#fff";
-    ictx.lineCap = "round";
-    ictx.lineJoin = "round";
-    ictx.lineWidth = Math.max(2, radius() * MS * 1.1);
-
-    var BK = 12;
-    var band = function (p) { return Math.round(strength(p, now) * BK) / BK; };
-    var i = 0;
-    while (i < trail.length) {
-      var a = band(trail[i]);
-      var j = i;
-      while (j + 1 < trail.length && band(trail[j + 1]) === a) j++;
-      if (a > 0.02) {
-        ictx.globalAlpha = a;
-        ictx.beginPath();
-        ictx.moveTo(trail[i].x * MS, trail[i].y * MS);
-        for (var k = i + 1; k <= j; k++) ictx.lineTo(trail[k].x * MS, trail[k].y * MS);
-        var nxt = trail[j + 1];
-        if (nxt) ictx.lineTo(nxt.x * MS, nxt.y * MS);
-        else if (i === j) ictx.lineTo(trail[i].x * MS + 0.01, trail[i].y * MS);
-        ictx.stroke();
+      ictx.setTransform(1, 0, 0, 1, 0, 0);
+      ictx.fillStyle = "#000";
+      ictx.fillRect(0, 0, w, h);
+      // con data-base el logo se ve siempre un poco; el rastro lo completa
+      if (BASE > 0) {
+        ictx.fillStyle = "rgba(255,255,255," + BASE + ")";
+        ictx.fillRect(0, 0, w, h);
       }
-      i = j + 1;
+      ictx.strokeStyle = "#fff";
+      ictx.lineCap = "round";
+      ictx.lineJoin = "round";
+      ictx.lineWidth = Math.max(2, radius() * MS * 1.1);
+
+      var BK = 12;
+      var band = function (p) { return Math.round(strength(p, now) * BK) / BK; };
+      var i = 0;
+      while (i < trail.length) {
+        var a = band(trail[i]);
+        var j = i;
+        while (j + 1 < trail.length && band(trail[j + 1]) === a) j++;
+        if (a > 0.02) {
+          ictx.globalAlpha = a;
+          ictx.beginPath();
+          ictx.moveTo(trail[i].x * MS, trail[i].y * MS);
+          for (var k = i + 1; k <= j; k++) ictx.lineTo(trail[k].x * MS, trail[k].y * MS);
+          var nxt = trail[j + 1];
+          if (nxt) ictx.lineTo(nxt.x * MS, nxt.y * MS);
+          else if (i === j) ictx.lineTo(trail[i].x * MS + 0.01, trail[i].y * MS);
+          ictx.stroke();
+        }
+        i = j + 1;
+      }
+      ictx.globalAlpha = 1;
+
+      sctx.setTransform(1, 0, 0, 1, 0, 0);
+      sctx.filter = "none";
+      sctx.fillStyle = "#000";
+      sctx.fillRect(0, 0, w, h);
+      // debajo del desenfoque, el mismo fondo: así los bordes no se oscurecen
+      if (BASE > 0) {
+        sctx.fillStyle = "rgba(255,255,255," + BASE + ")";
+        sctx.fillRect(0, 0, w, h);
+      }
+      sctx.filter = "blur(" + Math.max(1, radius() * MS * 0.32).toFixed(1) + "px)";
+      sctx.drawImage(inkc, 0, 0);
+      sctx.filter = "none";
     }
-    ictx.globalAlpha = 1;
 
-    sctx.setTransform(1, 0, 0, 1, 0, 0);
-    sctx.filter = "none";
-    sctx.fillStyle = "#000";
-    sctx.fillRect(0, 0, w, h);
-    sctx.filter = "blur(" + Math.max(1, radius() * MS * 0.32).toFixed(1) + "px)";
-    sctx.drawImage(inkc, 0, 0);
-    sctx.filter = "none";
+    /* ---------- webgl (shader de la referencia) ---------- */
+    var VERT =
+      "attribute vec2 aPos; varying vec2 vUv;" +
+      "void main(){ vUv = vec2((aPos.x + 1.0) * 0.5, 1.0 - (aPos.y + 1.0) * 0.5); gl_Position = vec4(aPos, 0.0, 1.0); }";
+
+    var N = CFG.quality;
+    var FRAG = [
+      "precision highp float;",
+      "varying vec2 vUv;",
+      "uniform sampler2D uTex;",
+      "uniform sampler2D uMask;",
+      "uniform vec2 uRes;",
+      "uniform vec2 uPtr;",
+      "uniform vec2 uDrag;",
+      "uniform float uRadius;",
+      "uniform float uSpread;",
+      "uniform float uMelt;",
+      "uniform float uHaze;",
+      "uniform float uOn;",
+      "uniform vec3 uInk;",
+      "uniform sampler2D uText;",
+      "uniform float uUseText;",
+      "uniform vec3 uInv;",
+      "float hash(vec2 p){ return fract(sin(dot(p, vec2(41.3, 289.7))) * 43758.5453); }",
+      "void main(){",
+      "  float m = texture2D(uMask, vUv).r;",
+      "  if (m < 0.004){ gl_FragColor = vec4(0.0); return; }",
+      "  vec2 px = vUv * uRes;",
+      "  float d = distance(px, uPtr);",
+      "  float f = pow(1.0 - smoothstep(uRadius * 0.12, uRadius, d), 1.3) * uOn;",
+      "  vec2 rl = d > 0.001 ? (px - uPtr) / d : vec2(0.0);",
+      "  vec2 c = px - uRes * 0.5;",
+      "  float lc = length(c);",
+      "  vec2 og = lc > 0.001 ? c / lc : vec2(0.0);",
+      /* la tinta nunca es nítida: brumosa en el centro del rastro y casi
+         deshecha en sus bordes */
+      "  float haze = (0.42 + 1.3 * (1.0 - m)) * uHaze;",
+      "  float sag = pow(f, 1.6);",
+      "  vec2 base = uDrag * 0.55 * f + vec2(0.0, 1.0) * uSpread * uMelt * (sag + 0.4 * haze);",
+      "  vec2 span = uDrag * 0.85 * f + rl * uSpread * f + og * uSpread * haze;",
+      "  float jit = hash(px + uDrag);",
+      "  float acc = 0.0;",
+      "  float wsum = 0.0;",
+      "  for (int i = 0; i < " + N + "; i++){",
+      "    float t = (float(i) + jit) / " + N + ".0;",
+      "    vec2 off = base + span * (t - 0.5);",
+      "    float w = 1.0 - 0.55 * abs(t - 0.5) * 2.0;",
+      "    acc += texture2D(uTex, (px - off) / uRes).a * w;",
+      "    wsum += w;",
+      "  }",
+      "  float a = (acc / wsum) * m;",
+      /* con data-invert, donde hay texto encima del logo la tinta se
+         vuelve del color del fondo: el texto se lee invertido */
+      "  float tx = texture2D(uText, vUv).a * uUseText;",
+      "  vec3 col = mix(uInk, uInv, tx);",
+      "  gl_FragColor = vec4(col * a, a);",   /* tinta sin fondo (alfa premultiplicado) */
+      "}"
+    ].join("\n");
+
+    function compile(src, type) {
+      var sh = gl.createShader(type);
+      gl.shaderSource(sh, src); gl.compileShader(sh);
+      return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : null;
+    }
+    var vs = compile(VERT, gl.VERTEX_SHADER), fs = compile(FRAG, gl.FRAGMENT_SHADER);
+    if (!vs || !fs) { stage.classList.add("is-no-webgl"); return; }
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { stage.classList.add("is-no-webgl"); return; }
+    gl.useProgram(prog);
+
+    var loc = {};
+    ["uTex", "uMask", "uRes", "uPtr", "uDrag", "uRadius", "uSpread", "uMelt", "uHaze", "uOn", "uInk", "uText", "uUseText", "uInv"].forEach(function (u) {
+      loc[u] = gl.getUniformLocation(prog, u);
+    });
+    var quad = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var aPos = gl.getAttribLocation(prog, "aPos");
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform1i(loc.uTex, 0);
+    gl.uniform1i(loc.uMask, 1);
+    gl.uniform1i(loc.uText, 2);
+
+    function makeTex() {
+      var t = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      return t;
+    }
+    var texPlate = makeTex(), texMask = makeTex(), texText = makeTex();
+
+    function uploadPlate() {
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, texPlate);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, plate);
+    }
+    function uploadMask() {
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, texMask);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, softc);
+    }
+
+    /* ---------- textos que se invierten sobre el logo (data-invert) ----------
+       el lienzo va por encima de esos textos: donde el logo los tapa, los
+       vuelve a dibujar en --marca-invert (el fondo), palabra a palabra en
+       su sitio exacto (Range), con su misma letra */
+    var INVERT = stage.getAttribute("data-invert");
+    var textc = document.createElement("canvas"), tctx = textc.getContext("2d");
+    function paintText() {
+      textc.width = cv.width; textc.height = cv.height;
+      if (INVERT) {
+        var r0 = stage.getBoundingClientRect();
+        var rg = document.createRange();
+        tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        tctx.fillStyle = "#fff";
+        Array.prototype.forEach.call(stage.querySelectorAll(INVERT), function (el) {
+          var tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), nodo, pal, re;
+          while ((nodo = tw.nextNode())) {
+            var cs = getComputedStyle(nodo.parentNode);
+            tctx.font = cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+            re = /\S+/g;
+            while ((pal = re.exec(nodo.data))) {
+              rg.setStart(nodo, pal.index);
+              rg.setEnd(nodo, pal.index + pal[0].length);
+              var b = rg.getClientRects()[0];
+              if (!b) continue;
+              tctx.fillText(pal[0], b.left - r0.left, b.top - r0.top + tctx.measureText(pal[0]).fontBoundingBoxAscent);
+            }
+          }
+        });
+      }
+      gl.activeTexture(gl.TEXTURE2);
+      gl.bindTexture(gl.TEXTURE_2D, texText);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textc);
+    }
+    // si el texto cambia (la reescritura de los enlaces en hover), se
+    // redibuja, como mucho cada 80ms
+    var textoPendiente = 0;
+    if (INVERT) {
+      new MutationObserver(function () {
+        if (textoPendiente) return;
+        textoPendiente = setTimeout(function () { textoPendiente = 0; paintText(); arrancar(); }, 80);
+      }).observe(stage, { subtree: true, childList: true, characterData: true });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { resize(); });
+    }
+
+    function resize() {
+      var r = stage.getBoundingClientRect();
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+      sc = W / REF_W;
+      cv.width = plate.width = Math.round(W * dpr);
+      cv.height = plate.height = Math.round(H * dpr);
+      inkc.width = softc.width = Math.max(2, Math.round(W * MS));
+      inkc.height = softc.height = Math.max(2, Math.round(H * MS));
+      leerColores();
+      paintPlate(); uploadPlate();
+      paintText();
+      gl.viewport(0, 0, cv.width, cv.height);
+      arrancar();
+    }
+
+    /* ---------- puntero ---------- */
+    var mx = -1e4, my = -1e4, sx = -1e4, sy = -1e4, on = 0, want = 0;
+
+    stage.addEventListener("pointermove", function (e) {
+      var r = stage.getBoundingClientRect();
+      mx = e.clientX - r.left; my = e.clientY - r.top;
+      if (want === 0) { sx = mx; sy = my; }
+      want = 1;
+      addTrail(mx, my, performance.now());
+      arrancar();
+    });
+    stage.addEventListener("pointerdown", function (e) {
+      stage.dispatchEvent(new PointerEvent("pointermove", e));
+    });
+    stage.addEventListener("pointerleave", function () { want = 0; });
+    window.addEventListener("resize", resize);
+    // si cambian los colores de la web (fondo oscuro de What I do), se repinta
+    new MutationObserver(function () { resize(); }).observe(root, { attributes: true, attributeFilter: ["class"] });
+
+    /* solo se anima mientras hay tinta o ratón encima; si no, se queda quieto */
+    var prev = 0, corriendo = false;
+    function arrancar() {
+      if (corriendo) return;
+      corriendo = true; prev = 0;
+      requestAnimationFrame(frame);
+    }
+    function frame(now) {
+      var dt = prev ? Math.min(0.05, (now - prev) / 1000) : 0.016;
+      prev = now;
+      var k = 1 - Math.pow(1 - (reduced.matches ? 0.5 : CFG.inertia), dt * 60);
+      sx += (mx - sx) * k; sy += (my - sy) * k;
+      on += (want - on) * (1 - Math.exp(-dt / 0.16));
+
+      paintMask(now);
+      uploadMask();
+
+      var gain = reduced.matches ? 0 : CFG.drag;
+      gl.uniform2f(loc.uRes, W, H);
+      gl.uniform2f(loc.uPtr, sx, sy);
+      gl.uniform2f(loc.uDrag, (mx - sx) * gain, (my - sy) * gain);
+      gl.uniform1f(loc.uRadius, radius());
+      gl.uniform1f(loc.uSpread, CFG.spread * sc);
+      gl.uniform1f(loc.uMelt, CFG.melt);
+      gl.uniform1f(loc.uHaze, HAZE);
+      gl.uniform1f(loc.uOn, on);
+      gl.uniform3f(loc.uInk, tinta[0], tinta[1], tinta[2]);
+      gl.uniform1f(loc.uUseText, INVERT ? 1 : 0);
+      gl.uniform3f(loc.uInv, inversa[0], inversa[1], inversa[2]);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      if (trail.length || want || on > 0.001) requestAnimationFrame(frame);
+      else corriendo = false;
+    }
+
+    resize();
   }
-
-  /* ---------- webgl (shader de la referencia) ---------- */
-  var VERT =
-    "attribute vec2 aPos; varying vec2 vUv;" +
-    "void main(){ vUv = vec2((aPos.x + 1.0) * 0.5, 1.0 - (aPos.y + 1.0) * 0.5); gl_Position = vec4(aPos, 0.0, 1.0); }";
-
-  var N = CFG.quality;
-  var FRAG = [
-    "precision highp float;",
-    "varying vec2 vUv;",
-    "uniform sampler2D uTex;",
-    "uniform sampler2D uMask;",
-    "uniform vec2 uRes;",
-    "uniform vec2 uPtr;",
-    "uniform vec2 uDrag;",
-    "uniform float uRadius;",
-    "uniform float uSpread;",
-    "uniform float uMelt;",
-    "uniform float uOn;",
-    "uniform vec3 uInk;",
-    "float hash(vec2 p){ return fract(sin(dot(p, vec2(41.3, 289.7))) * 43758.5453); }",
-    "void main(){",
-    "  float m = texture2D(uMask, vUv).r;",
-    "  if (m < 0.004){ gl_FragColor = vec4(0.0); return; }",
-    "  vec2 px = vUv * uRes;",
-    "  float d = distance(px, uPtr);",
-    "  float f = pow(1.0 - smoothstep(uRadius * 0.12, uRadius, d), 1.3) * uOn;",
-    "  vec2 rl = d > 0.001 ? (px - uPtr) / d : vec2(0.0);",
-    "  vec2 c = px - uRes * 0.5;",
-    "  float lc = length(c);",
-    "  vec2 og = lc > 0.001 ? c / lc : vec2(0.0);",
-    /* la tinta nunca es nítida: brumosa en el centro del rastro y casi
-       deshecha en sus bordes */
-    "  float haze = 0.42 + 1.3 * (1.0 - m);",
-    "  float sag = pow(f, 1.6);",
-    "  vec2 base = uDrag * 0.55 * f + vec2(0.0, 1.0) * uSpread * uMelt * (sag + 0.4 * haze);",
-    "  vec2 span = uDrag * 0.85 * f + rl * uSpread * f + og * uSpread * haze;",
-    "  float jit = hash(px + uDrag);",
-    "  float acc = 0.0;",
-    "  float wsum = 0.0;",
-    "  for (int i = 0; i < " + N + "; i++){",
-    "    float t = (float(i) + jit) / " + N + ".0;",
-    "    vec2 off = base + span * (t - 0.5);",
-    "    float w = 1.0 - 0.55 * abs(t - 0.5) * 2.0;",
-    "    acc += texture2D(uTex, (px - off) / uRes).a * w;",
-    "    wsum += w;",
-    "  }",
-    "  float a = (acc / wsum) * m;",
-    "  gl_FragColor = vec4(uInk * a, a);",   /* tinta sin fondo (alfa premultiplicado) */
-    "}"
-  ].join("\n");
-
-  function compile(src, type) {
-    var sh = gl.createShader(type);
-    gl.shaderSource(sh, src); gl.compileShader(sh);
-    return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : null;
-  }
-  var vs = compile(VERT, gl.VERTEX_SHADER), fs = compile(FRAG, gl.FRAGMENT_SHADER);
-  if (!vs || !fs) { stage.classList.add("is-no-webgl"); return; }
-  var prog = gl.createProgram();
-  gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { stage.classList.add("is-no-webgl"); return; }
-  gl.useProgram(prog);
-
-  var loc = {};
-  ["uTex", "uMask", "uRes", "uPtr", "uDrag", "uRadius", "uSpread", "uMelt", "uOn", "uInk"].forEach(function (u) {
-    loc[u] = gl.getUniformLocation(prog, u);
-  });
-  var quad = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  var aPos = gl.getAttribLocation(prog, "aPos");
-  gl.enableVertexAttribArray(aPos);
-  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-  gl.uniform1i(loc.uTex, 0);
-  gl.uniform1i(loc.uMask, 1);
-
-  function makeTex() {
-    var t = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, t);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    return t;
-  }
-  var texPlate = makeTex(), texMask = makeTex();
-
-  function uploadPlate() {
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, texPlate);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, plate);
-  }
-  function uploadMask() {
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, texMask);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, softc);
-  }
-
-  function resize() {
-    var r = stage.getBoundingClientRect();
-    dpr = Math.min(2, window.devicePixelRatio || 1);
-    W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
-    sc = W / REF_W;
-    cv.width = plate.width = Math.round(W * dpr);
-    cv.height = plate.height = Math.round(H * dpr);
-    inkc.width = softc.width = Math.max(2, Math.round(W * MS));
-    inkc.height = softc.height = Math.max(2, Math.round(H * MS));
-    leerColores();
-    paintPlate(); uploadPlate();
-    gl.viewport(0, 0, cv.width, cv.height);
-    arrancar();
-  }
-
-  /* ---------- puntero ---------- */
-  var mx = -1e4, my = -1e4, sx = -1e4, sy = -1e4, on = 0, want = 0;
-
-  stage.addEventListener("pointermove", function (e) {
-    var r = stage.getBoundingClientRect();
-    mx = e.clientX - r.left; my = e.clientY - r.top;
-    if (want === 0) { sx = mx; sy = my; }
-    want = 1;
-    addTrail(mx, my, performance.now());
-    arrancar();
-  });
-  stage.addEventListener("pointerdown", function (e) {
-    stage.dispatchEvent(new PointerEvent("pointermove", e));
-  });
-  stage.addEventListener("pointerleave", function () { want = 0; });
-  window.addEventListener("resize", resize);
-  // si cambian los colores de la web (fondo oscuro de What I do), se repinta
-  new MutationObserver(function () { resize(); }).observe(root, { attributes: true, attributeFilter: ["class"] });
-
-  /* solo se anima mientras hay tinta o ratón encima; si no, se queda quieto */
-  var prev = 0, corriendo = false;
-  function arrancar() {
-    if (corriendo) return;
-    corriendo = true; prev = 0;
-    requestAnimationFrame(frame);
-  }
-  function frame(now) {
-    var dt = prev ? Math.min(0.05, (now - prev) / 1000) : 0.016;
-    prev = now;
-    var k = 1 - Math.pow(1 - (reduced.matches ? 0.5 : CFG.inertia), dt * 60);
-    sx += (mx - sx) * k; sy += (my - sy) * k;
-    on += (want - on) * (1 - Math.exp(-dt / 0.16));
-
-    paintMask(now);
-    uploadMask();
-
-    var gain = reduced.matches ? 0 : CFG.drag;
-    gl.uniform2f(loc.uRes, W, H);
-    gl.uniform2f(loc.uPtr, sx, sy);
-    gl.uniform2f(loc.uDrag, (mx - sx) * gain, (my - sy) * gain);
-    gl.uniform1f(loc.uRadius, radius());
-    gl.uniform1f(loc.uSpread, CFG.spread * sc);
-    gl.uniform1f(loc.uMelt, CFG.melt);
-    gl.uniform1f(loc.uOn, on);
-    gl.uniform3f(loc.uInk, tinta[0], tinta[1], tinta[2]);
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-    if (trail.length || want || on > 0.001) requestAnimationFrame(frame);
-    else corriendo = false;
-  }
-
-  resize();
 })();

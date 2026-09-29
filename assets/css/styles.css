@@ -7,6 +7,10 @@
   --text-secondary:#a29f9f;
   --black:#000;           /* solo la rueda (va por su cuenta); el "negro" de texto es --text */
   --white:#fff;
+  /* verde de "What I do" (html.is-oscuro) y del escenario de Contact */
+  --green:#567668;
+  --green-text:#f4f3ef;
+  --green-text-secondary:#8f8f87;
 
   /* hero: el texto va en inversión (sin colores propios) */
   --hero-bg:#0b0714;      /* fondo de reserva mientras carga el degradado */
@@ -75,9 +79,9 @@
 @property --text-secondary{ syntax:"<color>"; inherits:true; initial-value:#a29f9f }
 html{ transition:--bg .9s ease, --text .9s ease, --text-secondary .9s ease }
 html.is-oscuro{
-  --bg:#567668;
-  --text:#f4f3ef;
-  --text-secondary:#8f8f87;
+  --bg:var(--green);
+  --text:var(--green-text);
+  --text-secondary:var(--green-text-secondary);
 }
 
 @media (max-width:1023px){ :root{ --grid-cols:4 } }

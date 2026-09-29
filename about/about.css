@@ -1,0 +1,202 @@
+/* ==========================================================
+   ABOUT: frame "Desktop - 33" de Figma.
+   Foto + presentación, trayectoria (fecha | etapa), herramientas en dos
+   filas de grupos y, al final a la derecha, CV y email.
+   Tipografía, color, márgenes y grid: variables del sitio (:root en
+   assets/css/styles.css). Todo el texto va a 20 ("subtitle" de Figma):
+   500 los textos, 700 las fechas y títulos de etapa; títulos de grupo 24/700.
+   ========================================================== */
+:root{
+  /* medidas de Figma a 1440, proporcionales al ancho como en work.css */
+  --about-top:calc(100vw * 269 / 1440);         /* del borde a la foto */
+  --about-photo:calc(100vw * 356 / 1440);       /* foto cuadrada */
+  --about-bio-top:calc(100vw * 263 / 1440);     /* de lo alto de la foto al texto */
+  --about-bio-w:520px;                          /* ancho de línea del texto (cortes de Figma) */
+  /* espacios entre apartados: proporcionales, con un mínimo para que al
+     estrechar la pantalla no se junten */
+  --about-timeline-top:max(160px, calc(100vw * 320 / 1440)); /* del texto a la trayectoria */
+  --about-skills-top:max(160px, calc(100vw * 277 / 1440));   /* de la trayectoria a las herramientas */
+  --about-rows-gap:max(110px, calc(100vw * 166 / 1440));     /* entre las dos filas de herramientas */
+  --about-links-top:max(130px, calc(100vw * 199 / 1440));    /* de las herramientas a CV / email */
+  --about-indent:80px;                          /* sangría del detalle de cada etapa */
+  --about-sub-indent:34px;                      /* sangría de la sublista (Adobe CC) */
+  --about-item-gap:16px;                        /* entre elementos de una lista */
+  --about-head-gap:22px;                        /* del título de grupo a su lista */
+  --about-links-gap:24px;                       /* entre CV y email */
+  --about-ai-w:470px;                           /* ancho del texto de IA (cortes de Figma) */
+  --about-placeholder:#d9d9d9;                  /* hueco de la foto sin imagen (Figma) */
+  /* columnas de las herramientas (x de Figma desde --content-margin) */
+  --about-r1-c1:calc(100vw * 434 / 1440);       /* Design (146 → 580) */
+  --about-r1-c2:calc(100vw * 402 / 1440);       /* Build  (580 → 982) */
+  --about-r2-c1:calc(100vw * 658 / 1440);       /* IA     (146 → 804) */
+  --about-r2-c2:calc(100vw * 276 / 1440);       /* Learning (804 → 1080) */
+}
+
+/* título solo para lectores de pantalla (el diseño no lo muestra) */
+.about__sr{
+  position:absolute;
+  width:1px; height:1px;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+  white-space:nowrap;
+}
+
+.about{
+  /* la cabecera es fija: la foto nunca queda debajo de ella */
+  padding:max(var(--about-top), calc(var(--header-h) + var(--space-3xs))) var(--grid-margin) 0;
+  font-size:var(--fs-subtitle);
+  font-weight:var(--fw-medium);
+  line-height:var(--lh-normal);
+}
+.about h2{ font-size:inherit; margin:0 }
+
+/* rejilla de 6 columnas de la web (3 de ellas = la mitad derecha) */
+.about__intro,
+.about__timeline > li{
+  display:grid;
+  grid-template-columns:repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap:var(--grid-gutter);
+}
+
+/* ---------- Foto + presentación ----------
+   la foto empieza en la 2.ª columna; el texto, alineado a la derecha en
+   la mitad derecha, empieza más abajo (se solapan en altura, como en Figma) */
+.about__photo{
+  grid-column:2 / -1;
+  grid-row:1;
+  margin:0;
+  position:relative;
+  width:var(--about-photo);
+  aspect-ratio:1;
+  overflow:hidden;
+  background:var(--about-placeholder);
+}
+.about__photo.is-loaded{ background:none }
+.about__photo img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity .6s var(--ease);
+}
+.about__photo.is-loaded img{ opacity:1 }
+
+.about__bio{
+  grid-column:4 / -1;
+  grid-row:1;
+  margin-top:var(--about-bio-top);
+  justify-self:end;
+  max-width:var(--about-bio-w);
+  text-align:right;
+  display:flex;
+  flex-direction:column;
+  gap:calc(var(--lh-normal) * 1em);   /* una línea en blanco entre párrafos */
+}
+
+/* ---------- Trayectoria ----------
+   fecha en las columnas 1-2, pegada a la derecha; la etapa, desde la 4.ª */
+.about__timeline{
+  list-style:none;
+  margin:var(--about-timeline-top) 0 0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-m);
+}
+.about__date{
+  grid-column:1 / span 2;
+  text-align:right;
+  font-weight:var(--fw-bold);
+  white-space:nowrap;
+}
+.about__entry{ grid-column:4 / -1 }
+.about__entry h2{ font-weight:var(--fw-bold) }
+.about__entry p{ padding-left:var(--about-indent) }
+
+/* ---------- Herramientas ---------- */
+.about__skills{
+  margin-top:var(--about-skills-top);
+  padding-left:calc(var(--content-margin) - var(--grid-margin));
+  display:flex;
+  flex-direction:column;
+  gap:var(--about-rows-gap);
+}
+.about__row{ display:grid; align-items:start }
+.about__row--1{ grid-template-columns:var(--about-r1-c1) var(--about-r1-c2) auto }
+.about__row--2{ grid-template-columns:var(--about-r2-c1) var(--about-r2-c2) auto }
+
+.about__group{
+  display:flex;
+  flex-direction:column;
+  gap:var(--about-head-gap);
+  white-space:nowrap;
+}
+.about__group h2{
+  font-size:var(--fs-minititle);
+  font-weight:var(--fw-bold);
+}
+.about__group > ul{
+  display:flex;
+  flex-direction:column;
+  gap:var(--about-item-gap);
+}
+.about__group ul ul{
+  margin-top:var(--space-3xs);
+  padding-left:var(--about-sub-indent);
+}
+.about__group--text{ white-space:normal }
+.about__group--text p{ max-width:var(--about-ai-w) }
+.about__group--text p + p{ margin-top:calc(var(--about-item-gap) - var(--about-head-gap)) }
+
+/* ---------- CV y email: al final, a la derecha ---------- */
+.about__links{
+  margin-top:var(--about-links-top);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:var(--about-links-gap);
+}
+
+/* ---------- Pantallas medianas: las columnas fijas de Figma ya no caben ---------- */
+@media (max-width:1199px){
+  .about__row--1,
+  .about__row--2{
+    grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+    gap:var(--space-m) var(--grid-gutter);
+  }
+}
+@media (max-width:1023px){
+  .about__photo{ grid-column:1 / -1 }
+  .about__bio{ grid-column:2 / -1 }
+  /* la columna de fechas ya no cabe en 2 columnas del grid: la
+     trayectoria pasa a ser una sola rejilla de 2 columnas (fecha, del
+     ancho de la más larga | etapa), así nunca se pisan y siguen alineadas */
+  .about__timeline{
+    display:grid;
+    grid-template-columns:max-content minmax(0, 1fr);
+    gap:var(--space-m) var(--space-s);
+  }
+  .about__timeline > li{ display:contents }
+  .about__date,
+  .about__entry{ grid-column:auto }
+}
+
+/* ---------- Móvil: una columna ---------- */
+@media (max-width:699px){
+  :root{
+    --about-photo:min(356px, 60vw);
+    --about-bio-top:var(--space-s);
+    --about-rows-gap:var(--space-m);
+    --about-indent:var(--space-3xs);
+  }
+  .about__intro,
+  .about__timeline > li{ display:flex; flex-direction:column }
+  .about__bio{ justify-self:auto; text-align:left }
+  .about__date{ text-align:left }
+  .about__timeline{ display:flex; flex-direction:column; gap:var(--space-s) }
+  .about__skills{ padding-left:0 }
+  .about__group,
+  .about__row{ white-space:normal }
+}

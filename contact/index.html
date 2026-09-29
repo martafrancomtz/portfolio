@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Marta Franco</title>
+<meta name="description" content="Let's talk. Marta Franco is looking for her first full-time role as a web / UI designer, in a studio or an agency.">
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/styles.css">
+<link rel="stylesheet" href="contact.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+
+<header class="hero__bar site-header" id="siteHeader">
+  <a href="../index.html" class="hero__logo" aria-label="Marta Franco — inicio">
+    <img src="../assets/img/logo.svg" alt="">
+  </a>
+  <nav class="hero__nav" aria-label="Principal">
+    <a href="../index.html" class="btn btn--inline"><span class="btn__label">Home</span></a>
+    <a href="../work/index.html" class="btn btn--inline"><span class="btn__label">Work</span></a>
+    <a href="../about/index.html" class="btn btn--inline"><span class="btn__label">About</span></a>
+    <a href="index.html" class="btn btn--inline is-current" aria-current="page"><span class="btn__label">Contact</span></a>
+  </nav>
+  <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navPanel" aria-label="Abrir menú">
+    <span class="nav-toggle__line"></span><span class="nav-toggle__line"></span>
+  </button>
+</header>
+
+<div class="nav-panel" id="navPanel">
+  <nav class="nav-panel__nav" aria-label="Principal (móvil)">
+    <a href="../index.html" class="btn btn--inline"><span class="btn__label">Home</span></a>
+    <a href="../work/index.html" class="btn btn--inline"><span class="btn__label">Work</span></a>
+    <a href="../about/index.html" class="btn btn--inline"><span class="btn__label">About</span></a>
+    <a href="index.html" class="btn btn--inline is-current" aria-current="page"><span class="btn__label">Contact</span></a>
+  </nav>
+</div>
+
+
+<!-- De fondo, el logo del footer (assets/js/marca-efimera.js) en verde:
+     data-base="1" = entero siempre; data-haze="0" = nítido en reposo;
+     data-radius/spread/drag/melt = más radio y más efecto que en el footer;
+     data-invert = textos que se invierten donde pasan por encima del logo -->
+<main class="contact" data-marca-efimera data-base="1" data-haze="0" data-fill="0.62"
+      data-radius="210" data-spread="95" data-drag="2.6" data-melt="0.85"
+      data-invert=".contact__lead, .contact__note, .contact__talk, .contact__foot">
+  <canvas aria-hidden="true"></canvas>
+
+  <p class="contact__lead">I'm looking for my first full-time role as a web / UI designer, in a studio or an agency. Junior, and happy to say so.</p>
+  <p class="contact__note">If you're hiring, or you just want to show me something you're working on — I read everything.</p>
+
+  <div class="contact__talk">
+    <h1 class="section-title">Let's talk.</h1>
+    <a href="mailto:martafrancomtz@gmail.com" class="btn btn--inline"><span class="btn__label">martafrancomtz@gmail.com</span></a>
+    <a href="tel:+34639867532" class="btn btn--inline"><span class="btn__label">+34 639 867 532</span></a>
+  </div>
+
+  <div class="contact__foot">
+    <p>Seville, ES · Remote first, open to travel</p>
+    <p>I answer emails like someone who wants the job</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__contact">
+    <p><span>(Call me maybe)</span> <a href="tel:+34639867532" class="btn btn--inline"><span class="btn__label">+34 639 867 532</span></a></p>
+    <p><span>(Or just write)</span> <a href="mailto:martafrancomtz@gmail.com" class="btn btn--inline"><span class="btn__label">martafrancomtz@gmail.com</span></a></p>
+    <p class="site-footer__copy">Seville, Spain. © 2026 Marta Franco. Designed and built by me.</p>
+  </div>
+
+  <div class="marca-efimera" id="marcaEfimera" role="img" aria-label="Logo de Marta Franco: aparece por donde pasa el ratón">
+    <canvas></canvas>
+  </div>
+
+  <div class="site-footer__links">
+    <a href="#" class="btn btn--external"><span class="btn__label">LinkedIn</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">Instagram</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">GitHub</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">Behance</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="site-footer__cv btn btn--external"><span class="btn__label">Curriculum Vitae (PDF)</span></a>
+  </div>
+</footer>
+
+<script src="../assets/js/rewrite.js"></script>
+<script src="../assets/js/marca-efimera.js"></script>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

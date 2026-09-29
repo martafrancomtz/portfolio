@@ -102,6 +102,18 @@
   }
 
   /* ============================================================
+     1d) CASOS (work/<proyecto>/): cada hueco lleva ya su
+         <img src="img/…">: la foto solo se enseña cuando carga; mientras
+         no haya nombre de archivo (o no exista) queda el hueco gris
+     ============================================================ */
+  document.querySelectorAll(".case__media img, .about__photo img").forEach(function (img) {
+    var hueco = img.parentNode;
+    function lista() { hueco.classList.add("is-loaded"); }
+    if (img.complete && img.naturalWidth) lista();
+    else img.addEventListener("load", lista);
+  });
+
+  /* ============================================================
      1c) CABECERA: se esconde al bajar y vuelve en cuanto se sube
          un poco (como studio-move); arriba del todo, siempre visible
      ============================================================ */

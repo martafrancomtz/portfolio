@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Marta Franco</title>
+<meta name="description" content="Marta Franco, designer from Seville. Interfaces — how they look, how they behave, and how they get built.">
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/styles.css">
+<link rel="stylesheet" href="about.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+
+<header class="hero__bar site-header" id="siteHeader">
+  <a href="../index.html" class="hero__logo" aria-label="Marta Franco — inicio">
+    <img src="../assets/img/logo.svg" alt="">
+  </a>
+  <nav class="hero__nav" aria-label="Principal">
+    <a href="../index.html" class="btn btn--inline"><span class="btn__label">Home</span></a>
+    <a href="../work/index.html" class="btn btn--inline"><span class="btn__label">Work</span></a>
+    <a href="index.html" class="btn btn--inline is-current" aria-current="page"><span class="btn__label">About</span></a>
+    <a href="../contact/index.html" class="btn btn--inline"><span class="btn__label">Contact</span></a>
+  </nav>
+  <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navPanel" aria-label="Abrir menú">
+    <span class="nav-toggle__line"></span><span class="nav-toggle__line"></span>
+  </button>
+</header>
+
+<div class="nav-panel" id="navPanel">
+  <nav class="nav-panel__nav" aria-label="Principal (móvil)">
+    <a href="../index.html" class="btn btn--inline"><span class="btn__label">Home</span></a>
+    <a href="../work/index.html" class="btn btn--inline"><span class="btn__label">Work</span></a>
+    <a href="index.html" class="btn btn--inline is-current" aria-current="page"><span class="btn__label">About</span></a>
+    <a href="../contact/index.html" class="btn btn--inline"><span class="btn__label">Contact</span></a>
+  </nav>
+</div>
+
+
+<main class="about">
+  <h1 class="about__sr">About</h1>
+
+  <!-- Foto + presentación. La foto: escribe el nombre del archivo detrás de
+       img/ (carpeta about/img/); mientras no haya foto se ve el hueco gris -->
+  <section class="about__intro">
+    <figure class="about__photo"><img src="img/img foto mia.png" alt="Marta Franco"></figure>
+    <div class="about__bio">
+      <p>I'm Marta, a designer from Seville. I work on interfaces — how they look, how they behave, and how they get built.</p>
+      <p>I studied graphic design, spent a semester on Erasmus in Slovenia, and then took a six-month master's in web design, UI/UX and front-end — which is where I built my first site. After that I worked as a graphic designer, where 3D and AI were part of the daily job. The web part never went away; it just waited.</p>
+      <p>Slovenia is where I got used to working entirely in English, and to being the person in the room who has to ask. Both turned out to be useful.</p>
+      <p>The way I work hasn't changed much: I still start with research, type and structure before anything else. What changed is that now I get to keep going after the layout is decided — into HTML and CSS, and increasingly into the JavaScript I'm still learning. Designing something you'll have to build yourself changes what you design.</p>
+    </div>
+  </section>
+
+  <!-- Trayectoria: una <li> por etapa (fecha a la izquierda; a la derecha,
+       el título en negrita y debajo, sangrado, el detalle; <br> = salto de línea) -->
+  <section aria-label="Experience and education">
+    <ol class="about__timeline">
+      <li>
+        <p class="about__date">Sept. 2020 — Jul. 2024</p>
+        <div class="about__entry">
+          <h2>BA in Graphic Design</h2>
+          <p>Ceade Leonardo, Seville</p>
+        </div>
+      </li>
+      <li>
+        <p class="about__date">Sept. 2022 - Feb. 2023</p>
+        <div class="about__entry">
+          <h2>Erasmus semester — Graphic and Media Technology</h2>
+          <p>Faculty Of Natural Sciences And Engineering<br>Ljubljana, Slovenia. Six months studying in English.</p>
+        </div>
+      </li>
+      <li>
+        <p class="about__date">Feb. 2024 — Jun. 2024</p>
+        <div class="about__entry">
+          <h2>3D Modeller Internship — Golden Race, Seville</h2>
+          <p>Modelling, texturing and rendering;<br>preparing 3D assets for web and digital use.</p>
+        </div>
+      </li>
+      <li>
+        <p class="about__date">Oct. 2024 — Jan. 2025</p>
+        <div class="about__entry">
+          <h2>Graphic Design Internship — Green Cloud Nine, Austria (remote)</h2>
+          <p>Sustainability-focused. Graphic design,<br>brand assets and AI tools in daily production.</p>
+        </div>
+      </li>
+      <li>
+        <p class="about__date">Oct. 2024 — Apr. 2025</p>
+        <div class="about__entry">
+          <h2>Master's in Web Design &amp; UI/UX</h2>
+          <p>CEI. Centro de Estudios de Innovación,<br>Diseño y Maketing, Seville<br>UI/UX, HTML, CSS and JavaScript.</p>
+        </div>
+      </li>
+      <li>
+        <p class="about__date">Jan. 2025 — Jul. 2026</p>
+        <div class="about__entry">
+          <h2>Graphic Designer — AXT</h2>
+          <p>Started as an intern during the master's<br>and stayed on a permanent contract<br>until the project closed.</p>
+        </div>
+      </li>
+      <li>
+        <p class="about__date">2026 — now</p>
+        <div class="about__entry">
+          <h2>Independent</h2>
+          <p>Web design, UI/UX and front-end.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- Herramientas y conocimientos: dos filas de grupos (título + lista) -->
+  <section class="about__skills" aria-label="Skills">
+    <div class="about__row about__row--1">
+      <div class="about__group">
+        <h2>Design</h2>
+        <ul>
+          <li>Figma</li>
+          <li>Adobe CC
+            <ul>
+              <li>Photoshop</li>
+              <li>Illustrator</li>
+              <li>InDesign</li>
+              <li>Premiere Pro</li>
+              <li>After Effects</li>
+              <li>Lightroom</li>
+            </ul>
+          </li>
+          <li>Autodesk 3ds Max, Blender</li>
+        </ul>
+      </div>
+      <div class="about__group">
+        <h2>Build</h2>
+        <ul>
+          <li>HTML5</li>
+          <li>CSS3</li>
+          <li>Version Control (Git)</li>
+          <li>Responsive Web Design</li>
+        </ul>
+      </div>
+      <div class="about__group">
+        <h2>UI/UX</h2>
+        <ul>
+          <li>Web design &amp; Responsive design</li>
+          <li>UI/UX Design &amp; User research</li>
+          <li>Wireframing &amp; Prototyping</li>
+          <li>Interface design &amp; Design systems</li>
+          <li>Digital asset management</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="about__row about__row--2">
+      <div class="about__group about__group--text">
+        <h2>Artificial Intelligence</h2>
+        <p>Two years using it in daily production: image generation, 3D workflows, iterating on directions faster, and code assistance while I learn JavaScript.</p>
+        <p>Used well it's a speed tool. It's very good at giving you forty options and no reason to choose one.</p>
+      </div>
+      <div class="about__group">
+        <h2>Learning</h2>
+        <ul>
+          <li>JavaScript</li>
+          <li>Webflow</li>
+          <li>(3D again)</li>
+        </ul>
+      </div>
+      <div class="about__group">
+        <h2>Languages</h2>
+        <ul>
+          <li>Spanish (native)</li>
+          <li>English (B2 Cambridge)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="about__links">
+    <a href="#" class="btn btn--external"><span class="btn__label">Full CV (PDF)</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="mailto:martafrancomtz@gmail.com" class="btn btn--external"><span class="btn__label">Want the short version? Email me.</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__contact">
+    <p><span>(Call me maybe)</span> <a href="tel:+34639867532" class="btn btn--inline"><span class="btn__label">+34 639 867 532</span></a></p>
+    <p><span>(Or just write)</span> <a href="mailto:martafrancomtz@gmail.com" class="btn btn--inline"><span class="btn__label">martafrancomtz@gmail.com</span></a></p>
+    <p class="site-footer__copy">Seville, Spain. © 2026 Marta Franco. Designed and built by me.</p>
+  </div>
+
+  <div class="marca-efimera" id="marcaEfimera" role="img" aria-label="Logo de Marta Franco: aparece por donde pasa el ratón">
+    <canvas></canvas>
+  </div>
+
+  <div class="site-footer__links">
+    <a href="#" class="btn btn--external"><span class="btn__label">LinkedIn</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">Instagram</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">GitHub</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="btn btn--external"><span class="btn__label">Behance</span><svg class="btn__icon" viewBox="0 0 18.1338 18.1338" aria-hidden="true" focusable="false"><path d="M18.1338 17.25H15.6338V4.26758L1.76758 18.1338L0 16.3662L13.8662 2.5H0.883789V0H18.1338V17.25Z" fill="currentColor"/></svg></a>
+    <a href="#" class="site-footer__cv btn btn--external"><span class="btn__label">Curriculum Vitae (PDF)</span></a>
+  </div>
+</footer>
+
+<script src="../assets/js/rewrite.js"></script>
+<script src="../assets/js/marca-efimera.js"></script>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+/* ==========================================================
+   CONTACT: frame "Desktop - 34" de Figma.
+   Dos párrafos arriba (24/500, escalonados), en medio "Let's talk.", el
+   email y el teléfono (48/400) y abajo, en una línea, dónde estoy y cómo
+   contesto (24/700). De fondo, en medio, el logo del footer
+   (assets/js/marca-efimera.js) en verde y entero; al pasar el ratón se
+   arrastra y se funde como en el footer, con más radio y más efecto.
+   Tipografía, color, márgenes y grid: variables del sitio (:root en
+   assets/css/styles.css).
+   ========================================================== */
+:root{
+  /* medidas de Figma a 1440, proporcionales al ancho como en work.css */
+  --contact-top:calc(100vw * 192 / 1440);        /* del borde al primer párrafo */
+  --contact-block-gap:max(110px, calc(100vw * 200 / 1440)); /* entre párrafos, datos y pie */
+  --contact-lines-gap:28px;                      /* entre "Let's talk.", email y teléfono */
+  --contact-note-w:600px;                        /* 2.º párrafo: corta tras "something" */
+  --contact-big-fs:var(--fs-title);
+}
+
+.contact{
+  position:relative;
+  /* la cabecera es fija: el texto nunca queda debajo de ella */
+  padding:max(var(--contact-top), calc(var(--header-h) + var(--space-3xs))) var(--grid-margin) 0;
+  display:grid;
+  grid-template-columns:repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap:var(--grid-gutter);
+  align-items:start;
+  color:var(--text);
+  --marca-ink:var(--green);             /* el logo, en verde */
+  --marca-invert:var(--bg);             /* el texto que pasa por encima, invertido */
+}
+
+/* el logo: un lienzo del tamaño de la página, POR ENCIMA de los textos
+   (sin recibir el ratón): donde tapa un texto lo vuelve a dibujar en
+   --marca-invert, así el texto se lee invertido sobre el verde. El ratón
+   se lee en toda la página, también encima de los textos */
+.contact > canvas{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  width:100%;
+  height:100%;
+  display:block;
+  pointer-events:none;
+}
+.contact > :not(canvas){ position:relative }
+/* sin la entrada con scroll (desplaza los textos y el lienzo los
+   dibujaría donde aún no están) */
+.contact .reveal{ opacity:1; transform:none; transition:none }
+
+/* ---------- Párrafos ---------- */
+.contact__lead,
+.contact__note{
+  font-size:var(--fs-body);
+  font-weight:var(--fw-medium);
+  line-height:var(--lh-normal);
+}
+.contact__lead{ grid-column:1 / span 3 }
+.contact__note{
+  grid-column:3 / -1;
+  max-width:var(--contact-note-w);
+  margin-top:var(--space-m);
+}
+
+/* ---------- "Let's talk.", email y teléfono ---------- */
+.contact__talk{
+  grid-column:2 / -1;
+  margin-top:var(--contact-block-gap);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:var(--contact-lines-gap);
+}
+.contact__talk .section-title{ line-height:var(--lh-normal) }
+/* los enlaces: .btn--inline (se reescriben en hover, sin flecha), a
+   tamaño de título (.btn--inline hereda la letra de su contenedor) */
+.contact__talk{
+  font-size:var(--contact-big-fs);
+  font-weight:var(--fw-regular);
+  line-height:var(--lh-normal);
+}
+
+/* ---------- Pie: dónde estoy | cómo contesto ---------- */
+.contact__foot{
+  grid-column:1 / -1;
+  margin-top:var(--contact-block-gap);
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:var(--space-3xs) var(--grid-gutter);
+  font-size:var(--fs-minititle);
+  font-weight:var(--fw-bold);
+  line-height:var(--lh-normal);
+}
+.contact__foot p:last-child{ margin-left:auto; text-align:right }
+
+/* ---------- Tablet ---------- */
+@media (max-width:1023px){
+  .contact__lead{ grid-column:1 / span 3 }
+  .contact__note{ grid-column:2 / -1 }
+  .contact__talk{ grid-column:1 / -1 }
+}
+
+/* ---------- Móvil: una columna ---------- */
+@media (max-width:699px){
+  :root{ --contact-big-fs:clamp(20px, 6.4vw, var(--fs-title-m)) }
+  .contact{ display:flex; flex-direction:column; align-items:stretch }
+  .contact__note{ margin-top:var(--space-s) }
+  .contact__talk{ gap:var(--space-3xs) }
+  .contact__foot{ font-size:var(--fs-subtitle) }
+  .contact__foot p:last-child{ margin-left:0; text-align:left }
+}
