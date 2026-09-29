@@ -76,13 +76,57 @@
        transparente fuera, opaca dentro; el color lo pone el shader) ---------- */
     var plate = document.createElement("canvas");
     var pctx = plate.getContext("2d");
+    /* data-center = selector: el centro del logo va al centro de lo que
+       ocupan esos elementos juntos (en Contact, "Let's talk.", email y
+       teléfono); sin él, al centro del escenario */
+    var CENTER = stage.getAttribute("data-center");
+    /* data-x / data-y: se mueve el logo desde ese centro, en px de una
+       pantalla de 1440 (se escalan con el ancho, como el resto de la web).
+       x positivo = a la derecha; y positivo = hacia abajo */
+    var MOVE_X = parseFloat(stage.getAttribute("data-x")) || 0;
+    var MOVE_Y = parseFloat(stage.getAttribute("data-y")) || 0;
+    /* data-mirror = selector: el borde derecho del logo queda a la misma
+       distancia del borde derecho que ese texto del izquierdo (en Contact,
+       "Let's talk."). Manda sobre el centro en horizontal; data-x lo sigue
+       moviendo desde ahí */
+    var MIRROR = stage.getAttribute("data-mirror");
+    /* data-right = px: el borde derecho del logo, a esa distancia fija del
+       borde derecho (manda sobre data-mirror) */
+    var RIGHT = parseFloat(stage.getAttribute("data-right"));
+    function centro() {
+      var c = centroBase();
+      var ancho = Math.min(W / VB.w, H / VB.h) * FILL * VB.w;
+      var ref = MIRROR && stage.querySelector(MIRROR);
+      if (!isNaN(RIGHT)) {
+        c[0] = W - RIGHT - ancho / 2;
+      } else if (ref) {
+        var margen = ref.getBoundingClientRect().left - stage.getBoundingClientRect().left;
+        c[0] = W - margen - ancho / 2;
+      }
+      var k = window.innerWidth / 1440;
+      return [c[0] + MOVE_X * k, c[1] + MOVE_Y * k];
+    }
+    function centroBase() {
+      var els = CENTER ? stage.querySelectorAll(CENTER) : [];
+      if (!els.length) return [W / 2, H / 2];
+      var r0 = stage.getBoundingClientRect();
+      var l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+      Array.prototype.forEach.call(els, function (el) {
+        var q = el.getBoundingClientRect();
+        l = Math.min(l, q.left); t = Math.min(t, q.top);
+        r = Math.max(r, q.right); b = Math.max(b, q.bottom);
+      });
+      return [(l + r) / 2 - r0.left, (t + b) / 2 - r0.top];
+    }
+
     function paintPlate() {
       pctx.setTransform(1, 0, 0, 1, 0, 0);
       pctx.clearRect(0, 0, plate.width, plate.height);
       var s = Math.min(W / VB.w, H / VB.h) * FILL * dpr;
+      var c = centro();
       pctx.setTransform(s, 0, 0, s,
-        (plate.width - VB.w * s) / 2 - VB.x * s,
-        (plate.height - VB.h * s) / 2 - VB.y * s);
+        c[0] * dpr - VB.w * s / 2 - VB.x * s,
+        c[1] * dpr - VB.h * s / 2 - VB.y * s);
       pctx.fillStyle = "#fff";
       pctx.fill(shape);
       pctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -316,7 +360,10 @@
         if (textoPendiente) return;
         textoPendiente = setTimeout(function () { textoPendiente = 0; paintText(); arrancar(); }, 80);
       }).observe(stage, { subtree: true, childList: true, characterData: true });
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { resize(); });
+    }
+    // los textos (y con ellos data-center) se colocan de nuevo al cargar la letra
+    if ((INVERT || CENTER) && document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { resize(); });
     }
 
     function resize() {

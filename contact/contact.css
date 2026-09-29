@@ -11,11 +11,12 @@
 :root{
   /* medidas de Figma a 1440, proporcionales al ancho como en work.css */
   --contact-top:calc(100vw * 192 / 1440);        /* del borde al primer párrafo */
-  --contact-block-gap:max(110px, calc(100vw * 200 / 1440)); /* entre párrafos, datos y pie */
+  /* encima y debajo de "Let's talk." + datos (con la M detrás, que es más
+     alta que el bloque): 320 a 1440 */
+  --contact-block-gap:max(160px, calc(100vw * 520 / 1440));
   --contact-lines-gap:28px;                      /* entre "Let's talk.", email y teléfono */
   --contact-note-w:600px;                        /* 2.º párrafo: corta tras "something" */
-  --contact-big-fs:var(--fs-title);
-}
+  --contact-big-fs:var(--fs-title);}
 
 .contact{
   position:relative;

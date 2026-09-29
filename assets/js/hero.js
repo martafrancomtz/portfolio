@@ -30,13 +30,13 @@
      rehace al parar. Las medidas en px son las de la referencia, donde la
      marca medía 594px de ancho: aquí se escalan con el ancho del título. */
   var MELT = {
-    radius: 230,    // hasta dónde llega el charco
-    spread: 58,     // cuánto se abre el desenfoque
-    drag: 2.3,      // cuánto arrastra la tinta al moverse
-    melt: 0.7,      // cuánto tira hacia abajo (goteo)
+    radius: 100,    // hasta dónde llega el charco
+    spread: 68,     // cuánto se abre el desenfoque
+    drag: 3.3,      // cuánto arrastra la tinta al moverse
+    melt: 0.6,      // cuánto tira hacia abajo (goteo)
     inertia: 0.11,  // lo que el charco se acerca al ratón por fotograma (60 fps)
     samples: 20,    // pases del desenfoque (calidad)
-    refWidth: 594   // ancho de la marca en la referencia
+    refWidth: 494   // ancho de la marca en la referencia
   };
 
   var MELT_FRAG = [

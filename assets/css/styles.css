@@ -470,18 +470,20 @@ html.is-menu-open{ overflow:hidden }
 
 /* ---------- FOOTER ---------- */
 /* a la izquierda el contacto (con dónde estoy y mi nombre), a la derecha las
-   redes y el CV, siempre arriba; en medio el logo, como en Figma. Donde no
-   cabe el logo (≤859px) se quita y quedan contacto y redes */
+   redes y el CV, siempre arriba; en medio el logo, como en Figma. El hueco
+   del logo encoge con la pantalla (310px a 1440) y, si hace falta, el
+   contacto parte línea; solo en pantallas pequeñas (<700px, las del menú
+   hamburguesa) se quita el logo y quedan contacto y redes */
 .site-footer{
   padding:var(--space-section) var(--grid-margin) 80px;
   display:grid;
-  grid-template-columns:auto minmax(180px, 310px) auto;
+  grid-template-columns:minmax(min-content, max-content) clamp(140px, 22vw, 310px) auto;
   grid-template-areas:"contacto marca redes";
   justify-content:space-between;
   align-items:start;
-  gap:var(--space-s) 40px;
+  gap:var(--space-s) clamp(20px, 2.8vw, 40px);
 }
-@media (max-width:859px){
+@media (max-width:699px){
   .site-footer{ grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"contacto redes" }
   .marca-efimera{ display:none }
 }

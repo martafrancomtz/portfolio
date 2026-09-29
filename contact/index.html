@@ -43,10 +43,13 @@
 
 
 <!-- De fondo, el logo del footer (assets/js/marca-efimera.js) en verde:
-     data-base="1" = entero siempre; data-haze="0" = nítido en reposo;
+     data-base="1" = entero siempre, al 100%; data-haze="0" = nítido en reposo; data-center = centrado en "Let's talk.", email y teléfono;
+     data-right = en horizontal, el borde derecho del logo a esos px del borde derecho
+       (o data-mirror=".contact__talk > :first-child": el mismo margen que "Let's talk." a la izquierda);
+     data-x/data-y = y desde ahí se mueve (px a 1440; x+ derecha, y+ abajo);
      data-radius/spread/drag/melt = más radio y más efecto que en el footer;
      data-invert = textos que se invierten donde pasan por encima del logo -->
-<main class="contact" data-marca-efimera data-base="1" data-haze="0" data-fill="0.62"
+<main class="contact" data-marca-efimera data-base="1" data-haze="0" data-fill="0.565" data-center=".contact__talk > *" data-right="20" data-x="0" data-y="0"
       data-radius="210" data-spread="95" data-drag="2.6" data-melt="0.85"
       data-invert=".contact__lead, .contact__note, .contact__talk, .contact__foot">
   <canvas aria-hidden="true"></canvas>
