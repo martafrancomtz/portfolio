@@ -18,3 +18,5 @@ node_modules/
 *.fig
 *.psd
 *.ai
+# originales de las imágenes (se reducen para la web; no se suben)
+_originales/

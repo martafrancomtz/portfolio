@@ -103,11 +103,20 @@
     window.scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
   }
 
+  /* En pantallas táctiles no hay salto de scroll: el toque (o el roce al
+     arrastrar) disparaba un scroll automático que peleaba con el dedo y
+     dejaba la página a medias. Ahí el enunciado cambia solo con el scroll,
+     y tocarlo solo lo muestra. */
+  var conRaton = !!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+
   items.forEach(function(item){
     var i = parseInt(item.getAttribute("data-i"), 10);
-    item.addEventListener("mouseenter", function(){ hover = i; pintarEnfocado(); saltarA(i); });
+    item.addEventListener("mouseenter", function(){
+      if (!conRaton) return;
+      hover = i; pintarEnfocado(); saltarA(i);
+    });
     item.addEventListener("focus",      function(){ hover = i; pintarEnfocado(); });
-    item.addEventListener("click",      function(){ hover = null; irA(i); saltarA(i); });
+    item.addEventListener("click",      function(){ hover = null; irA(i); if (conRaton) saltarA(i); });
   });
   lista.addEventListener("mouseleave", function(){ hover = null; pintarEnfocado(); });
   lista.addEventListener("focusout", function(e){

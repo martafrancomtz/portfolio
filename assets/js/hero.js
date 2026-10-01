@@ -389,9 +389,12 @@
     return true;
   }
 
+  var tactil = !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
   function resizeGL() {
     var rect = hero.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // en pantallas táctiles (móvil) menos resolución: el degradado es suave
+    // y así pesa la mitad; con ratón, hasta 2x
+    dpr = Math.min(window.devicePixelRatio || 1, tactil ? 1.5 : 2);
     var w = Math.round(rect.width * dpr);
     var h = Math.round(rect.height * dpr);
     if (canvas.width !== w || canvas.height !== h) {
@@ -441,7 +444,12 @@
     updateMelt(dt);
     comprobarModo();
 
-    if (usaGL) {
+    // Con el hero fuera de pantalla (y el menú cerrado) no se pinta nada:
+    // así el degradado no le quita potencia al scroll del resto de la página
+    var fuera = hero.getBoundingClientRect().bottom <= 0 &&
+      !document.documentElement.classList.contains("is-menu-open");
+
+    if (usaGL && !fuera) {
       resizeGL();
 
       var rect = hero.getBoundingClientRect();

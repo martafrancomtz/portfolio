@@ -305,7 +305,7 @@ main{ background:var(--bg); overflow-x:clip; }
   padding:var(--header-h) var(--grid-margin);
   /* el mismo fondo que el hero: en la home, hero.js copia aquí su degradado
      animado (.nav-panel__bg); si no, la imagen de reserva del hero */
-  background:var(--hero-bg) url("../img/hero-grainient.png") center / cover no-repeat;
+  background:var(--hero-bg) url("../img/hero-grainient.jpg") center / cover no-repeat;
   color:var(--white);
   opacity:0;
   visibility:hidden;

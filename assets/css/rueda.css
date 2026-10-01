@@ -64,6 +64,8 @@
   transform:scale(1);
   clip-path:inset(0);
 }
+/* táctil: la imagen abierta se puede tocar para ir al proyecto (rueda.js) */
+.rueda-card.is-visible.is-tocable{ pointer-events:auto }
 .rueda-card__face{
   position:absolute; inset:0;
   opacity:0;

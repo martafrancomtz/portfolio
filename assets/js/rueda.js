@@ -12,8 +12,8 @@
 
   var proyectos = [
     "3D bottle", "Off-White", "Mondo Restaurant", "Kilter Typography",
-    "Students Life Cards", "ConSentío", "Merkamueble Redesign",
-    "Antonio Franco portfolio", "Ecological Posters", "Portfolio v1 → v2", "Expo Sevilla '24", "Bullet Train Illustrations", "Typographic Analysis"
+    "Student Life Cards", "ConSentío", "Merkamueble Redesign",
+    "Antonio Franco portfolio", "Ecological Posters", "Portfolio v1", "Expo Sevilla '24", "Bullet Train Illustrations", "Typographic Analysis"
   ];
   /* El SVG junta los espacios seguidos en uno y quita los del final del
      texto: en la unión del círculo (el último nombre con el primero) el
@@ -27,10 +27,41 @@
      - Varias imágenes:   ["a.jpg", "b.jpg", "c.jpg"]  → se van cambiando rápido
      El nombre tiene que ser IGUAL que en la lista de arriba.
      Si un proyecto no aparece aquí, se ve un degradado de color. */
+  /* Por ahora, la imagen principal de cada proyecto en la página Work */
+  var W = "work/img work/";
   var medios = {
-    "Students Life Cards": "assets/img/playing-cards-mockup.png"
-    // "3D bottle": "assets/img/proyectos/3d-bottle.mp4",
-    // "Off-White": ["assets/img/proyectos/ow-1.jpg", "assets/img/proyectos/ow-2.jpg"],
+    "3D bottle": W + "renderer final.jpg",
+    "Off-White": W + "s.jpg",
+    "Mondo Restaurant": W + "Realistic Business Cards MockUp 4.jpg",
+    "Kilter Typography": W + "blue platform.jpg",
+    "Student Life Cards": W + "cartas mockup1.jpg",
+    "ConSentío": W + "Shot-4.jpg",
+    "Merkamueble Redesign": W + "merkamueble.jpg",
+    "Antonio Franco portfolio": W + "MacBook_Mockup_1.png",
+    "Ecological Posters": W + "52_urban_poster_mockup.jpg",
+    "Portfolio v1": W + "Scene _8.png",
+    "Expo Sevilla '24": W + "Qubus (EU).jpg",
+    "Bullet Train Illustrations": W + "Mockup jpg.jpg",
+    "Typographic Analysis": W + "Sin título-2-01.jpg"
+    // un vídeo:        "assets/img/proyectos/3d-bottle.mp4",
+    // varias imágenes: ["assets/img/proyectos/ow-1.jpg", "assets/img/proyectos/ow-2.jpg"],
+  };
+  /* A qué página lleva cada nombre (en táctil, al tocarlo por segunda vez
+     o al tocar su imagen). Ruta desde index.html */
+  var enlaces = {
+    "3D bottle": "work/3d-bottle/index.html",
+    "Off-White": "work/off-white/index.html",
+    "Mondo Restaurant": "work/mondo-restaurant/index.html",
+    "Kilter Typography": "work/kilter-typography/index.html",
+    "Student Life Cards": "work/students-life-cards/index.html",
+    "ConSentío": "work/consentio/index.html",
+    "Merkamueble Redesign": "work/merkamueble-redesign/index.html",
+    "Antonio Franco portfolio": "work/antonio-franco/index.html",
+    "Ecological Posters": "work/ecological-posters/index.html",
+    "Portfolio v1": "work/portfolio-v1-v2/index.html",
+    "Expo Sevilla '24": "work/expo-sevilla-24/index.html",
+    "Bullet Train Illustrations": "work/bullet-train-illustrations/index.html",
+    "Typographic Analysis": "work/typographic-analysis/index.html"
   };
   var VELOCIDAD_FLIPBOOK = 200; // ms entre imagen e imagen. No bajes de ~170: los cambios muy rápidos pueden molestar
 
@@ -268,8 +299,20 @@
         if (d >= rueda.r) libres.push({ x: x, y: y });
       }
     }
+    // Mejor cerca del centro vertical de la pantalla: de los huecos libres,
+    // los que dejan el centro de la tarjeta en la franja central (±20 % del alto)
+    var centroY = window.innerHeight / 2, franja = window.innerHeight * 0.2;
+    var centrados = libres.filter(function (h) { return Math.abs(h.y + alto / 2 - centroY) <= franja; });
+    if (centrados.length) libres = centrados;
     if (libres.length) return libres[Math.floor(Math.random() * libres.length)];
     return masLejos; // sin hueco (pantallas muy pequeñas): lo más lejos posible
+  }
+
+  /* ¿Cabe la tarjeta entera en la ventana en (x, y)? */
+  function cabeEnPantalla(x, y, ancho, alto) {
+    return x >= MARGEN_PANTALLA - 1 && y >= MARGEN_PANTALLA - 1 &&
+      x + ancho <= window.innerWidth - MARGEN_PANTALLA + 1 &&
+      y + alto <= window.innerHeight - MARGEN_PANTALLA + 1;
   }
 
   /* Seguro: si en su camino la tarjeta llega a rozar la rueda, se la empuja hacia fuera. */
@@ -293,9 +336,13 @@
     if (proyectoActivo === null || !tarjeta) return;
     var ancho = tarjeta.offsetWidth, alto = tarjeta.offsetHeight;
 
-    // Si la rueda se ha movido y su sitio ya no está libre, busca otro.
+    // Si la rueda se ha movido y su sitio ya no está libre, o la tarjeta ha
+    // cambiado de tamaño (al cargar la imagen) y ya no cabe, busca otro.
     var rueda = zonaDeLaRueda();
-    if (distanciaALaRueda(destinoX, destinoY, ancho, alto, rueda).d < rueda.r) {
+    var cabria = ancho <= window.innerWidth - 2 * MARGEN_PANTALLA &&
+                 alto <= window.innerHeight - 2 * MARGEN_PANTALLA;
+    if (distanciaALaRueda(destinoX, destinoY, ancho, alto, rueda).d < rueda.r ||
+        (cabria && !cabeEnPantalla(destinoX, destinoY, ancho, alto))) {
       var hueco = buscarHuecoAlAzar(ancho, alto);
       destinoX = hueco.x; destinoY = hueco.y;
     }
@@ -333,9 +380,26 @@
     if (tarjetaVideo) tarjetaVideo.pause();
   }
 
+  /* La tarjeta toma la proporción de su imagen o vídeo: las horizontales
+     mantienen el ancho de siempre (min(42vw, 460px)) y las verticales, el
+     alto de siempre (el de la tarjeta 4:5), para que ninguna se dispare.
+     Sin imagen (degradado), vuelve a la tarjeta 4:5 del CSS. */
+  function ajustarTarjeta(ancho, alto) {
+    if (!ancho || !alto) { tarjeta.style.width = ""; tarjeta.style.aspectRatio = ""; return; }
+    var proporcion = ancho / alto;
+    var base = Math.min(window.innerWidth * 0.42, 460);   // el ancho del CSS
+    // el alto de la tarjeta 4:5, sin pasar nunca del alto de la ventana
+    var altoMax = Math.min(base * 5 / 4, window.innerHeight - 2 * MARGEN_PANTALLA);
+    var w = proporcion >= 0.8 ? base : altoMax * proporcion;
+    if (w / proporcion > altoMax) w = altoMax * proporcion;
+    tarjeta.style.aspectRatio = ancho + " / " + alto;
+    tarjeta.style.width = w + "px";
+  }
+
   function ponerMedio(indice) {
     pararMedios();
     var medio = medios[proyectos[indice]];
+    if (!medio) ajustarTarjeta(0, 0);
     tarjetaImagen.classList.remove("is-on");
     tarjetaVideo.classList.remove("is-on");
 
@@ -362,6 +426,11 @@
     // 2) Vídeo: se reproduce desde el principio, sin sonido y en bucle.
     if (typeof medio === "string" && esVideo(medio)) {
       if (tarjetaVideo.getAttribute("src") !== medio) tarjetaVideo.src = medio;
+      if (tarjetaVideo.videoWidth) ajustarTarjeta(tarjetaVideo.videoWidth, tarjetaVideo.videoHeight);
+      else tarjetaVideo.onloadedmetadata = function () {
+        tarjetaVideo.onloadedmetadata = null;
+        ajustarTarjeta(tarjetaVideo.videoWidth, tarjetaVideo.videoHeight);
+      };
       tarjetaVideo.currentTime = 0;
       tarjetaVideo.classList.add("is-on");
       if (!reduce) tarjetaVideo.play().catch(function () {});
@@ -374,6 +443,15 @@
     var paso = 0;
     tarjetaImagen.src = lista[0];
     tarjetaImagen.classList.add("is-on");
+    // la tarjeta toma la proporción de la imagen (de la primera, si son varias)
+    if (tarjetaImagen.complete && tarjetaImagen.naturalWidth) {
+      ajustarTarjeta(tarjetaImagen.naturalWidth, tarjetaImagen.naturalHeight);
+    } else {
+      tarjetaImagen.onload = function () {
+        tarjetaImagen.onload = null;
+        ajustarTarjeta(tarjetaImagen.naturalWidth, tarjetaImagen.naturalHeight);
+      };
+    }
 
     if (lista.length > 1 && !reduce) {
       temporizadorFlipbook = setInterval(function () {
@@ -414,7 +492,7 @@
     svg.querySelectorAll(".rueda-item, .rueda-sep").forEach(function (el) {
       el.classList.remove("is-active", "is-blur");
     });
-    if (tarjeta) tarjeta.classList.remove("is-visible");
+    if (tarjeta) tarjeta.classList.remove("is-visible", "is-tocable");
     pararMedios();
   }
 
@@ -449,14 +527,24 @@
 
   var ultimoPuntero = "mouse";
   document.addEventListener("pointerdown", function (e) { ultimoPuntero = e.pointerType; }, true);
+  /* Táctil: el primer toque en un nombre saca su imagen; tocar otra vez el
+     mismo nombre, o la imagen, lleva al proyecto. Tocar fuera la cierra. */
   document.addEventListener("click", function (evento) {
     if (ultimoPuntero === "mouse") return;
-    var palabra = evento.target.closest && evento.target.closest(".rueda-item");
+    var objetivo = evento.target;
+    var enTarjeta = objetivo.closest && objetivo.closest("#wheelCard");
+    if (enTarjeta && proyectoActivo !== null) { irAlProyecto(proyectoActivo); return; }
+    var palabra = objetivo.closest && objetivo.closest(".rueda-item");
     if (!palabra) { if (proyectoActivo !== null) ocultarTarjeta(); return; }
     var indice = Number(palabra.dataset.idx);
-    if (proyectoActivo === indice) ocultarTarjeta();
-    else mostrarProyecto(indice);
+    if (proyectoActivo === indice) irAlProyecto(indice);
+    else { mostrarProyecto(indice); tarjeta.classList.add("is-tocable"); }
   });
+
+  function irAlProyecto(indice) {
+    var ruta = enlaces[proyectos[indice]];
+    if (ruta) window.location.href = ruta;
+  }
 
   /* ============================================================
      ARRANQUE

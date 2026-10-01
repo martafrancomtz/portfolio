@@ -63,6 +63,10 @@
   .whatido-pin__grid{ grid-template-columns:1fr; gap:0 }
   .what-i-do__item > .what-i-do__desc{ margin-top: 30px }
 }
+/* táctil: cada paso dura menos scroll (con el dedo se quedaba "atascado") */
+@media (pointer:coarse){
+  .whatido-pin{ --wid-paso:38vh }
+}
 
 /* ---------- sin movimiento: nada de pin, lista + descripción en flujo normal ---------- */
 @media (prefers-reduced-motion:reduce){

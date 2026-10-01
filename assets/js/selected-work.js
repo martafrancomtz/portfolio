@@ -7,6 +7,7 @@
   /* ================== AJUSTES ================== */
   const CONFIG = {
     step: 0.9,         // scroll (en alturas de pantalla) que dura abierto cada proyecto
+    stepTouch: 0.6,    // lo mismo en pantallas táctiles
     minMedia: 0.4,     // móvil muy bajo: la imagen nunca baja del 40% de su alto
     stagger: 90         // ms entre filas al aparecer
   };
@@ -142,7 +143,8 @@
 
     const vh = lastH;
     fit(vh);
-    distance = Math.round(N * CONFIG.step * vh);
+    // en táctil, cada proyecto dura menos scroll (con el dedo se hacía eterno)
+    distance = Math.round(N * (coarse.matches ? CONFIG.stepTouch : CONFIG.step) * vh);
     stage.style.position = 'sticky';
     stage.style.top = '0px';
     stage.style.height = vh + 'px';
@@ -195,7 +197,8 @@
   // clic en una fila: ir al punto del scroll donde ese proyecto está abierto
   heads.forEach((head, i) => {
     head.addEventListener('click', () => {
-      if (!pinned) return;
+      // en táctil no: el salto automático pelea con el dedo al hacer scroll
+      if (!pinned || coarse.matches) return;
       const top = pinStart + (i + 0.35) * (distance / N);
       window.scrollTo({ top, behavior: 'smooth' });
     });

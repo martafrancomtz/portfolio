@@ -112,6 +112,21 @@
     if (img.complete && img.naturalWidth) lista();
     else img.addEventListener("load", lista);
   });
+  // vídeos de los casos: igual, se enseñan cuando ya tienen imagen
+  document.querySelectorAll(".case__media video").forEach(function (video) {
+    var hueco = video.parentNode;
+    function listo() { hueco.classList.add("is-loaded"); }
+    if (video.readyState >= 2) listo();
+    else video.addEventListener("loadeddata", listo);
+  });
+
+  /* prototipos de Figma (.case__proto): dentro del iframe la página no
+     recibe el ratón y el círculo se quedaría quieto en el borde; se oculta
+     mientras el ratón está dentro */
+  document.querySelectorAll(".case__proto").forEach(function (el) {
+    el.addEventListener("mouseenter", function () { document.documentElement.classList.add("embed-on"); });
+    el.addEventListener("mouseleave", function () { document.documentElement.classList.remove("embed-on"); });
+  });
 
   /* ============================================================
      1c) CABECERA: se esconde al bajar y vuelve en cuanto se sube

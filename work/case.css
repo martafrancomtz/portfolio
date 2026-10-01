@@ -11,6 +11,11 @@
        .case__media.case__media--tall   imagen a todo el ancho más alta (1364×976)
        .case__pair                  dos imágenes en paralelo (672×910 cada una)
        .case__quad                  cuatro imágenes en fila (2 + 2 en móvil)
+       + .case__media--screen       pantalla de móvil (393×852), vista desde arriba
+       .case__proto                 prototipo de Figma (<iframe>) + .case__proto-link
+                                    (el enlace que lo sustituye en móvil); también
+                                    sirve para una web real (<iframe> de la web)
+       .case__visit                 botón "Visit the website" (siempre visible)
        + .case__media--auto        en cualquier imagen: la altura la pone la
                                     foto en vez del tamaño fijo de Figma
        .case__text                  texto a todo el ancho
@@ -34,6 +39,7 @@
   --case-ratio:1364 / 850;
   --case-ratio-tall:1364 / 976;
   --case-ratio-half:672 / 910;
+  --case-ratio-screen:393 / 852;               /* pantalla de móvil */
 }
 
 /* ---------- Cabecera: la común (.site-header, en assets/css/styles.css) ---------- */
@@ -92,7 +98,9 @@
 }
 .case__media--tall{ aspect-ratio:var(--case-ratio-tall) }
 .case__media.is-loaded{ background:none }
-.case__media img{
+.case__media img,
+.case__media video{
+  display:block;
   position:absolute;
   inset:0;
   width:100%;
@@ -101,12 +109,14 @@
   opacity:0;
   transition:opacity .6s var(--ease);
 }
-.case__media.is-loaded img{ opacity:1 }
+.case__media.is-loaded img,
+.case__media.is-loaded video{ opacity:1 }
 
 /* opción: la altura la pone la foto (el ancho sigue siendo el del hueco).
    Mientras no carga, el hueco gris tiene la altura de siempre */
 .case__media--auto.is-loaded{ aspect-ratio:auto }
-.case__media--auto.is-loaded img{ position:static; height:auto }
+.case__media--auto.is-loaded img,
+.case__media--auto.is-loaded video{ position:static; height:auto }
 
 .case__pair{
   display:grid;
@@ -127,6 +137,27 @@
 }
 .case__quad .case__media{ aspect-ratio:var(--case-ratio-half) }
 .case__quad .case__media--auto.is-loaded{ aspect-ratio:auto }
+
+/* pantallas de móvil (393×852, las del diseño de apps): todas igual de
+   altas; las pantallas largas (con scroll) se ven desde arriba */
+.case__media.case__media--screen{ aspect-ratio:var(--case-ratio-screen) }
+.case__media--screen img{ object-position:top }
+
+/* prototipo de Figma incrustado (<iframe>, enlace "embed" de Figma):
+   a todo el ancho, con la proporción de una imagen grande. Mientras el
+   ratón está dentro, main.js pone html.embed-on y se oculta el cursor de
+   la web (dentro del iframe la página no recibe el ratón). En pantallas
+   pequeñas no cabe: se quita y queda el enlace (.case__proto-link) */
+.case__proto{
+  margin:0;
+  aspect-ratio:var(--case-ratio);
+  background:var(--case-placeholder);
+}
+.case__proto iframe{ display:block; width:100%; height:100%; border:0 }
+.case__proto-link{ display:none; align-self:flex-start }
+/* enlace a la web real del proyecto: un .btn externo, centrado en la página */
+.case__visit{ align-self:center }
+html.embed-on .cursor{ opacity:0 }
 
 /* texto: la tipografía de los demás textos de la web (24/400/1.3) */
 .case__text{
@@ -183,6 +214,8 @@
 /* ---------- Móvil ---------- */
 @media (max-width:699px){
   .case__text--half{ padding-left:0 }
+  .case__proto{ display:none }
+  .case__proto-link{ display:inline-flex }
   .case__text--cols{ grid-template-columns:minmax(0, 1fr) }
   /* títulos a la izquierda del todo; los valores se quedan el resto */
   .case__text--list{ grid-template-columns:auto minmax(0, 1fr) }
