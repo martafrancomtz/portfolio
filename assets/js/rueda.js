@@ -37,9 +37,9 @@
     "Student Life Cards": W + "cartas mockup1.jpg",
     "ConSentío": W + "Shot-4.jpg",
     "Merkamueble Redesign": W + "merkamueble.jpg",
-    "Antonio Franco portfolio": W + "MacBook_Mockup_1.png",
+    "Antonio Franco portfolio": W + "MacBook_Mockup_1.jpg",
     "Ecological Posters": W + "52_urban_poster_mockup.jpg",
-    "Portfolio v1": W + "Scene _8.png",
+    "Portfolio v1": W + "Scene _8.jpg",
     "Expo Sevilla '24": W + "Qubus (EU).jpg",
     "Bullet Train Illustrations": W + "Mockup jpg.jpg",
     "Typographic Analysis": W + "Sin título-2-01.jpg"
@@ -373,6 +373,35 @@
      CONTENIDO DE LA TARJETA: imagen, gif, vídeo o secuencia
      ============================================================ */
   function esVideo(ruta) { return /\.(mp4|webm|mov)$/i.test(ruta); }
+
+  /* Precarga: cuando la rueda está a una pantalla de distancia se bajan y
+     decodifican todas las imágenes, para que al pasar por encima salgan
+     al momento (antes se pedían en el hover). Se guardan en "precargadas"
+     para que el navegador no las suelte. Los vídeos no: pesan demasiado. */
+  var precargadas = [];
+  function precargarMedios() {
+    Object.keys(medios).forEach(function (nombre) {
+      var medio = medios[nombre];
+      (typeof medio === "string" ? [medio] : medio).forEach(function (ruta) {
+        if (esVideo(ruta)) return;
+        var img = new Image();
+        img.decoding = "async";
+        img.src = ruta;
+        if (img.decode) img.decode().catch(function () {});
+        precargadas.push(img);
+      });
+    });
+  }
+  if (pin && "IntersectionObserver" in window) {
+    var vigia = new IntersectionObserver(function (entradas) {
+      if (!entradas.some(function (e) { return e.isIntersecting; })) return;
+      vigia.disconnect();
+      precargarMedios();
+    }, { rootMargin: "100% 0px" });
+    vigia.observe(pin);
+  } else {
+    window.addEventListener("load", precargarMedios);
+  }
 
   function pararMedios() {
     clearInterval(temporizadorColor);

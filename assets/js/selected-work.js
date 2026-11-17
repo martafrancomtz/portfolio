@@ -168,11 +168,6 @@
     let index = -1;
     if (q >= 0 && q < 1) index = Math.min(N - 1, Math.floor(q * N));
     open(index);
-    // desplazamiento suave de la imagen dentro de su tramo
-    if (index >= 0) {
-      const local = Math.min(1, Math.max(0, q * N - index));
-      items[index].style.setProperty('--l', local.toFixed(3));
-    }
   }
 
   window.addEventListener('scroll', () => {
@@ -197,8 +192,14 @@
   // clic en una fila: ir al punto del scroll donde ese proyecto está abierto
   heads.forEach((head, i) => {
     head.addEventListener('click', () => {
-      // en táctil no: el salto automático pelea con el dedo al hacer scroll
-      if (!pinned || coarse.matches) return;
+      // en táctil no hay salto (pelea con el dedo al hacer scroll): tocar el
+      // título lleva directamente al caso, esté abierto o cerrado
+      if (coarse.matches) {
+        const cta = items[i].querySelector('.sw__cta');
+        if (cta) window.location.href = cta.href;
+        return;
+      }
+      if (!pinned) return;
       const top = pinStart + (i + 0.35) * (distance / N);
       window.scrollTo({ top, behavior: 'smooth' });
     });

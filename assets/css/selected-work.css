@@ -147,10 +147,10 @@
 
 .sw__media img{
   width: 100%;
-  height: 108%;               /* un poco más alta para el desplazamiento suave al hacer scroll */
+  height: 100%;               /* quieta en su marco: sin desplazamiento con el scroll */
   object-fit: cover;
   object-position: var(--pos, 50% 50%);
-  transform: translate3d(0, calc(var(--l, .5) * -7.4%), 0) scale(var(--zoom, 1));
+  transform: scale(var(--zoom, 1));
   will-change: transform;
 }
 

@@ -54,9 +54,13 @@
          All my work, assets/js/rewrite.js); no se mueve nada
      ============================================================ */
   if (window.Rewrite) {
-    document.querySelectorAll(".btn").forEach(function (btn) {
-      var label = btn.querySelector(".btn__label");
+    // .tm = botones de la franja horaria del hero (auto/day/twilight/night):
+    // no llevan .btn__label, se reescribe el propio botón
+    document.querySelectorAll(".btn, .tm").forEach(function (btn) {
+      var label = btn.classList.contains("tm") ? btn : btn.querySelector(".btn__label");
       if (!label) return;
+      // al elegir una franja pasa a negrita: suelta el ancho fijado para que quepa
+      if (label === btn) btn.addEventListener("click", function () { label.style.width = ""; });
       // el ancho del texto se fija mientras se reescribe: las letras al azar
       // no miden exactamente lo mismo y la flecha (o el botón) se movería
       function run() {
